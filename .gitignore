@@ -1,0 +1,53 @@
+# === Python ===
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+*.so
+*.egg
+*.egg-info/
+.eggs/
+
+# === Django ===
+*.log
+*.pot
+*.pyc
+db.sqlite3
+media/
+staticfiles/
+local_settings.py
+
+# === Virtual Environment ===
+venv/
+.venv/
+ENV/
+env/
+env.bak/
+
+# === Environment Variables ===
+.env
+*.env
+
+# === VS Code ===
+.vscode/
+.history/
+*.code-workspace
+
+# === OS Generated Files ===
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# macOS (in case you ever move the repo)
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# === IDEs / Editors ===
+.idea/
+*.swp
+*.swo
+*.bak
