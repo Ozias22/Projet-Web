@@ -1,0 +1,40 @@
+{% extends "utilisateurs/_modele.html"%}
+{%load static%}
+
+{% block title %}
+PerfectMatch - Accueil
+{% endblock %}
+
+{% block header%}
+<h2>
+    <a href="/">
+        PerfectMatch
+    </a>
+</h2>
+{% endblock %}
+
+{% block main%}
+<div class="row">
+    <!-- -->
+    <div class="col-12">
+        <div class="row">
+            <div class="col-3"><img class="img-fluid" src="{%static 'utilisateurs/static/images/happy.png'%}" alt=""></div>
+            <div class="col-9"><p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea possimus, ex, illo cum commodi, praesentium nulla nobis perspiciatis sapiente numquam earum ducimus dicta. Recusandae nisi natus, porro repellendus ratione minima.</p></div>
+        </div>
+    </div>
+    <!-- -->
+    <div class="col-12">
+        <div class="row">
+            <div class="col-9"><p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea possimus, ex, illo cum commodi, praesentium nulla nobis perspiciatis sapiente numquam earum ducimus dicta. Recusandae nisi natus, porro repellendus ratione minima.</p></div>
+            <div class="col-3"><img src="img-fluid" alt=""></div>
+        </div>
+    </div>
+    <!-- -->
+    <div class="col-12">
+        <div class="row">
+            <div class="col-3"><img src="img-fluid" alt=""></div>
+            <div class="col-9"><p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea possimus, ex, illo cum commodi, praesentium nulla nobis perspiciatis sapiente numquam earum ducimus dicta. Recusandae nisi natus, porro repellendus ratione minima.</p></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
