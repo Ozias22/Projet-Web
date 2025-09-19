@@ -11,42 +11,41 @@
     <link rel="stylesheet" href="">
 
     <!-- titre tu site-->
-    <title>{% block title %}PerfectMatch{% endblock title %}</title>
+    <title>{%block title%}PerfectMatch{%endblock title%}</title>
 
     <!-- script javascript-->
-    {% block script%}{% endblock script%}
+    {%block script%}{%endblock script%}
 </head>
 
 <body>
     <!-- Accescibilitee avec tabulation-->
     <a href="#">Access au contenu</a>
     <header>
-        {% block header %}
+        {%block header%}
         <h1>
-            <a href="/"></a>
+            <a href="/">PerfectMatch</a>
         </h1>
-        {% endblock header}
+        {%endblock header%}
     </header>
     <nav>
         <div>
             <ul>
-                <li></li>
-                <li></li>
+                <li><a href="">Lien1</a></li>
+                <li><a href="">Lien2</a></li>
+                <li><a href="">Lien3</a></li>
+                <li><a href="">Lien4</a></li>
+                <li><a href="">Lien5</a></li>
             </ul>
-            <!-- Zone de recherche-->
-            <form>
-
-            </form>
         </div>
     </nav>
     <main>
-        {% block main %}{% endblock main %}
+        {%block main%}{%endblock main%}
     </main>
     <footer>
         <h2>Nous rejoindre</h2>
         <a>facebook.com</a>
 
-        <p>2025 PerfecteMatch | Ozias Tasse Douanla && Marie Wideline Pierre && Vosa Neo. Tous droits réservés.</p>
+        <p>2025 PerfectMatch | Ozias Tasse Douanla && Marie Wideline Pierre && Vosa Neo. Tous droits réservés.</p>
     </footer>
 </body>
 
