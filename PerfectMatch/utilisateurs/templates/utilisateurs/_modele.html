@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- icone du site-->
+    <link rel="icon" href="">
+    <!-- style bootstrap? -->
+    <link rel="stylesheet" href="">
+
+    <!-- titre tu site-->
+    <title>{%block title%}PerfectMatch{%endblock title%}</title>
+
+    <!-- script javascript-->
+    {%block script%}{%endblock script%}
+</head>
+
+<body>
+    <!-- Accescibilitee avec tabulation-->
+    <a href="#">Access au contenu</a>
+    <header>
+        {%block header%}
+        <h1>
+            <a href="/">PerfectMatch</a>
+        </h1>
+        {%endblock header%}
+    </header>
+    <nav>
+        <div>
+            <ul>
+                <li><a href="">Lien1</a></li>
+                <li><a href="">Lien2</a></li>
+                <li><a href="">Lien3</a></li>
+                <li><a href="">Lien4</a></li>
+                <li><a href="">Lien5</a></li>
+            </ul>
+        </div>
+    </nav>
+    <main>
+        {%block main%}{%endblock main%}
+    </main>
+    <footer>
+        <h2>Nous rejoindre</h2>
+        <a>facebook.com</a>
+
+        <p>2025 PerfectMatch | Ozias Tasse Douanla && Marie Wideline Pierre && Vosa Neo. Tous droits réservés.</p>
+    </footer>
+</body>
+
+</html>
