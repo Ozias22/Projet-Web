@@ -1,3 +1,5 @@
+{% load static%}
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -8,7 +10,7 @@
     <!-- icone du site-->
     <link rel="icon" href="">
     <!-- style bootstrap? -->
-    <link rel="stylesheet" href="">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
     <!-- titre tu site-->
     <title>{%block title%}PerfectMatch{%endblock title%}</title>
@@ -37,8 +39,16 @@
                 <li><a href="">Lien5</a></li>
             </ul>
         </div>
+        <!-- Zone de recherche-->
+        <form class="" action="" method="get">
+            <div>
+                <label class="form-label visually-hidden" for="txtRecherche">Champs de recherche</label>
+                <input class="form-control" type="search" placeholder="Rechercher..." name="txtRecherche"
+                    aria-label="Champs de recherche"></input>
+            </div>
+        </form>
     </nav>
-    <main>
+    <main class="container">
         {%block main%}{%endblock main%}
     </main>
     <footer>
