@@ -1,9 +1,10 @@
 {% extends "utilisateurs/_base.html"%}
-{%load static%}
+{% load static%}
 
 {% block title %}
-PerfectMatch - Accueil
+PerfectMatch
 {% endblock %}
+
 
 {% block header%}
 <h2>
@@ -13,16 +14,19 @@ PerfectMatch - Accueil
 </h2>
 {% endblock %}
 
+
 {% block main%}
-<div class="container primary">
+<div class="container mb-5">
+    <div></div>
+    <div class="px-4 py-5 my-5 text-center bg-dark">
+        <img class="img-fluid" src="{%static 'utilisateurs/images/happy.png'%}">
+    </div>
 
-    <a href="{%url 'connexion'%}">Page de connexion</a>
-
-    <div class="row">
+    <div class="row bg-secondary mx-3">
         <!-- -->
         <div class="col-12">
             <div class="row">
-                <div class="col-3"><img class="img-fluid" src="{%static 'utilisateurs/images/happy.png'%}" alt=""></div>
+                <div class="col-3"><img class="img-fluid" src="{%static 'utilisateurs/images/happy.png'%}" width="300" height="300" alt=""></div>
                 <div class="col-9">
                     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea possimus, ex, illo cum commodi,
                         praesentium nulla nobis perspiciatis sapiente numquam earum ducimus dicta. Recusandae nisi
@@ -40,13 +44,13 @@ PerfectMatch - Accueil
                         natus,
                         porro repellendus ratione minima.</p>
                 </div>
-                <div class="col-3"><img class="img-fluid" src="{%static 'utilisateurs/images/happy.png'%}" alt=""></div>
+                <div class="col-3"><img class="img-fluid bg-primary" src="{%static 'utilisateurs/images/happy.png'%}" width="300" height="300" alt=""></div>
             </div>
         </div>
         <!-- -->
         <div class="col-12">
             <div class="row">
-                <div class="col-3"><img class="img-fluid" src="{%static 'utilisateurs/images/happy.png'%}" alt=""></div>
+                <div class="col-3"><img class="img-fluid" src="{%static 'utilisateurs/images/happy.png'%}" width="300" height="300" alt=""></div>
                 <div class="col-9">
                     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea possimus, ex, illo cum commodi,
                         praesentium nulla nobis perspiciatis sapiente numquam earum ducimus dicta. Recusandae nisi
