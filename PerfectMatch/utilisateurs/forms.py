@@ -6,6 +6,12 @@ import datetime
 
 User = get_user_model()
 
+class ConnectionForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['email', 'password']
+        labels = {'email': 'Adresse courriel', 'password':'Mot de passe'}
+        help_texts = {'email': ''}
 
 class InscriptionForm(UserCreationForm):
     """Permet à un nouvel utilisateur de s'incrire et d'avoir accès au site web"""

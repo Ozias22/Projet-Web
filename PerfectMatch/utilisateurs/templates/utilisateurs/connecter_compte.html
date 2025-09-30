@@ -1,18 +1,22 @@
 {% extends "utilisateurs/_base.html"%}
+{% load static%}
 
 {% block title %}
-PerfectMatch - Connexion
+PerfectMatch - se connecter
 {% endblock %}
 
 {% block header%}
-<h2>
-    <a href="/">
-
+<h2 class="h1">
+    <a href="{%url 'index'%}">
+        PerfectMatch
     </a>
 </h2>
 {% endblock %}
 
 {% block main%}
-<p>hi</p>
-
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Envoyer">
+</form>
 {% endblock %}
