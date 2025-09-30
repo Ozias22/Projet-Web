@@ -25,9 +25,11 @@ SECRET_KEY = 'django-insecure-y_^09vuw=@iq2!t%=36t9vhrn&@ku4c9ono6@*uz6zf+-f49$p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["oziastasse.pythonanywhere.com",
-"localhost","127.0.0.1"]
 
+ALLOWED_HOSTS = ["oziastasse.pythonanywhere.com",
+                 "localhost","127.0.0.1"]
+
+AUTH_USER_MODEL = "utilisateurs.User"
 
 # Application definition
 
@@ -69,7 +71,7 @@ TEMPLATES = [
         },
     },
 ]
-
+AUTH_USER_MODEL = 'utilisateurs.User'
 WSGI_APPLICATION = 'PerfectMatch.wsgi.application'
 
 
@@ -77,17 +79,13 @@ WSGI_APPLICATION = 'PerfectMatch.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # }
-      'default': {
+   'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'perfect_match',
-        'USER': "root",
-        'PASSWORD':"" ,
-        'HOST': "127.0.0.1",
-        'PORT': "3306",
+        'USER': 'garneau',
+        'PASSWORD': 'qwerty123',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
 
