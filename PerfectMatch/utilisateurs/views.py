@@ -22,20 +22,25 @@ def connexion(request):
                 user = User.objects.get(email=email)
             except User.DoesNotExist:
                 user = None
-                
+            
             if user is not None:
                 user = user.authenticate(request, username=user.username, password=user.password)
-                login(request, user)
-                messages.success(request,"Connexion a été fait avec succès.")
+                if not user.is_active:
+                    messages.error(request,"Le compte est désactivé")
+                else:
+                    login(request, user)
+                    messages.success(request,"Connexion a été fait avec succès.")
                 return redirect('home')
             else:
                 form.add_error(None, "Invalid email or password.")
+                
                 
             return redirect('index')
     else:
         form = ConnectionForm()
     return render(request, "utilisateurs/connecter_compte.html",{'form': form})
-
+                
+            
 def accueil(request):
     return render(request, "utilisateurs/accueil.html")
 

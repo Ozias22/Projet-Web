@@ -22,5 +22,6 @@ class User(AbstractUser):
             models.UniqueConstraint(fields=['username'], name='unique_username'),
             models.UniqueConstraint(fields=['email'], name='unique_email')
         ]
+
     def __str__(self):
         return f"{self.username} ({self.email})"

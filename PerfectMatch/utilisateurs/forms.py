@@ -6,12 +6,54 @@ import datetime
 
 User = get_user_model()
 
-class ConnectionForm(forms.ModelForm):
+class ConnectionForm(forms.Form):
+    email = forms.CharField(
+        label="Adresse courriel",
+        # max_length=50,
+        required=True,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placerholder': 'johndoe@email.com'}),
+        error_messages={
+            'required': 'L\'adresse courriel est obligatoire.',
+            'invalid': 'Entrez une adresse courriel valide.'
+        })
+    password = forms.CharField(
+        label="Mot de passe",
+        max_length=12,
+        required=True,
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        error_messages={
+            'required': 'L\'adresse courriel est obligatoire.',
+            'max_length': 'Le mot de passe possède au maximum 12 caractères.',
+        })
+    
     class Meta:
         model = User
-        fields = ['email', 'password']
-        labels = {'email': 'Adresse courriel', 'password':'Mot de passe'}
-        help_texts = {'email': ''}
+        fields = ("email","password")
+    
+    def clean_email(self):
+        email = self.cleaned_data.get("email")
+        return email.lower()
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        email = cleaned_data.get("email")
+        password = cleaned_data.get("password")
+
+        try:
+            user = User.objects.get(email__iexact=email)
+        except User.DoesNotExist:
+            raise forms.ValidationError("Adresse courriel ou mot de passe invalide.")
+
+        if not user.check_password(password):
+            raise forms.ValidationError("Adresse courriel ou mot de passe invalide.")
+
+        if not user.is_active:
+            raise forms.ValidationError("Ce compte est inactif.")
+
+        # self.user = user
+        return cleaned_data
+    
+        
 
 class InscriptionForm(UserCreationForm):
     """Permet à un nouvel utilisateur de s'incrire et d'avoir accès au site web"""
