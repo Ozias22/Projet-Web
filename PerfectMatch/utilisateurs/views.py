@@ -1,11 +1,45 @@
 from django.shortcuts import render,redirect
 from django.contrib import messages
-from .forms import InscriptionForm
+from django.contrib.auth import authenticate, login
+from .forms import InscriptionForm, ConnectionForm
+from .models import User
 
 # Create your views here.
 
 def index(request):
+    """Comment"""
     return render(request, "utilisateurs/index.html")
+
+def connexion(request):
+    """Comment"""
+    if request.method == "POST":
+        form = ConnectionForm(request.POST)
+        if form.is_valid():
+            try:
+                username = form.cleaned_data["username"]
+                password = form.cleaned_data["password"]
+                
+                user = User.objects.get(username=username)
+            except User.DoesNotExist:
+                user = None
+            user = authenticate(request, username=user.username, password=password)
+            if user is not None:
+                
+                login(request, user)
+                messages.success(request,"Connexion a été fait avec succès.")
+                return redirect('accueil')
+            else:
+                form.add_error(None, "Invalid email or password.")
+                
+                
+            return redirect('index')
+    else:
+        form = ConnectionForm()
+    return render(request, "utilisateurs/connecter_compte.html",{'form': form})
+                
+            
+def accueil(request):
+    return render(request, "utilisateurs/accueil.html")
 
 def inscription_view(request):
     if request.method == "POST":

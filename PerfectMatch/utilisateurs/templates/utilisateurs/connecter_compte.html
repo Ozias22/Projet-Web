@@ -1,24 +1,22 @@
-{% extends "utilisateurs/_modele.html"%}
+{% extends 'utilisateurs/_base.html' %}
+{% load static %}
 
 {% block title %}
-PerfectMatch - Connexion
+  PerfectMatch - Se connecter
 {% endblock %}
 
-{% block header%}
-<h2>
-    <a href="/">
-
-    </a>
-</h2>
-{% endblock %}
-
-{% block main%}
-<p>hi</p>
-<!-- Zone de recherche-->
-            <form class="" action="" method="get">
-                <div>
-                    <label class="form-label visually-hidden" for="txtRecherche">Champs de recherche</label>
-                    <input class="form-control" type="search" placeholder="Rechercher..." name="txtRecherche" aria-label="Champs de recherche"></input>
-                </div>
-            </form>
+{% block main %}
+  <div class="container bg-dark p-5">
+    <div class="container bg-light rounded-4">
+      <h1>Connexion de compte utilisateur</h1>
+      <form class="p-5" action="{% url 'connexion'%}" method="post" novalidate>
+        {% csrf_token %}
+        {{ form }}
+        <div class="d-flex justify-content-end">
+            <input class="btn btn-secondary m-2" type="reset" value="Réinitaliser"/>
+            <input class="btn btn-primary m-2" type="submit" value="Envoyer"/>
+        </div>
+      </form>
+    </div>
+  </div>
 {% endblock %}

@@ -1,40 +1,69 @@
-{% extends "utilisateurs/_modele.html"%}
-{%load static%}
+{% extends 'utilisateurs/_base.html' %}
+{% load static %}
 
 {% block title %}
-PerfectMatch - Accueil
+  PerfectMatch
 {% endblock %}
 
-{% block header%}
-<h2>
-    <a href="/">
-        PerfectMatch
-    </a>
-</h2>
+{% block header %}
+  <h1 class="visually-hidden">PerfectMatch</h1>
 {% endblock %}
 
-{% block main%}
-<div class="row">
-    <!-- -->
-    <div class="col-12">
-        <div class="row">
-            <div class="col-3"><img class="img-fluid" src="{%static 'utilisateurs/static/images/happy.png'%}" alt=""></div>
-            <div class="col-9"><p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea possimus, ex, illo cum commodi, praesentium nulla nobis perspiciatis sapiente numquam earum ducimus dicta. Recusandae nisi natus, porro repellendus ratione minima.</p></div>
-        </div>
+{% block main %}
+  <div class="text-center bg-dark pt-5 pb-1"></div>
+  <div class="container-fluid text-white p-5 text-center bg-dark min-vh-100" style="background: url('{% static 'utilisateurs/images/hero.jpg' %}') center/cover no-repeat;">
+    <div class="container">
+      <h1 class="display-4">PerfectMatch</h1>
+      <p class="lead">Chercher votre paire parfaite.</p>
+      <a href="{% url 'inscription' %}" class="btn btn-outline-light btn-lg">S'inscrire maintenant</a>
     </div>
-    <!-- -->
-    <div class="col-12">
+  </div>
+
+  <div class="container">
+    <div class="row bg-secondary p-5 mx-3">
+      <!--  -->
+      <div class="col-12 p-3 my-3 rounded-4 bg-primary">
         <div class="row">
-            <div class="col-9"><p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea possimus, ex, illo cum commodi, praesentium nulla nobis perspiciatis sapiente numquam earum ducimus dicta. Recusandae nisi natus, porro repellendus ratione minima.</p></div>
-            <div class="col-3"><img src="img-fluid" alt=""></div>
+          <div class="col-3">
+            <img class="img-fluid" src="{% static 'utilisateurs/images/happy.png' %}" width="300" height="300" alt="" />
+          </div>
+          <div class="col-9 text-center my-3">
+            <h2 class="">Des millions de candidats vous attendent!</h2>
+            <p>
+              Ne perdez plus de temps: trouvez des profils qui correspondent à vos critères et testez la solidité de vos matchs avant de vous lancer.<br />Trouvez le profil en un clin d'œil et invitez-les à faire une discussion aimable.
+            </p>
+          </div>
         </div>
-    </div>
-    <!-- -->
-    <div class="col-12">
+      </div>
+      <!--  -->
+      <div class="col-12 p-3 my-3 rounded-4 bg-primary">
         <div class="row">
-            <div class="col-3"><img src="img-fluid" alt=""></div>
-            <div class="col-9"><p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea possimus, ex, illo cum commodi, praesentium nulla nobis perspiciatis sapiente numquam earum ducimus dicta. Recusandae nisi natus, porro repellendus ratione minima.</p></div>
+          <div class="col-9 text-center my-3">
+            <h2 class="h2">Disponibilités de plusieurs outils pour vous aider!</h2>
+            <p>
+              Un algorithme intelligent, des critères sur mesure et un test de comptabilité pour transformer vos matchs en vraies histoires.<br />
+              On t'encourage aux maximums avec nos outils personnalisés à t'aider le plus possible.
+            </p>
+          </div>
+          <div class="col-3">
+            <img class="img-fluid" src="{% static 'utilisateurs/images/happy.png' %}" width="300" height="300" alt="" />
+          </div>
         </div>
+      </div>
+      <!--  -->
+      <div class="col-12 p-3 my-3 rounded-4 bg-primary">
+        <div class="row">
+          <div class="col-3 text-center my-3">
+            <img class="img-fluid" src="{% static 'utilisateurs/images/happy.png' %}" width="300" height="300" alt="" />
+          </div>
+          <div class="col-9 text-center">
+            <h2>Approfondissez votre relation proche à une relation intime et joyeuse.</h2>
+            <p>
+              Parce que matcher ne vous suffit pas: découvrez si votre connexion a le potentiel d'un vrai coup de cœur.<br />Améliorer le stade de votre relation à un niveau supérieur.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
-</div>
+  </div>
 {% endblock %}

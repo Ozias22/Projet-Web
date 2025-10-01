@@ -6,6 +6,54 @@ import datetime
 
 User = get_user_model()
 
+class ConnectionForm(forms.Form):
+    username = forms.CharField(
+        label="Nom d'utilisateur",
+        # max_length=50,
+        required=True,
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        error_messages={
+            'required': "Le nom d'utilisateur est obligatoire.",
+            'invalid': "Entrez une nom d'utilisateur valide."
+        })
+    password = forms.CharField(
+        label="Mot de passe",
+        max_length=12,
+        required=True,
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        error_messages={
+            'required': 'Le mot de passe est obligatoire.',
+            'max_length': 'Le mot de passe possède au maximum 12 caractères.',
+        })
+    
+    class Meta:
+        model = User
+        fields = ("username","password")
+    
+    def clean_username(self):
+        username = self.cleaned_data.get("username")
+        return username
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        username = cleaned_data.get("username")
+        password = cleaned_data.get("password")
+
+        try:
+            user = User.objects.get(username__iexact=username)
+        except User.DoesNotExist:
+            raise forms.ValidationError("Nom d'utilisateur ou mot de passe invalide.")
+
+        if not user.check_password(password):
+            raise forms.ValidationError("Nom d'utilisateur ou mot de passe invalide.")
+
+        if not user.is_active:
+            raise forms.ValidationError("Ce compte est inactif.")
+
+        # self.user = user
+        return cleaned_data
+    
+        
 
 class InscriptionForm(UserCreationForm):
     """Permet à un nouvel utilisateur de s'incrire et d'avoir accès au site web"""
