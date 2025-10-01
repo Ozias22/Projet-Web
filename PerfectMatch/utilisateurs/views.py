@@ -1,56 +1,38 @@
 from django.shortcuts import render,redirect
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
-from .forms import InscriptionForm, ConnectionForm
-from .models import User
+from .forms import InscriptionForm,AbonementForm
 
 # Create your views here.
 
 def index(request):
-    """Comment"""
-    return render(request, "utilisateurs/index.html")
-
-def connexion(request):
-    """Comment"""
-    if request.method == "POST":
-        form = ConnectionForm(request.POST)
-        if form.is_valid():
-            try:
-                username = form.cleaned_data["username"]
-                password = form.cleaned_data["password"]
-                
-                user = User.objects.get(username=username)
-            except User.DoesNotExist:
-                user = None
-            user = authenticate(request, username=user.username, password=password)
-            if user is not None:
-                
-                login(request, user)
-                messages.success(request,"Connexion a été fait avec succès.")
-                return redirect('accueil')
-            else:
-                form.add_error(None, "Invalid email or password.")
-                
-                
-            return redirect('index')
-    else:
-        form = ConnectionForm()
-    return render(request, "utilisateurs/connecter_compte.html",{'form': form})
-                
-            
-def accueil(request):
-    return render(request, "utilisateurs/accueil.html")
+    form = AbonementForm()
+    return render(request, "utilisateurs/abonement.html", {"form": form})
 
 def inscription_view(request):
     if request.method == "POST":
         form = InscriptionForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, "Votre compte a été créé avec succès !")
+            messages.add_message(request, messages.SUCCESS, "Votre compte a été créé avec succès !")
             return redirect("connecter_compte")
         else:
-            messages.error(request, "Veuillez corriger les erreurs ci-dessous.")
+            messages.add_message(request, messages.ERROR, "Veuillez corriger les erreurs ci-dessous.")
     else:
         form = InscriptionForm()
 
     return render(request, "utilisateurs/inscription.html", {"form": form})
+
+
+def valider_abonement(request):
+    if request.method == "POST":
+        form = AbonementForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.add_message(request, messages.SUCCESS, "Votre abonnement a été validé avec succès !")
+            return redirect("connecter_compte")
+        else:
+            messages.add_message(request, messages.ERROR, "Veuillez corriger les erreurs ci-dessous.")
+    else:
+        form = AbonementForm()
+
+    return render(request, "utilisateurs/abonement.html", {"form": form})
