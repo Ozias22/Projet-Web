@@ -41,7 +41,6 @@ def connexion(request):
 def accueil(request):
     return render(request, "utilisateurs/accueil.html")
 
-
 def inscription_view(request):
     if request.method == "POST":
         form = InscriptionForm(request.POST)

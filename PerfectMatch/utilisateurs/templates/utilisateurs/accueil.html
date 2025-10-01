@@ -1,4 +1,4 @@
-{% extends 'utilisateurs/_base.html' %}
+{% extends 'utilisateurs/_base_accueil.html' %}
 {% load static %}
 
 {% block title %}
@@ -10,42 +10,14 @@
 {% endblock %}
 
 {% block main %}
-  <div class="container-fluid">
-    <div class="row">
-      <nav class="col-3 d-md-block bg-dark text-white sidebar collapse show" id="sidebarMenu">
-        <div class="position-sticky pt-3">
-          <img class="img-fluid" src="{% static 'utilisateurs/images/happy.png' %}" width="300" height="300" alt="" />
-          <p class="h1">
-            {% comment %} {% if user %}
-              {{ user.firstName }} {{ user.lastName }}
-            {% else %}
-              {{ user.username }}
-            {% endif %} {% endcomment %}
-            {{ user.username }}
-          </p>
-          <ul class="nav flex-column">
-            <li class="nav-item">
-              <a class="nav-link text-white btn btn-primary" href="">Mon profil</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-white btn btn-primary" href="">Messages</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-white btn btn-primary" href="">Mes Matchs</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-white btn btn-primary" href="">Paramètre</a>
-            </li>
-          </ul>
-        </div>
-      </nav>
+  <div class="container d-flex justify-content-center">
+    <div class="card text-center" style="width: 18rem;">
+      <img src="{% static 'utilisateurs/images/happy.png' %}" class="card-img-top" alt="..." />
+      <div class="card-body">
+        <h5 class="card-title">Card title</h5>
+        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
+        <a href="#" class="btn btn-primary">Go somewhere</a>
+      </div>
     </div>
-  </div>
-
-  <div>
-    <form action="">
-        <label for="test">Zone de recherche</label>
-        <input name="test" id="test" type="search">
-    </form>
   </div>
 {% endblock %}
