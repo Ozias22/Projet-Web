@@ -16,11 +16,12 @@
         <div class="position-sticky pt-3">
           <img class="img-fluid" src="{% static 'utilisateurs/images/happy.png' %}" width="300" height="300" alt="" />
           <p class="h1">
-            {% if user.first_name and user.last_name %}
+            {% comment %} {% if user %}
               {{ user.firstName }} {{ user.lastName }}
             {% else %}
-              {{ user.email }}
-            {% endif %}
+              {{ user.username }}
+            {% endif %} {% endcomment %}
+            {{ user.username }}
           </p>
           <ul class="nav flex-column">
             <li class="nav-item">

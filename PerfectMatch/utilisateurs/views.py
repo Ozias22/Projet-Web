@@ -16,21 +16,18 @@ def connexion(request):
         form = ConnectionForm(request.POST)
         if form.is_valid():
             try:
-                email = form.cleaned_data["email"]
+                username = form.cleaned_data["username"]
                 password = form.cleaned_data["password"]
                 
-                user = User.objects.get(email=email)
+                user = User.objects.get(username=username)
             except User.DoesNotExist:
                 user = None
-            
+            user = authenticate(request, username=user.username, password=password)
             if user is not None:
-                user = user.authenticate(request, username=user.username, password=user.password)
-                if not user.is_active:
-                    messages.error(request,"Le compte est désactivé")
-                else:
-                    login(request, user)
-                    messages.success(request,"Connexion a été fait avec succès.")
-                return redirect('home')
+                
+                login(request, user)
+                messages.success(request,"Connexion a été fait avec succès.")
+                return redirect('accueil')
             else:
                 form.add_error(None, "Invalid email or password.")
                 
