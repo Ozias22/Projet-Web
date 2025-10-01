@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Michroma&display=swap');
+/** VOS $VARIABLES Sass ici avant l'importation**/
+$primary: #E94E65;
+$secondary: #A36F82;
+$info: #CB6372;
+$dark: #3D2F32;
+
+$text-primary: "Roboto", sans-serif;
+$text-titre: "Lilita One", serif;
+
+/*** Importation de Boostrap **/
+@import "partials/bootstrap";
+
+/*** Début des styles personnalisés ***/
+body {
+    font-size: 1rem;
+    font-family: $text-primary;
+}
+body{
+    background-color: #A36F82;
+}
+h1 {
+    font-family: $text-titre;
+}
+
+h2 {
+    font-family: $text-titre;
+}
+
+h3 {
+    font-family: $text-titre;
+}
+
+h4 {
+    font-family: $text-titre;
+}
+
+h5 {
+    font-family: $text-titre;
+}
+
+h6 {
+    font-family: $text-titre;
+}
+
+.logo {
+    font-family: "Dancing Script", serif;
+    font-optical-sizing: auto;
+    font-weight: bold;
+    font-style: normal;
+    font-size: 2.8rem;
+}
+
+a {
+    text-decoration: none;
+}
+footer{
+    height: 4rem;
+}
+
+.paragraph{
+    font-family: 'Michroma', sans-serif;
+    font-size: 1.4rem;
+    text-align: justify;
+    text-justify: inter-word;
+    color: $dark;
+}
