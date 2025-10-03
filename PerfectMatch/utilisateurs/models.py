@@ -13,6 +13,12 @@ class User(AbstractUser):
     city = models.CharField(max_length=50, blank=False)
     password = models.CharField(max_length=12)
     birthday = models.DateField(null=True, blank=False)
+    photo_profil = models.ImageField(
+        upload_to="profils/",
+        blank=True,
+        null=True,
+        default="profils/default.png"
+    )
 
     class Meta:
         verbose_name = 'user'

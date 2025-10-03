@@ -10,13 +10,33 @@
 {% endblock %}
 
 {% block main %}
+
   <div class="container d-flex justify-content-center">
     <div class="card text-center" style="width: 18rem;">
       <img src="{% static 'utilisateurs/images/happy.png' %}" class="card-img-top" alt="..." />
       <div class="card-body">
-        <h5 class="card-title">Card title</h5>
+        <div class="row">
+          <div class="col-7">
+            <h5>{{ user.username }}</h5>
+            <p class="lead">99 Ans</p>
+          </div>
+
+          <div class="col-5">
+            <a href="#"><i class="bi bi-x-circle fs-3"></i></a>
+            <a href="#"><i class="bi bi-heart fs-3 ms-3"></i></a>
+          </div>
+          <a href="#" class="btn btn-primary">Voir le profil</a>
+
+        </div>
+        {% comment %} <h5 class="card-title">
+          {% if user.first_name and user.last_name %}
+            {{ user.get_full_name }}
+          {% else %}
+            {{ user.username }}
+          {% endif %}
+        </h5>
         <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
-        <a href="#" class="btn btn-primary">Go somewhere</a>
+        <a href="#" class="btn btn-primary">Go somewhere</a> {% endcomment %}
       </div>
     </div>
   </div>

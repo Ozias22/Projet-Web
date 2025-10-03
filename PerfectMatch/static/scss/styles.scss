@@ -1,12 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Michroma&display=swap');
 /** VOS $VARIABLES Sass ici avant l'importation**/
-$primary: #E94E65;
+$primary: #F559CE;
 $secondary: #A36F82;
 $info: #CB6372;
 $dark: #3D2F32;
 
-$text-primary: "Roboto", sans-serif;
-$text-titre: "Lilita One", serif;
 
 /*** Importation de Boostrap **/
 @import "partials/bootstrap";

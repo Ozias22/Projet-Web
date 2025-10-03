@@ -6,5 +6,7 @@ urlpatterns = [
     path('connexion/', views.connexion, name='connexion'),
     path("inscription/", views.inscription_view, name="inscription"),
     path("accueil/", views.accueil, name='accueil'),
+    path("profil/", views.profil_view, name='profil'),
+    path("profil/modifier/", views.modifier_view, name='profil_modifier'),
     # path("valider_abonement/", views.valider_abonement, name='valider_abonement'),
 ]

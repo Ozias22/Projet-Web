@@ -208,3 +208,46 @@ def clean_birthday(self):
         return user
 
 
+User = get_user_model()
+ 
+ 
+class ProfilForm(forms.ModelForm):
+    age = forms.IntegerField(
+        label="Âge",
+        required=False,
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'readonly': 'readonly'})
+    )
+ 
+    class Meta:
+        model = User
+        fields = [
+            'photo_profil', 'first_name', 'last_name',
+            'city', 'country', 'email', 'birthday'
+        ]
+        labels = {
+            'photo_profil': "Photo de profil",
+            'first_name': "Prénom",
+            'last_name': "Nom",
+            'city': "Ville",
+            'country': "Pays",
+            'email': "Email",
+            'birthday': "Anniversaire",
+        }
+        widgets = {
+            'photo_profil': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'city': forms.TextInput(attrs={'class': 'form-control'}),
+            'country': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'birthday': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+        }
+ 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance and self.instance.birthday:
+            today = datetime.date.today()
+            age = today.year - self.instance.birthday.year - (
+                (today.month, today.day) < (self.instance.birthday.month, self.instance.birthday.day)
+            )
+            self.fields['age'].initial = age
