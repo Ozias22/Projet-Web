@@ -1,14 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-
+from django.core.validators import MinLengthValidator
+from django.core.exceptions import ValidationError
 
 # Create your models here.
 class User(AbstractUser):
-    # You can add additional fields here if needed
-    username = models.CharField(max_length=50, unique=True)
+    
+    username = models.CharField(max_length=50, unique=True,  validators=[MinLengthValidator(3, "Le nom d'utilisateur doit contenir au moins 3 caractères.")])
     email = models.EmailField(unique=True)
-    first_name = models.CharField(max_length=30, blank=False)
-    last_name = models.CharField(max_length=30, blank=False)
+    first_name = models.CharField(max_length=30, blank=False,  validators=[MinLengthValidator(3, "Le nom d'utilisateur doit contenir au moins 3 caractères.")])
+    last_name = models.CharField(max_length=30, blank=False,  validators=[MinLengthValidator(3, "Le nom d'utilisateur doit contenir au moins 3 caractères.")])
     country = models.CharField(max_length=50, blank=False)
     city = models.CharField(max_length=50, blank=False)
     password = models.CharField(max_length=12)
