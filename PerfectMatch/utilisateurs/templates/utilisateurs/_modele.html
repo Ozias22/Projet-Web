@@ -26,13 +26,15 @@
     <header>
         <nav class="navbar navbar-expand-lg w-100" style="background-color: #F559CE;" data-bs-theme="light">
             <div class="container-fluid">
-                <a class="navbar-brand mx-4" href="#"><img src="../../static/images/Untitled.jpg" alt="logo" class="w-75"></a>
+                <a class="navbar-brand mx-4" href="#"><img src="../../static/images/Untitled.jpg" alt="logo"
+                        class="w-75"></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    {% if user.is_authenticated %}
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
                             <a class="nav-link active text-white" aria-current="page" href="#">Home</a>
@@ -41,8 +43,8 @@
                             <a class="nav-link text-white" href="#">Link</a>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">
+                            <a class="nav-link dropdown-toggle text-white" href="#" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
                                 Dropdown
                             </a>
                             <ul class="dropdown-menu">
@@ -55,6 +57,14 @@
                             </ul>
                         </li>
                     </ul>
+                    {% else %}
+                    <div class="navbar-nav">
+                        <a class="nav-link active btn btn-light fw-bold text-white" aria-current="page"
+                            href="{% url 'connexion' %}">Connexion</a>
+                        <a class="nav-link btn btn-info mx-2 fw-bold text-white"
+                            href="{% url 'inscription' %}">Inscription</a>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </nav>
@@ -73,7 +83,7 @@
     <main class="container">
         {%block main%}{%endblock main%}
     </main>
-    <footer class="bg-dark text-white p-4 w-100 position-fixed bottom-0">
+    <footer class="bg-dark text-white p-4 w-100 mt-4">
         <h4>Nous rejoindre</h4>
         <a>facebook.com</a>
 

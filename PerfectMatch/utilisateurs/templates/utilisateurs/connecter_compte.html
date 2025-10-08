@@ -1,8 +1,8 @@
-{% extends 'utilisateurs/_base.html' %}
+{% extends 'utilisateurs/_modele.html' %}
 {% load static %}
 
 {% block title %}
-  PerfectMatch - Se connecter
+PerfectMatch - Se connecter
 {% endblock %}
 
 {% block header%}
@@ -13,48 +13,54 @@
 </h2>
 {% endblock %}
 
-{% block main%}
 <!-- Zone de recherche-->
-<form class="" action="" method="get">
+<!-- <form class="" action="" method="get">
     <div>
         <label class="form-label visually-hidden" for="txtRecherche">Champs de recherche</label>
         <input class="form-control" type="search" placeholder="Rechercher..." name="txtRecherche"
             aria-label="Champs de recherche"></input>
     </div>
-</form>
+</form> -->
 
-<section class="mt-4">
-    <div class="w-100 d-inline-block row mb-3">
-        <img src="../../static/images/system-2521728_640.jpg" alt="image2" class="img-fluid float-md-start col-lg-4">
-        <h5>Ne perdez plus de temps</h5>
-        <p class="text-center p-2 fs-5"> Grâce à notre système intelligent de filtrage et de compatibilité, vous accédez rapidement à des profils
-            qui répondent précisément à vos critères. Que vous cherchiez une affinité professionnelle, amicale ou amoureuse, notre plateforme v
-            ous permet de cibler les bons profils dès le départ</p>
-    </div>
-    <div class="w-100 d-inline-block row mb-3">
-        <p class="text-center p-2 fs-5"> Notre plateforme vous permet d’identifier rapidement les profils qui répondent à vos attentes, grâce
-             à des filtres précis et une technologie de matching intelligente. Que vous soyez en quête d’une connexion sérieuse ou d’une affinité
-             spontanée, vous accédez directement aux personnes qui vous correspondent.</p>
-        <img src="../../static/images/system-2521728_640.jpg" alt="image2" class="img-fluid float-md-end col-lg-4">
-    </div>
-    <div class="w-100 d-inline-block row mb-3">
-        <img src="../../static/images/people-7273372_640.jpg" alt="image1" class="img-fluid float-md-start col-lg-4">
-        <p class="text-center p-2 fs-5"> Ne perdez plus de temps : trouvez des profils qui correspondent à vos critères et testez la solidité de vos
-            matchs avant de vous lancer.</p>
-    </div>
-</section>
 {% block main %}
-  <div class="container bg-dark p-5">
-    <div class="container bg-light rounded-4">
-      <h1>Connexion de compte utilisateur</h1>
-      <form class="p-5" action="{% url 'connexion'%}" method="post" novalidate>
-        {% csrf_token %}
-        {{ form }}
-        <div class="d-flex justify-content-end">
-            <input class="btn btn-secondary m-2" type="reset" value="Réinitaliser"/>
-            <input class="btn btn-primary m-2" type="submit" value="Envoyer"/>
-        </div>
-      </form>
+<div class="container p-5">
+    <div class="bg-light rounded-4">
+        <h1>Connexion de compte utilisateur</h1>
+        <form class="p-5" action="#" method="post" novalidate>
+            {% csrf_token %}
+            {{ form }}
+            <div class="d-flex justify-content-end">
+                <input class="btn btn-secondary m-2" type="reset" value="Réinitaliser" />
+                <input class="btn btn-primary m-2" type="submit" value="Envoyer" />
+            </div>
+        </form>
     </div>
-  </div>
+    <section class="mt-4">
+        <div class="w-100 d-inline-block row mb-3">
+            <img src="../../static/images/system-2521728_640.jpg" alt="image2"
+                class="img-fluid float-md-start col-lg-4">
+            <h5>Ne perdez plus de temps</h5>
+            <p class="text-center p-2 fs-5"> Grâce à notre système intelligent de filtrage et de compatibilité, vous
+                accédez rapidement à des profils
+                qui répondent précisément à vos critères. Que vous cherchiez une affinité professionnelle, amicale ou
+                amoureuse, notre plateforme v
+                ous permet de cibler les bons profils dès le départ</p>
+        </div>
+        <div class="w-100 d-inline-block row mb-3">
+            <p class="text-center p-2 fs-5"> Notre plateforme vous permet d’identifier rapidement les profils qui
+                répondent à vos attentes, grâce
+                à des filtres précis et une technologie de matching intelligente. Que vous soyez en quête d’une
+                connexion sérieuse ou d’une affinité
+                spontanée, vous accédez directement aux personnes qui vous correspondent.</p>
+            <img src="../../static/images/system-2521728_640.jpg" alt="image2" class="img-fluid float-md-end col-lg-4">
+        </div>
+        <div class="w-100 d-inline-block row mb-3">
+            <img src="../../static/images/people-7273372_640.jpg" alt="image1"
+                class="img-fluid float-md-start col-lg-4">
+            <p class="text-center p-2 fs-5"> Ne perdez plus de temps : trouvez des profils qui correspondent à vos
+                critères et testez la solidité de vos
+                matchs avant de vous lancer.</p>
+        </div>
+    </section>
+</div>
 {% endblock %}

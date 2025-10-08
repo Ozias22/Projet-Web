@@ -6,83 +6,102 @@ PerfectMatch - Abonnement
 
 
 {% block main%}
-
-<form action="valider_abonement" method="post">
-    {% csrf_token %}
-    <h2 class="text-center my-3">Choisissez votre abonnement</h2>
-    {% if messages %}
-    <div>
-        {% for message in messages %}
-        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">
-            {{ message }}
+<div class="row">
+    <form action="{% url 'valider_abonement' %}" method="post" novalidate>
+        {% csrf_token %}
+        <h2 class="text-center my-3">Choisissez votre abonnement</h2>
+        {% if messages %}
+        <div>
+            {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">
+                {{ message }}
+            </div>
+            {% endfor %}
         </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-    <div class="accordion accordion-flush" id="accordionFlushExample">
-        <div class="accordion-item">
-            <h3 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                    Vos informations
-                </button>
-            </h3>
-            <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-                <div class="accordion-body">
-                    <div class="mb-3 form-group">
-                        <label for="nom">{{ form.nom.label_tag }}</label>
-                        {{ form.nom }}
+        {% endif %}
+        <div class="d-flex justify-content-center">
+            <div class="accordion accordion-flush col-md-8" id="accordionFlushExample">
+                <div class="accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                            Vos informations
+                        </button>
+                    </h3>
+                    <div id="flush-collapseOne" class="accordion-collapse collapse"
+                        data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">
+                            <div class="mb-3 form-group">
+                                <label for="nom">Nom : </label>
+                                <input type="text" name="nom" class="form-control" value="{{user.nom}}" disabled>
+                            </div>
+                            <div class="mb-3 form-group">
+                                <label for="prenom">Prenom : </label>
+                                <input type="text" name="prenom" class="form-control" value="{{user.prenom}}" disabled>
+                            </div>
+                            <div class="mb-3 form-group">
+                                <label for="email">Mail : </label>
+                                <input type="email" name="email" class="form-control" value="{{user.email}}" disabled>
+                            </div>
+                        </div>
                     </div>
-                    <div class="mb-3 form-group">
-                        <label for="prenom">{{ form.prenom.label_tag }}</label>
-                        {{ form.prenom }}
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                            Choix de l'abonnement
+                        </button>
+                    </h2>
+                    <div id="flush-collapseTwo" class="accordion-collapse collapse"
+                        data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">
+                            <label for="abonnement">{{ form.type_abonement.label_tag }}</label>
+                            {{ form.type_abonement }}
+                            <br>
+                        </div>
                     </div>
-                    <div class="mb-3 form-group">
-                        <label for="email">{{ form.email.label_tag }}</label>
-                        {{ form.email }}
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#flush-collapseThree" aria-expanded="false"
+                            aria-controls="flush-collapseThree">
+                            Paiement
+                        </button>
+                    </h2>
+                    <div id="flush-collapseThree" class="accordion-collapse collapse"
+                        data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">
+                            <label for="carte">{{ form.card_number.label_tag }}</label>
+                            {{ form.card_number }}
+                            {% for error in form.card_number.errors %}
+                            <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                            <div class="form-group d-flex mt-2 mb-2">
+                                <div>
+                                    <label for="date_expiration">{{ form.expiration_date.label_tag }}</label>
+                                    {{ form.expiration_date }}
+                                    {% for error in form.expiration_date.errors %}
+                                    <div class="text-danger small">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                                <div class="mx-3">
+                                    <label for="cvv">{{ form.cvv.label_tag }}</label>
+                                    {{ form.cvv }}
+                                    {% for error in form.cvv.errors %}
+                                    <div class="text-danger small">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary mt-3">Valider l'abonnement</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="accordion-item">
-            <h2 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
-                    Choix de l'abonnement
-                </button>
-            </h2>
-            <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-                <div class="accordion-body">
-                    <label for="abonnement">{{ form.abonnement.label_tag }}</label>
-                    {{ form.abonnement }}
-                    <br>
-                </div>
-            </div>
-        </div>
-        <div class="accordion-item">
-            <h2 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
-                    Paiement
-                </button>
-            </h2>
-            <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-                <div class="accordion-body">
-                    <label for="carte">{{ form.carte.label_tag }}</label>
-                    {{ form.carte }}
-                    <br>
-                    <label for="date_expiration">{{ form.date_expiration.label_tag }}</label>
-                    {{ form.date_expiration }}
-                    <br>
-                    <label for="cvv">{{ form.cvv.label_tag }}</label>
-                    {{ form.cvv }}
-                    <br>
-                    <button type="submit" class="btn btn-primary mt-3">Valider l'abonnement</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
+    </form>
+</div>
 
-</form>
 {% endblock %}

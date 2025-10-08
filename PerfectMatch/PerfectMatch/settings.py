@@ -25,6 +25,10 @@ SECRET_KEY = 'django-insecure-y_^09vuw=@iq2!t%=36t9vhrn&@ku4c9ono6@*uz6zf+-f49$p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# Configuration des fichiers média
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / "media"
+
 
 ALLOWED_HOSTS = ["oziastasse.pythonanywhere.com",
                  "localhost","127.0.0.1"]
