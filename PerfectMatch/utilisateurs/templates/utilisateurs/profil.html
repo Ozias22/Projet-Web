@@ -11,7 +11,7 @@ PerfectMatch - Abonnement
 
 <div class="d-flex justify-content-center align-items-center py-5">
   <div class="card shadow-sm p-4" style="width: 600px; border-radius: 15px;">
-
+    
     <!-- Photo profil + username -->
     <div class="text-center mb-3">
       {% if user.photo_profil %}
@@ -29,12 +29,12 @@ PerfectMatch - Abonnement
       <!-- Nom avant prénom -->
       <div class="mb-3">
         <label for="id_last_name" class="form-label">Nom</label>
-        {{ user.last_name }}
+        {{ form.last_name }}
       </div>
 
       <div class="mb-3">
         <label for="id_first_name" class="form-label">Prénom</label>
-        {{ user.first_name }}
+        {{ form.first_name }}
       </div>
       <div class="mb-3">
         <label class="form-label">Âge</label>
@@ -47,17 +47,17 @@ PerfectMatch - Abonnement
 
       <div class="mb-3">
         <label for="id_email" class="form-label">Email</label>
-        {{ user.email }}
+        {{ form.email }}
       </div>
 
       <div class="mb-3">
         <label for="id_city" class="form-label">Ville</label>
-        {{ user.city }}
+        {{ form.city }}
       </div>
 
       <div class="mb-3">
         <label for="id_country" class="form-label">Pays</label>
-        {{ user.country }}
+        {{ form.country }}
       </div>
       <div class="text-center mt-3">
         <button type="submit" class="btn btn-pink w-100">Modifier mon profil</button>

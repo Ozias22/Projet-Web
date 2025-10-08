@@ -4,6 +4,7 @@ from .models import User, Abonement
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 import datetime
+import re
 
 User = get_user_model()
 
@@ -55,6 +56,11 @@ class ConnectionForm(forms.Form):
         return cleaned_data
 
 
+def validate_text(value):
+    if not re.match(r'^[A-Za-zÀ-ÿ \'-]+$', value):
+        raise ValidationError("Le champ ne doit contenir que des lettres, espaces, apostrophes ou tirets.")
+
+        
 
 class InscriptionForm(UserCreationForm):
     """Permet à un nouvel utilisateur de s'incrire et d'avoir accès au site web"""
@@ -122,6 +128,7 @@ class InscriptionForm(UserCreationForm):
         label="Pays",
         max_length=50,
         required=True,
+        validators=[validate_text],
         widget=forms.TextInput(attrs={
             'class': 'form-control',
             'placeholder': 'Pays'
@@ -135,6 +142,7 @@ class InscriptionForm(UserCreationForm):
         label="Ville",
         max_length=50,
         required=True,
+        validators=[validate_text],
         widget=forms.TextInput(attrs={
             'class': 'form-control',
             'placeholder': 'Ville'
@@ -185,16 +193,27 @@ class InscriptionForm(UserCreationForm):
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1")
         password2 = self.cleaned_data.get("password2")
+
         if password1 and password2 and password1 != password2:
             raise ValidationError("Les mots de passe ne correspondent pas.")
+
+        if password1 and len(password1) < 8:
+            raise ValidationError("Le mot de passe doit contenir au moins 8 caractères.")
+        regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$'
+        if not re.match(regex, password1):
+            raise ValidationError(
+                "Le mot de passe doit contenir au moins une majuscule,un chiffre et un caractère spécial."
+            )
+
         return password2
-def clean_birthday(self):
-    birthday = self.cleaned_data.get("birthday")
-    if birthday is None:
-        raise ValidationError("La date de naissance est obligatoire.")
-    if birthday > datetime.date.today():
-        raise ValidationError("La date de naissance ne peut pas être dans le futur.")
-    return birthday
+    
+    def clean_birthday(self):
+        birthday = self.cleaned_data.get("birthday")
+        if birthday is None:
+            raise ValidationError("La date de naissance est obligatoire.")
+        if birthday > datetime.date.today():
+            raise ValidationError("La date de naissance ne peut pas être dans le futur.")
+        return birthday
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -202,8 +221,8 @@ def clean_birthday(self):
         user.email = self.cleaned_data["email"]
         user.first_name = self.cleaned_data["first_name"]
         user.last_name = self.cleaned_data["last_name"]
-        user.pays = self.cleaned_data["pays"]
-        user.ville = self.cleaned_data["ville"]
+        user.country = self.cleaned_data["country"]
+        user.city = self.cleaned_data["city"]
         if commit:
             user.save()
         return user

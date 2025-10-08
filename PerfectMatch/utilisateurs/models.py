@@ -3,6 +3,8 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.models import AbstractUser
 import os
 
+from django.core.validators import MinLengthValidator
+from django.core.exceptions import ValidationError
 
 
 def validate_file_extension(value):
@@ -19,8 +21,8 @@ def validate_file_size(value):
         raise ValidationError('Le fichier est trop volumineux (5MB maximum)')
 # Create your models here.
 class User(AbstractUser):
-    # You can add additional fields here if needed
-    username = models.CharField(max_length=50, unique=True)
+    
+    username = models.CharField(max_length=50, unique=True,  validators=[MinLengthValidator(3, "Le nom d'utilisateur doit contenir au moins 3 caractères.")])
     email = models.EmailField(unique=True)
     photo_profil = models.ImageField(verbose_name='image_de_profil',upload_to='images/%Y/%m/%d/',validators=[validate_file_extension,validate_file_size],blank=True)
     first_name = models.CharField(max_length=30, blank=False)
