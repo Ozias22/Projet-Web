@@ -25,6 +25,10 @@ SECRET_KEY = 'django-insecure-y_^09vuw=@iq2!t%=36t9vhrn&@ku4c9ono6@*uz6zf+-f49$p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# Configuration des fichiers média
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / "media"
+
 
 ALLOWED_HOSTS = ["oziastasse.pythonanywhere.com",
                  "localhost","127.0.0.1"]
@@ -55,6 +59,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'PerfectMatch.urls'
 
+AUTH_USER_MODEL = "utilisateurs.User"
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -69,7 +75,7 @@ TEMPLATES = [
         },
     },
 ]
-
+AUTH_USER_MODEL = 'utilisateurs.User'
 WSGI_APPLICATION = 'PerfectMatch.wsgi.application'
 
 
@@ -79,11 +85,11 @@ WSGI_APPLICATION = 'PerfectMatch.wsgi.application'
 DATABASES = {
    'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'perfect_match', 
+        'NAME': 'perfect_match',
         'USER': 'garneau',
-        'PASSWORD': 'qwerty123', 
-        'HOST': 'localhost',  
-        'PORT': '3306',  
+        'PASSWORD': 'qwerty123',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
 

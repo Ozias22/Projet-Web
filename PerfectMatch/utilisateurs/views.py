@@ -1,51 +1,66 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Compatibilite
-from .forms import InscriptionForm, ProfilForm, TestCompatibiliteForm
+
+from .forms import InscriptionForm, AbonnementForm,ConnectionForm,ProfilFormfrom, TestCompatibiliteForm
+
+from django.contrib.auth import logout, authenticate, login
 
 # Create your views here.
 
 def index(request):
-    return render(request, "utilisateurs/index.html")
+    form = ConnectionForm()
+    return render(request, "utilisateurs/connecter_compte.html", {"form": form})
 
 def inscription_view(request):
     if request.method == "POST":
         form = InscriptionForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, "Votre compte a été créé avec succès !")
-            return redirect("connecter_compte")
+            messages.add_message(request, messages.SUCCESS, "Votre compte a été créé avec succès !")
+            return redirect("connexion")
         else:
-            messages.error(request, "Veuillez corriger les erreurs ci-dessous.")
+            messages.add_message(request, messages.ERROR, "Veuillez corriger les erreurs ci-dessous.")
     else:
         form = InscriptionForm()
 
     return render(request, "utilisateurs/inscription.html", {"form": form})
+<<<<<<< .mine
 
-@login_required
-def profil_view(request):
-    """Vue pour afficher le profil de l'utilisateur connecté"""
-    user = request.user
-    return render(request, "utilisateurs/profil.html", {"user": user})
- 
- 
-@login_required
-def modifier_view(request):
-    """Vue pour modifier le profil de l'utilisateur connecté"""
-    user = request.user
- 
+=======
+
+>>>>>>> .theirs
+
+def valider_abonement(request):
     if request.method == "POST":
-        form = ProfilForm(request.POST, request.FILES, instance=user)
+        form = AbonnementForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, "Votre profil a été mis à jour avec succès")
+            messages.add_message(request, messages.SUCCESS, "Votre abonnement a été validé avec succès !")
+            return redirect("connecter_compte")
+        else:
+            messages.add_message(request, messages.ERROR, "Veuillez corriger les erreurs ci-dessous.")
+
+    else:
+        form = AbonnementForm()
+
+    return render(request, "utilisateurs/abonement.html", {"form": form})
+
+def connexion(request):
+    """Comment"""
+    if request.method == "POST":
+        form = ConnectionForm(request.POST)
+        if form.is_valid():
+            try:
+                username = form.cleaned_data["username"]
+                password = form.cleaned_data["password"]
+    messages.success(request, "Votre profil a été mis à jour avec succès")
             return redirect("profil")
         else:
             messages.error(request, "Veuillez corriger les erreurs dans le formulaire.")
     else:
         form = ProfilForm(instance=user)
- 
+
     return render(request, "utilisateurs/modifier_profil.html", {"form": form})
 
 @login_required
@@ -82,3 +97,7 @@ def test_compatibilite(request, match_id):
         "form": form,
         "match": match
     })
+        
+
+
+
