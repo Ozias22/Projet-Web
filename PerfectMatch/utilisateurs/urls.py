@@ -1,9 +1,11 @@
 from django.urls import path
-from . import views # Importe le fichier views depuis le dossier courant
+from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
     path("inscription/", views.inscription_view, name="inscription"),
+    #path('login/', views.login_view, name='login'),
+    path('compatibilite/<int:match_id>/', views.test_compatibilite, name='test_compatibilite'),
 ]
 
 

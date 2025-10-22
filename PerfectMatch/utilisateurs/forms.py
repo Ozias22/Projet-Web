@@ -4,8 +4,8 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 import datetime
 
-User = get_user_model()
 
+User = get_user_model()
 
 class InscriptionForm(UserCreationForm):
     """Permet à un nouvel utilisateur de s'incrire et d'avoir accès au site web"""
@@ -139,13 +139,13 @@ class InscriptionForm(UserCreationForm):
         if password1 and password2 and password1 != password2:
             raise ValidationError("Les mots de passe ne correspondent pas.")
         return password2
-def clean_birthday(self):
-    birthday = self.cleaned_data.get("birthday")
-    if birthday is None:
-        raise ValidationError("La date de naissance est obligatoire.")
-    if birthday > datetime.date.today():
-        raise ValidationError("La date de naissance ne peut pas être dans le futur.")
-    return birthday
+    def clean_birthday(self):
+        birthday = self.cleaned_data.get("birthday")
+        if birthday is None:
+            raise ValidationError("La date de naissance est obligatoire.")
+        if birthday > datetime.date.today():
+            raise ValidationError("La date de naissance ne peut pas être dans le futur.")
+        return birthday
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -158,5 +158,72 @@ def clean_birthday(self):
         if commit:
             user.save()
         return user
+    
+User = get_user_model()
+
+class ProfilForm(forms.ModelForm):
+    age = forms.IntegerField(
+        label="Âge",
+        required=False,
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'readonly': 'readonly'})
+    )
+ 
+    class Meta:
+        model = User
+        fields = [
+            'photo_profil', 'first_name', 'last_name',
+            'city', 'country', 'email'
+        ]
+        labels = {
+            'photo_profil': "Photo de profil",
+            'first_name': "Prénom",
+            'last_name': "Nom",
+            'city': "Ville",
+            'country': "Pays",
+            'email': "Email",
+        }
+        widgets = {
+            'photo_profil': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'city': forms.TextInput(attrs={'class': 'form-control'}),
+            'country': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+        }
+ 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance and self.instance.birthday:
+            today = datetime.date.today()
+            age = today.year - self.instance.birthday.year - (
+                (today.month, today.day) < (self.instance.birthday.month, self.instance.birthday.day)
+            )
+            self.fields['age'].initial = age
 
 
+class TestCompatibiliteForm(forms.Form):
+    aime_voyager = forms.ChoiceField(
+        label="Aimes-tu voyager ?",
+        choices=[("oui", "Oui"), ("non", "Non")],
+        widget=forms.RadioSelect
+    )
+    animal = forms.ChoiceField(
+        label="Aimes-tu les animaux ?",
+        choices=[("oui", "Oui"), ("non", "Non")],
+        widget=forms.RadioSelect
+    )
+    sport = forms.ChoiceField(
+        label="Fais-tu souvent du sport ?",
+        choices=[("oui", "Oui"), ("non", "Non")],
+        widget=forms.RadioSelect
+    )
+    fumeur = forms.ChoiceField(
+        label="Es-tu fumeur/fumeuse ?",
+        choices=[("oui", "Oui"), ("non", "Non")],
+        widget=forms.RadioSelect
+    )
+    musique = forms.ChoiceField(
+        label="La musique est-elle importante pour toi ?",
+        choices=[("oui", "Oui"), ("non", "Non")],
+        widget=forms.RadioSelect
+    )
