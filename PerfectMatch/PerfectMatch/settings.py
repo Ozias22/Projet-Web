@@ -86,13 +86,8 @@ DATABASES = {
    'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'perfect_match',
-<<<<<<< HEAD
         'USER': 'root',
         'PASSWORD': '',
-=======
-        'USER': 'garneau',
-        'PASSWORD': 'qwerty123',
->>>>>>> origin/main
         'HOST': 'localhost',
         'PORT': '3306',
     }

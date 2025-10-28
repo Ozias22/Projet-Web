@@ -4,11 +4,14 @@ from .forms import InscriptionForm, AbonnementForm,ConnectionForm,ProfilForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout, authenticate, login
 
+
 # Create your views here.
 
 def index(request):
+    if request.user is not None:
+        redirect('accueil')
     form = ConnectionForm()
-    return render(request, "utilisateurs/connecter_compte.html", {"form": form})
+    return render(request, "utilisateurs/index.html", {"form": form})
 
 def inscription_view(request):
     if request.method == "POST":
@@ -42,30 +45,28 @@ def valider_abonement(request):
 
 def connexion(request):
     """Comment"""
+    if request.user.is_authenticated:
+        return redirect('accueil')
+    
     if request.method == "POST":
         form = ConnectionForm(request.POST)
         if form.is_valid():
-            try:
-                username = form.cleaned_data["username"]
-                password = form.cleaned_data["password"]
+            username = form.cleaned_data["username"]
+            password = form.cleaned_data["password"]
 
-                user = User.objects.get(username=username)
-            except User.DoesNotExist:
-                user = None
-            user = authenticate(request, username=user.username, password=password)
+            user = authenticate(request, username=username, password=password)
             if user is not None:
-
                 login(request, user)
-                messages.success(request,"Connexion a été fait avec succès.")
+                messages.success(request, "Connexion réussie !")
                 return redirect('accueil')
             else:
-                form.add_error(None, "Invalid email or password.")
-
-
-            return redirect('index')
+                form.add_error(None, "Nom d'utilisateur ou mot de passe incorrect.")
     else:
         form = ConnectionForm()
     return render(request, "utilisateurs/connecter_compte.html",{'form': form})
+
+def accueil(request):
+    return render(request, "utilisateurs/accueil.html")
 
 @login_required
 def profil_view(request):
@@ -92,7 +93,8 @@ def modifier_view(request):
  
     return render(request, "utilisateurs/modifier_profil.html", {"form": form, "user": user})
 
-def inscription_view(request):
+def modifier_profil(request):
+    user = request.user
     if request.method == "POST":
         form = ProfilForm(request.POST, request.FILES, instance=user)
         if form.is_valid():
