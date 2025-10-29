@@ -112,6 +112,15 @@ class Abonement(models.Model):
             models.UniqueConstraint(fields=['user', 'type_abonement'], name='unique_user_abonement')
         ]
 
+class Compatibilite(models.Model):
+    utilisateur = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tests_effectues')
+    match = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tests_recus')
+    score = models.FloatField(default=0)
+    date_test = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Compatibilité entre {self.utilisateur.username} et {self.match.username} : {self.score:.1f}%"
+
 class ImagesUser(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to='images/%Y/%m/%d/', validators=[validate_file_extension, validate_file_size])

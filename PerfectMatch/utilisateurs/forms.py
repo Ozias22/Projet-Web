@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 import datetime
 import re
 
+
 User = get_user_model()
 
 class ConnectionForm(forms.Form):
@@ -226,6 +227,47 @@ class InscriptionForm(UserCreationForm):
         if commit:
             user.save()
         return user
+    
+User = get_user_model()
+
+class ProfilForm(forms.ModelForm):
+    age = forms.IntegerField(
+        label="Âge",
+        required=False,
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'readonly': 'readonly'})
+    )
+ 
+    class Meta:
+        model = User
+        fields = [
+            'photo_profil', 'first_name', 'last_name',
+            'city', 'country', 'email'
+        ]
+        labels = {
+            'photo_profil': "Photo de profil",
+            'first_name': "Prénom",
+            'last_name': "Nom",
+            'city': "Ville",
+            'country': "Pays",
+            'email': "Email",
+        }
+        widgets = {
+            'photo_profil': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'city': forms.TextInput(attrs={'class': 'form-control'}),
+            'country': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+        }
+ 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance and self.instance.birthday:
+            today = datetime.date.today()
+            age = today.year - self.instance.birthday.year - (
+                (today.month, today.day) < (self.instance.birthday.month, self.instance.birthday.day)
+            )
+            self.fields['age'].initial = age
 
 
 class AbonnementForm(forms.ModelForm):
@@ -398,3 +440,54 @@ class ImagesUserForm(forms.ModelForm):
 
 
 
+class TestCompatibiliteForm(forms.Form):
+    optimiste = forms.ChoiceField(
+        label="Te considères-tu optimiste ?",
+        choices=[("oui", "Oui"), ("non", "Non")],
+        widget=forms.RadioSelect
+    )
+    sociable = forms.ChoiceField(
+        label="Es-tu plutôt sociable ?",
+        choices=[("oui", "Oui"), ("non", "Non")],
+        widget=forms.RadioSelect
+    )
+    organise = forms.ChoiceField(
+        label="Aimes-tu que les choses soient bien organisées ?",
+        choices=[("oui", "Oui"), ("non", "Non")],
+        widget=forms.RadioSelect
+    )
+    patience = forms.ChoiceField(
+        label="Es-tu patient(e) dans les situations difficiles ?",
+        choices=[("oui", "Oui"), ("non", "Non")],
+        widget=forms.RadioSelect
+    )
+    aventureux = forms.ChoiceField(
+        label="Aimes-tu tenter de nouvelles expériences ?",
+        choices=[("oui", "Oui"), ("non", "Non")],
+        widget=forms.RadioSelect
+    )
+    empathique = forms.ChoiceField(
+        label="Te considères-tu empathique envers les autres ?",
+        choices=[("oui", "Oui"), ("non", "Non")],
+        widget=forms.RadioSelect
+    )
+    humour = forms.ChoiceField(
+        label="L'humour est-il important pour toi ?",
+        choices=[("oui", "Oui"), ("non", "Non")],
+        widget=forms.RadioSelect
+    )
+    sportif = forms.ChoiceField(
+        label="Aimes-tu faire du sport régulièrement ?",
+        choices=[("oui", "Oui"), ("non", "Non")],
+        widget=forms.RadioSelect
+    )
+    spontaneite = forms.ChoiceField(
+        label="Es-tu spontané(e) dans tes décisions ?",
+        choices=[("oui", "Oui"), ("non", "Non")],
+        widget=forms.RadioSelect
+    )
+    lecture = forms.ChoiceField(
+        label="Aimes-tu passer du temps à lire ou apprendre de nouvelles choses ?",
+        choices=[("oui", "Oui"), ("non", "Non")],
+        widget=forms.RadioSelect
+    )
