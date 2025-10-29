@@ -25,10 +25,6 @@ urlpatterns = [
     path('utilisateurs/', include('utilisateurs.urls')),
     path('', include('utilisateurs.urls')),  # Redirige la racine vers les URLs de l'application utilisateurs
 ]
-<<<<<<< .mine
-if settings.DEBUG:
-=======
 
->>>>>>> .theirs
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
