@@ -4,69 +4,84 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- icone du site -->
     <link rel="icon" href="" />
     <!-- style bootstrap? -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <!-- titre tu site -->
-    <title>{% block title %}PerfectMatch{% endblock %}</title>
-
+    <title>
+      {% block title %}
+        PerfectMatch - Accueil
+      {% endblock %}
+    </title>
     <!-- script javascript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
-    {% block script %}{% endblock %}
+    {% block script %}
+    {% endblock %}
   </head>
 
   <body class="d-flex flex-column min-vh-100">
     <!-- Accescibilitee avec tabulation -->
-    <a class="visually-hidden-focusable" href="#content">Access au contenu</a>
+    <a class="visually-hidden-focusable" href="#content">Accèss au contenu</a>
 
-    <div class="container-fluid">
+    <div class="container-fluid p-0">
       <header class="p-0">
-        <div class="row">
-          <nav class="col-3 d-md-block bg-dark text-white sidebar collapse show" id="sidebarMenu">
-            <div class="position-sticky pt-3 text-center">
-              <img class="img-fluid rounded-circle bg-light" src="{% static 'utilisateurs/images/happy.png' %}" width="200" height="200" alt="" />
-              <p class="h1">{{ user.username }}</p>
-              <ul class="nav flex-column">
-                <li class="nav-item">
-                  <a class="nav-link text-dark btn btn-primary mt-4" href="{% url 'profil'%}" style="background-color: #F559CE;">Mon profil</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link text-white btn btn-primary mt-4" style="background-color: #F559CE;" href="">Messages</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link text-white btn btn-primary mt-4" style="background-color: #F559CE;" href="">Mes Matchs</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link text-white btn btn-primary mt-4" style="background-color: #F559CE;" href="">Paramètre</a>
-                </li>
-              </ul>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4">
+          <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'accueil' %}">
+              <img src="{% static 'utilisateurs/images/Untitled.jpg' %}" alt="Logo" class="me-2 rounded-1" />
+              <h2 class="visually-hidden">PerfectMatch</h2>
+            </a>
+
+            <div class="d-flex align-items-center">
+              <form class="d-flex me-3">
+                {% csrf_token %}
+                <input class="form-control form-control-sm" type="search" placeholder="Recherche..." aria-label="Barre de recherche" />
+              </form>
+              <span class="me-3 text-white">{{ user.username }}</span>
+              <a href="#" class="btn btn-outline-light btn-sm">Déconnexion</a>
             </div>
-          </nav>
-          <div class="col-9 bg-secondary py-1 px-5">
-            <nav class="navbar navbar-expand-lg navbar-dark">
-              <div class="container-fluid">
-                <a href="{% url 'accueil' %}"><img class="img-fluid" src="{% static 'utilisateurs/images/happy.png' %}" width="150" height="150" alt="" /></a>
-                <form action="" novalidate>
-                  <label class="visually-hidden" for="test">Zone de recherche</label>
-                  <input name="test" id="test" type="search" placeholder="Recherche..." />
-                </form>
-              </div>
-            </nav>
-            <main class="">
-              {% block main %}
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Et ipsum dignissimos necessitatibus itaque dicta possimus porro perferendis asperiores non! Minus voluptates, a voluptatem dolor neque dolore veritatis magni doloribus quae!
-              {% endblock %}
-            </main>
           </div>
-        </div>
+        </nav>
       </header>
     </div>
 
-    <footer class="py-3 text-center" style="background-color: #F559CE;">
+    <div class="container-fluid">
+      <div class="row">
+        <!-- 🔹 SIDEBAR -->
+        <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar p-4 text-center">
+          <div class="sticky-top py-5">
+            <img class="img-fluid rounded-circle bg-light mb-3" src="{% static 'utilisateurs/images/happy.png' %}" width="150" height="150" alt="profile picture"/>
+            <h4 class="text-white pb-5">{{ user.username }}</h4>
+
+            <ul class="nav flex-column mt-4 py-5">
+              <li class="nav-item">
+                <a class="btn btn-primary w-100 mb-2" href="{% url 'profil' %}">Mon profil</a>
+              </li>
+              <li class="nav-item">
+                <a class="btn btn-primary w-100 mb-2" href="#">Messages</a>
+              </li>
+              <li class="nav-item">
+                <a class="btn btn-primary w-100 mb-2" href="#">Mes Matchs</a>
+              </li>
+              <li class="nav-item">
+                <a class="btn btn-primary w-100 mb-2" href="#">Paramètres</a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+
+        <!-- 🔹 MAIN CONTENT -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+          {% block main %}
+          {% endblock %}
+        </main>
+      </div>
+    </div>
+
+    <footer class="py-3 text-center mt-auto" style="background-color: #F559CE;">
       <p>2025 PerfectMatch | Ozias Tasse Douanla && Marie Wideline Pierre && Vosa Neo. Tous droits réservés.</p>
     </footer>
   </body>
