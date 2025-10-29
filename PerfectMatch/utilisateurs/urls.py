@@ -1,4 +1,6 @@
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
 from . import views # Importe le fichier views depuis le dossier courant
 
 urlpatterns = [
@@ -9,5 +11,8 @@ urlpatterns = [
     path("accueil/", views.accueil, name='accueil'),
     path("profil/", views.profil_view, name='profil'),
     path("profil/modifier/", views.modifier_view, name='profil_modifier'),
-    # path("valider_abonement/", views.valider_abonement, name='valider_abonement'),
+    path('profilPerfectMatch/', views.profil_perfectmatch_view, name='profilPerfectMatch'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

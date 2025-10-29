@@ -1,19 +1,23 @@
 from django.shortcuts import render,redirect
 from django.contrib import messages
-from .forms import InscriptionForm, AbonnementForm,ConnectionForm,ProfilForm
+from .forms import InscriptionForm, AbonnementForm,ConnectionForm,ProfilForm,userProfileForm,ImagesUserForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout, authenticate, login
-
+from .models import User, UserProfile, ImagesUser
 
 # Create your views here.
 
+# def index(request):
+#     form = ConnectionForm()
+#     return render(request, "utilisateurs/connecter_compte.html", {"form": form})
 def index(request):
-    if request.user is not None:
-        redirect('accueil')
-    form = ConnectionForm()
-    return render(request, "utilisateurs/index.html", {"form": form})
+    if request.user.is_authenticated:
+        return redirect('accueil')
+    return render(request, "utilisateurs/index.html")
 
 def inscription_view(request):
+    if request.user.is_authenticated:
+        return redirect('accueil')
     if request.method == "POST":
         form = InscriptionForm(request.POST)
         if form.is_valid():
@@ -43,6 +47,12 @@ def valider_abonement(request):
 
     return render(request, "utilisateurs/abonement.html", {"form": form})
 
+def deconnexion(request):
+    """Comment"""
+    logout(request)
+    messages.success(request, "Vous avez été déconnecté avec succès.")
+    return redirect('connexion')
+
 def connexion(request):
     """Comment"""
     if request.user.is_authenticated:
@@ -53,13 +63,18 @@ def connexion(request):
         if form.is_valid():
             username = form.cleaned_data["username"]
             password = form.cleaned_data["password"]
+            username = form.cleaned_data["username"]
+            password = form.cleaned_data["password"]
 
+            user = authenticate(request, username=username, password=password)
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
                 messages.success(request, "Connexion réussie !")
+                messages.success(request, "Connexion réussie !")
                 return redirect('accueil')
             else:
+                form.add_error(None, "Nom d'utilisateur ou mot de passe incorrect.")
                 form.add_error(None, "Nom d'utilisateur ou mot de passe incorrect.")
     else:
         form = ConnectionForm()
@@ -71,6 +86,13 @@ def deconnexion(request):
 
 def accueil(request):
     return render(request, "utilisateurs/accueil.html")
+
+@login_required
+def accueil(request):
+    """Vue pour la page d'accueil après connexion"""
+    user = request.user
+    return render(request, "utilisateurs/accueil.html")
+
 
 @login_required
 def profil_view(request):
@@ -111,3 +133,16 @@ def modifier_profil(request):
         form = ProfilForm(instance=user)
 
     return render(request, "utilisateurs/modifier_profil.html", {"form": form})
+
+@login_required
+def profil_perfectmatch_view(request):
+    """Vue pour afficher le profil PerfectMatch de l'utilisateur connecté"""
+
+    user = request.user
+    user_profile = UserProfile.objects.get(user=user)
+    imagesUser = ImagesUser.objects.filter(user=user)
+
+    form1 = userProfileForm(instance=user_profile)
+    form2 = ImagesUserForm()
+
+    return render(request, "utilisateurs/profilePerfectMatch.html", {"form1": form1, "form2": form2, "ImagesUser": imagesUser})

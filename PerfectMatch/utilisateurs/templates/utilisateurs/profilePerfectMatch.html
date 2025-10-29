@@ -1,0 +1,70 @@
+{% extends "utilisateurs/_modele.html"%}
+
+{% block title %}
+PerfectMatch - Mon Profil PerfectMatch
+{% endblock %}
+
+
+{% block main%}
+<div class="container">
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    <div class="row mt-3">
+        <div class="col-6 mx-auto">
+            <a href="#" id="modifierProfil" class="active">Modifier Profil PerfectMatch</a>
+        </div>
+        <div class="col-6 mx-auto">
+            <a href="#" id="apercuProfil">Aperçu Profil PerfectMatch</a>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <form action="#" method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="id_biography" class="form-label">Biographie</label>
+                {{ form1.biography }}
+            </div>
+
+            <div class="mb-3">
+                <label>Intérêts</label>
+                {% for checkbox in form1.interests %}
+                <div>{{ checkbox.tag }} {{ checkbox.choice_label }}</div>
+                {% endfor %}
+
+                {{ form1.new_interest.label_tag }} {{ form1.new_interest }}
+            </div>
+            <div class="mb-3">
+                <label for="id_location" class="form-label">Occupation</label>
+                {{ form1.occupation }}
+            </div>
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary w-100">Enregistrer</button>
+            </div>
+        </form>
+        <div class="row mt-4"></div>
+        {% if ImagesUser %}
+        <h4 class="mb-3">Vos Images</h4>
+        {% for image in Imagesuser %}
+        <div class="col-md-3 mb-3">
+            <img src="{{ image.image_url }}" alt="Image utilisateur" class="img-fluid rounded">
+        </div>
+        {% endfor %}
+        {% endif %}
+        <form action="#" method="post" novalidate>
+            {% csrf_token %}
+            <div class="text-center mt-4">
+                {{ form2.image }}
+                <button type="submit" class="btn btn-pink w-25">Ajouter l'image</button>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+</div>
+{% endblock %}

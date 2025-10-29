@@ -9,11 +9,11 @@ PerfectMatch - Abonnement
 
 <div class="d-flex justify-content-center align-items-center py-5">
   <div class="card shadow-sm p-4" style="width: 600px; border-radius: 15px;">
-    
+
     <!-- Photo profil + username -->
     <div class="text-center mb-3">
       {% if user.photo_profil %}
-        <img src="{{ user.photo_profil.url }}" alt="Photo de profil" class="rounded-circle mb-2" width="100" height="100" style="object-fit: cover;">
+        <img src="{{ user.photo_profil.url }}" alt="Photo de profil" class="rounded-circle mb-2" width="100" height="100" >
       {% else %}
         <img src="
         " alt="Photo de profil" class="rounded-circle mb-2" width="100" height="100" style="object-fit: cover;">
