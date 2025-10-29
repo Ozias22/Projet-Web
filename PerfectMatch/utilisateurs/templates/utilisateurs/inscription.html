@@ -1,4 +1,4 @@
-{% extends "utilisateurs/_modele.html"%}
+{% extends 'utilisateurs/_base_visiteur.html' %}
 
 {% block title %}
 PerfectMatch - Abonnement
@@ -10,7 +10,7 @@ PerfectMatch - Abonnement
     <div class="row justify-content-center">
         <div class="col-lg-8">
             <div class="card shadow-lg border-0 rounded-4">
-                <div class="card-header text-white text-center rounded-top-4" style="background-color:#A36F82 ;">
+                <div class="card-header text-white text-center rounded-top-4 bg-secondary">
                     <h2 class="mb-0">Créer un compte</h2>
                 </div>
                 <div class="card-body p-4">
@@ -93,7 +93,7 @@ PerfectMatch - Abonnement
 
                         </div>
 
-                        <button type="submit" class="btn w-100 mt-3" style="background-color: #A36F82;">
+                        <button type="submit" class="btn w-100 mt-3 bg-primary"">
                             S'inscrire
                         </button>
                     </form>

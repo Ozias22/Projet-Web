@@ -1,65 +1,63 @@
-@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Michroma&display=swap');
-/** VOS $VARIABLES Sass ici avant l'importation**/
-$primary: #F559CE;
-$secondary: #A36F82;
-$info: #CB6372;
-$dark: #3D2F32;
-
-
 /*** Importation de Boostrap **/
-@import "partials/bootstrap";
+@use "partials/_bootstrap" with (
+    /** VOS $VARIABLES Sass ici avant l'importation**/
+    $primary: #F559CE,
+    $secondary: #B2A9C2,
+    $success: #9281A0,
+    $info: #F2F4F2,
+    $light: #F2F4F2,
+    $dark: #3A334C,
+    $body-bg: #F2F4F2,
+    $body-color: #3A334C);
+
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Michroma&display=swap');
 
 /*** Début des styles personnalisés ***/
+main {
+  padding-bottom: 80px;
+}
+
 body {
-    font-size: 1rem;
-    font-family: $text-primary;
-}
-body{
-    background-color: #A36F82;
-}
-h1 {
-    font-family: $text-titre;
+    background-color: bootstrap.$body-bg;
+    color: bootstrap.$body-color;
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
 }
 
-h2 {
-    font-family: $text-titre;
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: bootstrap.$dark;
+  color: bootstrap.$light;
+  text-align: center;
+  padding: 1rem;
+  z-index: 1000;
 }
 
-h3 {
-    font-family: $text-titre;
-}
-
-h4 {
-    font-family: $text-titre;
-}
-
-h5 {
-    font-family: $text-titre;
-}
-
-h6 {
-    font-family: $text-titre;
-}
-
-.logo {
-    font-family: "Dancing Script", serif;
-    font-optical-sizing: auto;
-    font-weight: bold;
-    font-style: normal;
-    font-size: 2.8rem;
-}
 
 a {
     text-decoration: none;
-}
-footer{
-    height: 4rem;
+    color: inherit;
 }
 
-.paragraph{
-    font-family: 'Michroma', sans-serif;
-    font-size: 1.4rem;
-    text-align: justify;
-    text-justify: inter-word;
-    color: $dark;
+.hero {
+    position: relative;
+    width: 100%;
+    min-height: 100vh; // full viewport height
+    display: flex;
+    justify-content: center; // vertical centering
+    align-items: center; // horizontal centering
+    text-align: center;
+    color: #fff;
+    background: url('../images/hero.jpg') center/cover no-repeat;
+    background-size: cover;
+}
+
+.images300x300 {
+    height: auto;
+    width: auto;
+    border-radius: 0.5rem;
 }

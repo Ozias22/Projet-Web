@@ -65,6 +65,10 @@ def connexion(request):
         form = ConnectionForm()
     return render(request, "utilisateurs/connecter_compte.html",{'form': form})
 
+def deconnexion(request):
+    logout(request)
+    return redirect('index')
+
 def accueil(request):
     return render(request, "utilisateurs/accueil.html")
 
