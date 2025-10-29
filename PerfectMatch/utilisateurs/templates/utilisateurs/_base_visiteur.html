@@ -24,7 +24,7 @@
     <header>
       <nav class="navbar navbar-expand-lg w-100 bg-dark" data-bs-theme="light">
         <div class="container-fluid ">
-          <a class="navbar-brand mx-4" href="#">
+          <a class="navbar-brand mx-4" href="{% url 'index'%}">
             <img src="{% static "images/Untitled.jpg" %}" alt="logo"/>
             {% block header %}<h1 class="visually-hidden">PerfectMatch</h1>{% endblock header %}
           </a>
