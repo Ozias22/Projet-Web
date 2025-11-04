@@ -13,19 +13,14 @@
   <div class="container">
     <h1 class="h1">Galerie photo de "{{ user.username }}"</h1>
     <div>
-      <form action="POST" enctype="multipart/form-data" novalidate>
-
-        <div class="mb-3">
-          <label for="i" class="form-label">Sélectionnez une image</label>
-          {{ form.photo_profil }}
-        </div>
-
-        <button class="btn btn-danger disabled" type="submit">Supprimer une photo</button>
-        <button class="btn btn-primary" type="submit">Ajouter une photo</button>
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn btn-primary mt-2" type="submit">Téléverser</button>
       </form>
     </div>
     <div class="row row-cols-1 row-cols-md-3 g-4">
-      {% for photo in photos %}
+      {% for photo in images %}
         <div class="col">
           <div class="card h-100">
             <img src="{{ photo.image.url }}" class="card-img-top" alt="Photo" />

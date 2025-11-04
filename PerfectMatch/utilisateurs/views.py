@@ -69,7 +69,17 @@ def connexion(request):
 
 @login_required
 def galerie_photo(request):
-    return render(request, "utilisateurs/galerie_photo.html")
+    images = request.user.images.all()
+    
+    if request.method == "POST":
+        form = ImagesUserForm(request.POST, request.FILES, user=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect("galerie_photo")  # ✅ correct redirect
+    else:
+        form = ImagesUserForm(user=request.user)
+
+    return render(request, "utilisateurs/galerie_photo.html", {"form": form,"images": images})
 
 @login_required
 def accueil(request):

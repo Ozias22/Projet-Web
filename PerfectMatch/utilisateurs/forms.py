@@ -411,43 +411,20 @@ class ImagesUserForm(forms.ModelForm):
         widgets = {
             'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }
-        labels = {
-            'image': "Ajouter une image",
-        }
-    def clean_image(self):
-        image = self.cleaned_data.get("image")
-        return image
+        labels = {'image': "Ajouter une image"}
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+
     def save(self, commit=True):
         image_instance = super().save(commit=False)
-        image_instance.user = User
-        image_instance.image = self.cleaned_data['image']
+        # Utilisateur courrant
+        image_instance.user = self.user 
         if commit:
             image_instance.save()
         return image_instance
-
-class imageGalleryForm(forms.ModelForm):
-    class Meta:
-        model = ImagesUser
-        fields = ['image']
-        widgets = {
-            'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
-        }
-        labels = {
-            'image': "Ajouter une image",
-        }
-    def clean_image(self):
-        image = self.cleaned_data.get("image")
-        return image
-    def save(self, commit=True):
-        image_instance = super().save(commit=False)
-        image_instance.user = User
-        image_instance.image = self.cleaned_data['image']
-        if commit:
-            image_instance.save()
-        return image_instance
-        
-
-
+    
 class AbonnementForm(forms.ModelForm):
     """Permet à un utilisateur de choisir un abonnement"""
     class Meta:
