@@ -1,0 +1,20 @@
+{% comment %}Non disponible{% endcomment %}
+{% extends 'utilsiateurs/_base_utilisateur.html' %}
+{% load static %}
+
+{% block title %}
+  PerfectMatch - Rechercher
+{% endblock %}
+{% block header %}
+
+{% endblock %}
+
+{% block main %}
+  <div class="container">
+    <form method="POST" novalidate>
+      {% csrf_token %}
+      <button type="submit" class="btn btn-primary mt-4">Filtrer</button>
+      <button class="btn btn-primary" type="submit">Rechercher</button>
+    </form>
+  </div>
+{% endblock %}

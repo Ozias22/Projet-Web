@@ -1,0 +1,42 @@
+{% extends 'utilisateurs/_base_utilisateur.html' %}
+{% comment %}Non disponible{% endcomment %}
+{% load static %}
+{% block title %}
+  PerfectMatch - Gallerie Photo
+{% endblock %}
+
+{% block header %}
+
+{% endblock %}
+
+{% block main %}
+  <div class="container">
+    <h1 class="h1">Galerie photo de "{{ user.username }}"</h1>
+    <div>
+      <form action="POST" enctype="multipart/form-data" novalidate>
+
+        <div class="mb-3">
+          <label for="i" class="form-label">Sélectionnez une image</label>
+          {{ form.photo_profil }}
+        </div>
+
+        <button class="btn btn-danger disabled" type="submit">Supprimer une photo</button>
+        <button class="btn btn-primary" type="submit">Ajouter une photo</button>
+      </form>
+    </div>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+      {% for photo in photos %}
+        <div class="col">
+          <div class="card h-100">
+            <img src="{{ photo.image.url }}" class="card-img-top" alt="Photo" />
+            <div class="card-body">
+              <p class="card-text">Uploaded at: {{ photo.uploaded_at|date:'d/m/Y H:i' }}</p>
+            </div>
+          </div>
+        </div>
+      {% empty %}
+        <p>Aucune photo téléversée.</p>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

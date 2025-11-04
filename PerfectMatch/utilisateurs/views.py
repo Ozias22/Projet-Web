@@ -1,15 +1,12 @@
-from django.shortcuts import render,redirect
+
+from django.shortcuts import render,redirect, get_object_or_404
 from django.contrib import messages
-from .forms import InscriptionForm, AbonnementForm,ConnectionForm,ProfilForm,userProfileForm,ImagesUserForm
+from .forms import InscriptionForm, AbonnementForm,ConnectionForm,ProfilForm,userProfileForm,ImagesUserForm,TestCompatibiliteForm
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.contrib.auth import logout, authenticate, login
-from .models import User, UserProfile, ImagesUser
+from .models import User, UserProfile, ImagesUser, Compatibilite
 
-# Create your views here.
-
-# def index(request):
-#     form = ConnectionForm()
-#     return render(request, "utilisateurs/connecter_compte.html", {"form": form})
 def index(request):
     if request.user.is_authenticated:
         return redirect('accueil')
@@ -30,7 +27,6 @@ def inscription_view(request):
         form = InscriptionForm()
 
     return render(request, "utilisateurs/inscription.html", {"form": form})
-
 
 def valider_abonement(request):
     if request.method == "POST":
@@ -54,38 +50,26 @@ def deconnexion(request):
     return redirect('connexion')
 
 def connexion(request):
-    """Comment"""
     if request.user.is_authenticated:
         return redirect('accueil')
     
     if request.method == "POST":
         form = ConnectionForm(request.POST)
         if form.is_valid():
-            username = form.cleaned_data["username"]
-            password = form.cleaned_data["password"]
-            username = form.cleaned_data["username"]
-            password = form.cleaned_data["password"]
-
-            user = authenticate(request, username=username, password=password)
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                login(request, user)
-                messages.success(request, "Connexion réussie !")
-                messages.success(request, "Connexion réussie !")
-                return redirect('accueil')
-            else:
-                form.add_error(None, "Nom d'utilisateur ou mot de passe incorrect.")
-                form.add_error(None, "Nom d'utilisateur ou mot de passe incorrect.")
+            user = form.cleaned_data["user"]
+            login(request, user)
+            messages.success(request, "Connexion réussie !")
+            return redirect('accueil')
+        else:
+            messages.error(request, "Nom d'utilisateur ou mot de passe incorrect.")
     else:
         form = ConnectionForm()
-    return render(request, "utilisateurs/connecter_compte.html",{'form': form})
 
-def deconnexion(request):
-    logout(request)
-    return redirect('index')
+    return render(request, "utilisateurs/connecter_compte.html", {'form': form})
 
-def accueil(request):
-    return render(request, "utilisateurs/accueil.html")
+@login_required
+def galerie_photo(request):
+    return render(request, "utilisateurs/galerie_photo.html")
 
 @login_required
 def accueil(request):
@@ -135,6 +119,41 @@ def modifier_profil(request):
     return render(request, "utilisateurs/modifier_profil.html", {"form": form})
 
 @login_required
+def test_compatibilite(request, match_id):
+    match = get_object_or_404(User, id=match_id)
+    
+    if request.method == "POST":
+        form = TestCompatibiliteForm(request.POST)
+        if form.is_valid():
+            user_answers = form.cleaned_data
+            score = 0
+            total = len(user_answers)
+
+            for value in user_answers.values():
+                if value == "oui":
+                    score += 1
+
+            score_final = (score / total) * 100
+
+            Compatibilite.objects.update_or_create(
+                utilisateur=request.user,
+                match=match,
+                score=score_final
+            )
+
+            return render(request, "utilisateurs/compatibilite_resultat.html", {
+                "match": match,
+                "score": score_final
+            })
+    else:
+        form = TestCompatibiliteForm()
+
+    return render(request, "utilisateurs/compatibilite_form.html", {
+        "form": form,
+        "match": match
+    })
+        
+
 def profil_perfectmatch_view(request):
     """Vue pour afficher le profil PerfectMatch de l'utilisateur connecté"""
 

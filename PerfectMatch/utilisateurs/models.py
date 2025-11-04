@@ -35,14 +35,7 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=30, blank=False)
     country = models.CharField(max_length=50, blank=False)
     city = models.CharField(max_length=50, blank=False)
-    password = models.CharField(max_length=12)
     birthday = models.DateField(null=True, blank=False)
-    photo_profil = models.ImageField(
-        upload_to="profils/",
-        blank=True,
-        null=True,
-        default="profils/default.png"
-    )
 
     class Meta:
         verbose_name = 'user'
@@ -56,7 +49,12 @@ class User(AbstractUser):
     def __str__(self):
         return f"{self.username} ({self.email})"
 
+class Interest(models.Model):
+        name = models.CharField(max_length=50, unique=True)
 
+        def __str__(self):
+            return self.name
+        
 class UserProfile(models.Model):
     TYPE_GENDER = [
         ('male', 'Male'),
@@ -67,16 +65,13 @@ class UserProfile(models.Model):
     gender = models.CharField(max_length=10, choices=TYPE_GENDER)
     occupation = models.CharField(max_length=100, blank=True)
     bio = models.CharField(max_length=500, blank=True)
-    interests = models.ManyToManyField('Interest', blank=True)
+    interests = models.ManyToManyField(Interest, blank=True)
+
 
     def __str__(self):
         return f"Profile of {self.user.username}"
 
-    class Interest(models.Model):
-        name = models.CharField(max_length=50, unique=True)
-
-        def __str__(self):
-            return self.name
+    
 
 class Match(models.Model):
     user1 = models.ForeignKey(UserProfile, related_name='initiated_matches', on_delete=models.CASCADE)
@@ -118,9 +113,19 @@ class Abonement(models.Model):
             models.UniqueConstraint(fields=['user', 'type_abonement'], name='unique_user_abonement')
         ]
 
+class Compatibilite(models.Model):
+    utilisateur = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tests_effectues')
+    match = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tests_recus')
+    score = models.FloatField(default=0)
+    date_test = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Compatibilité entre {self.utilisateur.username} et {self.match.username} : {self.score:.1f}%"
+
 class ImagesUser(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to='images/%Y/%m/%d/', validators=[validate_file_extension, validate_file_size])
 
     def __str__(self):
         return f"Image for {self.user.username}"
+    
