@@ -77,7 +77,7 @@ def connexion(request):
 def accueil(request):
     """Vue pour la page d'accueil après connexion"""
     user = request.user
-    return render(request, "utilisateurs/accueil.html")
+    return render(request, "utilisateurs/accueil.html", {"user": user})
 
 @login_required
 def profil_view(request):
@@ -116,3 +116,16 @@ def profil_perfectmatch_view(request):
     form2 = ImagesUserForm()
 
     return render(request, "utilisateurs/profilePerfectMatch.html", {"form1": form1, "form2": form2, "ImagesUser": imagesUser})
+
+def ajouter_image_view(request):
+    """Vue pour ajouter une image au profil PerfectMatch de l'utilisateur connecté"""
+    if request.method == "POST":
+        form = ImagesUserForm(request.POST, request.FILES)
+        if form.is_valid():
+            image_user = form.save(commit=False)
+            image_user.user = request.user
+            image_user.save()
+            messages.success(request, "Image ajoutée avec succès !")
+        else:
+            messages.error(request, "Erreur lors de l'ajout de l'image. Veuillez réessayer.")
+    return redirect("profile_perfectmatch")
