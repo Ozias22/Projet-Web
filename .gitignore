@@ -52,3 +52,11 @@ $RECYCLE.BIN/
 *.swp
 *.swo
 *.bak
+
+# Node
+node_modules/
+
+# Sass / CSS build artifacts
+*.css
+*.css.map
+*.sass-cache/
