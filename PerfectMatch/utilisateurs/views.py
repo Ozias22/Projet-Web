@@ -97,7 +97,7 @@ def modifier_view(request):
     else:
         form = ProfilForm(instance=user)
 
-    return render(request, "utilisateurs/modifier_profil.html", {"form": form})
+    return render(request, "utilisateurs/modifier_profil.html", {"form": form, "user": user})
 
 @login_required
 def test_compatibilite(request, match_id):
@@ -116,10 +116,18 @@ def test_compatibilite(request, match_id):
 
             score_final = (score / total) * 100
 
+            # Compatibilité principale
             Compatibilite.objects.update_or_create(
                 utilisateur=request.user,
                 match=match,
-                score=score_final
+                defaults={'score': score_final}
+            )
+
+            # Compatibilité réciproque (facultatif mais recommandé pour le matching)
+            Compatibilite.objects.update_or_create(
+                utilisateur=match,
+                match=request.user,
+                defaults={'score': score_final}
             )
 
             return render(request, "utilisateurs/compatibilite_resultat.html", {
@@ -133,6 +141,12 @@ def test_compatibilite(request, match_id):
         "form": form,
         "match": match
     })
+
+@login_required
+def mes_matchs(request):
+    matchs = Compatibilite.objects.filter(utilisateur=request.user).order_by('-score')
+    return render(request, "utilisateurs/liste_matchs.html", {"matchs": matchs})
+
         
 
 def profil_perfectmatch_view(request):
