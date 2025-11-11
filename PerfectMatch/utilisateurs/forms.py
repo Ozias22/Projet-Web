@@ -444,50 +444,71 @@ class TestCompatibiliteForm(forms.Form):
     optimiste = forms.ChoiceField(
         label="Te considères-tu optimiste ?",
         choices=[("oui", "Oui"), ("non", "Non")],
-        widget=forms.RadioSelect
+        widget=forms.RadioSelect,
+        required=False
     )
     sociable = forms.ChoiceField(
         label="Es-tu plutôt sociable ?",
         choices=[("oui", "Oui"), ("non", "Non")],
-        widget=forms.RadioSelect
+        widget=forms.RadioSelect,
+        required=False
     )
     organise = forms.ChoiceField(
         label="Aimes-tu que les choses soient bien organisées ?",
         choices=[("oui", "Oui"), ("non", "Non")],
-        widget=forms.RadioSelect
+        widget=forms.RadioSelect,
+        required=False
     )
     patience = forms.ChoiceField(
         label="Es-tu patient(e) dans les situations difficiles ?",
         choices=[("oui", "Oui"), ("non", "Non")],
-        widget=forms.RadioSelect
+        widget=forms.RadioSelect,
+        required=False
     )
     aventureux = forms.ChoiceField(
         label="Aimes-tu tenter de nouvelles expériences ?",
         choices=[("oui", "Oui"), ("non", "Non")],
-        widget=forms.RadioSelect
+        widget=forms.RadioSelect,
+        required=False
     )
     empathique = forms.ChoiceField(
         label="Te considères-tu empathique envers les autres ?",
         choices=[("oui", "Oui"), ("non", "Non")],
-        widget=forms.RadioSelect
+        widget=forms.RadioSelect,
+        required=False
     )
     humour = forms.ChoiceField(
         label="L'humour est-il important pour toi ?",
         choices=[("oui", "Oui"), ("non", "Non")],
-        widget=forms.RadioSelect
+        widget=forms.RadioSelect,
+        required=False
     )
     sportif = forms.ChoiceField(
         label="Aimes-tu faire du sport régulièrement ?",
         choices=[("oui", "Oui"), ("non", "Non")],
-        widget=forms.RadioSelect
+        widget=forms.RadioSelect,
+        required=False
     )
     spontaneite = forms.ChoiceField(
         label="Es-tu spontané(e) dans tes décisions ?",
         choices=[("oui", "Oui"), ("non", "Non")],
-        widget=forms.RadioSelect
+        widget=forms.RadioSelect,
+        required=False
     )
     lecture = forms.ChoiceField(
         label="Aimes-tu passer du temps à lire ou apprendre de nouvelles choses ?",
         choices=[("oui", "Oui"), ("non", "Non")],
-        widget=forms.RadioSelect
+        widget=forms.RadioSelect,
+        required=False
     )
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        for field_name in self.fields:
+            if not cleaned_data.get(field_name):
+                raise forms.ValidationError(
+                    "Veuillez répondre à toutes les questions avant de soumettre le test."
+                )
+                
+        return cleaned_data
