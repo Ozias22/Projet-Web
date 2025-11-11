@@ -3,20 +3,38 @@
 
 
 /** VOS $VARIABLES Sass ici avant l'importation**/
-$primary:#E94E65;
-$secondary:#CB6372;
-$info:#B23F56;
-$dark:#3D2F32;
-$light:#F8F9FA;
+$primary: #E94E65;
+$secondary: #CB6372;
+$info: #B23F56;
+$dark: #3D2F32;
+$light: #F8F9FA;
 
-$text-primary: "Roboto",sans-serif;
+$text-primary: "Roboto", sans-serif;
 $text-titre: "Lilita One", serif;
 
 /*** Importation de Boostrap **/
 @import "partials/bootstrap";
 
 /*** Début des styles personnalisés ***/
+main {
+    padding-bottom: 80px;
+}
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: bootstrap.$dark;
+  color: bootstrap.$light;
+  text-align: center;
+  padding: 1rem;
+  z-index: 1000;
+}
 
+a {
+    text-decoration: none;
+    color: inherit;
+}
 
 img {
     object-fit: cover;
@@ -26,27 +44,46 @@ img {
     width: 100%;
     max-width: 1500px;
 }
-.aside-accueil{
+
+.aside-accueil {
     margin-left: 2.8rem;
     @extend .text-center;
     @extend .col-md-3;
 }
-a{
-    text-decoration: none;
-    color: black;
-}
-.survol{
+
+.survol {
     width: 60%;
+
+    &:hover {
+        text-decoration: none;
+        background-color: rgba(188, 121, 188, 0.509);
+        border-radius: 1.1rem;
+        padding-left: 18px;
+        padding-right: 18px;
+        transition: 0.3s;
+        padding-top: 11px;
+    }
 }
-.survol:hover{
-    text-decoration: none;
-    background-color: rgba(188, 121, 188, 0.509);
-    border-radius: 1.1rem;
-    padding-left: 18px;
-    padding-right: 18px;
-    transition: 0.3s;
-    padding-top: 11px;
-}
-.alignement-gauche{
+
+.alignement-gauche {
     text-align: left;
+}
+
+.hero {
+    position: relative;
+    width: 100%;
+    min-height: 100vh; // full viewport height
+    display: flex;
+    justify-content: center; // vertical centering
+    align-items: center; // horizontal centering
+    text-align: center;
+    color: #fff;
+    background: url('../images/hero.jpg') center/cover no-repeat;
+    background-size: cover;
+}
+
+.images300x300 {
+    height: auto;
+    width: auto;
+    border-radius: 0.5rem;
 }

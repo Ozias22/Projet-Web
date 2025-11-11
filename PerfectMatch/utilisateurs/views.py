@@ -53,20 +53,20 @@ def connexion(request):
     if request.method == "POST":
         form = ConnectionForm(request.POST)
         if form.is_valid():
-            username = form.cleaned_data["username"]
-            password = form.cleaned_data["password"]
+            input_username = form.cleaned_data["username"]
+            input_password = form.cleaned_data["password"]
 
-            user = authenticate(request, username=username, password=password)
+            user = authenticate(request, username=input_username, password=input_password)
             if user is not None:
                 login(request, user)
                 messages.success(request, "Connexion réussie !")
                 return redirect('accueil')
             else:
                 form.add_error(None, "Nom d'utilisateur ou mot de passe incorrect.")
+                
     else:
         form = ConnectionForm()
     return render(request, "utilisateurs/connecter_compte.html",{'form': form})
-
 
 @login_required
 def accueil(request):
@@ -139,10 +139,23 @@ def profil_perfectmatch_view(request):
     """Vue pour afficher le profil PerfectMatch de l'utilisateur connecté"""
 
     user = request.user
-    user_profile = UserProfile.objects.get(user=user)
-    imagesUser = ImagesUser.objects.filter(user=user)
+    # user_profile = UserProfile.objects.get(user=user)
+    # imagesUser = ImagesUser.objects.filter(user=user)
+    user_profile = user.profile
+    # Tous les images de l'utilisateur
+    user_images = request.user.images.all()
+    
+    # Formulaire téléversement images
+    if request.method == "POST":
+        form = ImagesUserForm(request.POST, request.FILES, user=request.user)
+        if form.is_valid():
+            form.save()
+            # Rafraichisement de la page actuelle pour voir la nouvelle image
+            return redirect("profilPerfectMatch")
+    else:
+        image_form = ImagesUserForm(user=request.user)
 
     form1 = userProfileForm(instance=user_profile)
-    form2 = ImagesUserForm()
 
-    return render(request, "utilisateurs/profilePerfectMatch.html", {"form1": form1, "form2": form2, "ImagesUser": imagesUser})
+    return render(request, "utilisateurs/profilePerfectMatch.html", {"form1": form1, "image_form": image_form,"user_images": user_images})
+

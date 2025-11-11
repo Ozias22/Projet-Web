@@ -7,6 +7,8 @@ from django.core.validators import MinLengthValidator
 from django.core.exceptions import ValidationError
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 def validate_file_extension(value):
@@ -35,7 +37,7 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=30, blank=False)
     country = models.CharField(max_length=50, blank=False)
     city = models.CharField(max_length=50, blank=False)
-    password = models.CharField(max_length=12)
+    # password = models.CharField(max_length=12)
     birthday = models.DateField(null=True, blank=False)
 
     class Meta:
@@ -71,6 +73,11 @@ class UserProfile(models.Model):
 
         def __str__(self):
             return self.name
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        UserProfile.objects.create(user=instance)
 
 class Match(models.Model):
     user1 = models.ForeignKey(UserProfile, related_name='initiated_matches', on_delete=models.CASCADE)

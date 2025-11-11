@@ -53,7 +53,7 @@ class ConnectionForm(forms.Form):
         if not user.is_active:
             raise forms.ValidationError("Ce compte est inactif.")
 
-        # self.user = user
+        self.user = user
         return cleaned_data
 
 
@@ -430,14 +430,22 @@ class ImagesUserForm(forms.ModelForm):
     def clean_image(self):
         image = self.cleaned_data.get("image")
         return image
+    
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+    
     def save(self, commit=True):
         image_instance = super().save(commit=False)
-        image_instance.user = User
+        # Utilisateur courrant
+        image_instance.user = self.user
         image_instance.image = self.cleaned_data['image']
         if commit:
             image_instance.save()
         return image_instance
 
+    
+    
 
 
 class TestCompatibiliteForm(forms.Form):
