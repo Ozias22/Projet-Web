@@ -28,20 +28,21 @@ PerfectMatch - Abonnement
                             Vos informations
                         </button>
                     </h3>
-                    <div id="flush-collapseOne" class="accordion-collapse collapse"
-                        data-bs-parent="#accordionFlushExample">
+                    <div id="flush-collapseOne" class="accordion-collapse" data-bs-parent="#accordionFlushExample">
                         <div class="accordion-body">
                             <div class="mb-3 form-group">
                                 <label for="nom">Nom : </label>
-                                <input type="text" name="nom" class="form-control" value="{{user.nom}}" disabled>
+                                <input type="text" name="nom" class="form-control w-75" value="{{user.nom}}" disabled>
                             </div>
                             <div class="mb-3 form-group">
                                 <label for="prenom">Prenom : </label>
-                                <input type="text" name="prenom" class="form-control" value="{{user.prenom}}" disabled>
+                                <input type="text" name="prenom" class="form-control w-75" value="{{user.prenom}}"
+                                    disabled>
                             </div>
                             <div class="mb-3 form-group">
                                 <label for="email">Mail : </label>
-                                <input type="email" name="email" class="form-control" value="{{user.email}}" disabled>
+                                <input type="email" name="email" class="form-control w-75" value="{{user.email}}"
+                                    disabled>
                             </div>
                         </div>
                     </div>
@@ -53,12 +54,23 @@ PerfectMatch - Abonnement
                             Choix de l'abonnement
                         </button>
                     </h2>
-                    <div id="flush-collapseTwo" class="accordion-collapse collapse"
-                        data-bs-parent="#accordionFlushExample">
+                    <div id="flush-collapseTwo" class="accordion-collapse" data-bs-parent="#accordionFlushExample">
                         <div class="accordion-body">
-                            <label for="abonnement">{{ form.type_abonement.label_tag }}</label>
                             {{ form.type_abonement }}
-                            <br>
+                            <div class="row">
+                                <div class="card-abonnement">
+                                    <h6 class="text-center">Abonnement Mensuel</h6>
+                                    <p class="text-center">15$/mois</p>
+                                </div>
+                                <div class="card-abonnement">
+                                    <h6 class="text-center">Abonnement Annuel</h6>
+                                    <p class="text-center">110$/An</p>
+                                </div>
+                                <div class="card-abonnement">
+                                    <h6 class="text-center">Abonnement Premiun</h6>
+                                    <p class="text-center">20$/mois</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -70,8 +82,7 @@ PerfectMatch - Abonnement
                             Paiement
                         </button>
                     </h2>
-                    <div id="flush-collapseThree" class="accordion-collapse collapse"
-                        data-bs-parent="#accordionFlushExample">
+                    <div id="flush-collapseThree" class="accordion-collapse" data-bs-parent="#accordionFlushExample">
                         <div class="accordion-body">
                             <label for="carte">{{ form.card_number.label_tag }}</label>
                             {{ form.card_number }}

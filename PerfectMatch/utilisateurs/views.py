@@ -1,11 +1,13 @@
-
-from django.shortcuts import render,redirect, get_object_or_404
+from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib import messages
-from .forms import InscriptionForm, AbonnementForm,ConnectionForm,ProfilForm,userProfileForm,ImagesUserForm,TestCompatibiliteForm
+from django.http import JsonResponse
+from .forms import InscriptionForm, AbonnementForm,ConnectionForm,ProfilForm,userProfileForm,ImagesUserForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import logout, authenticate, login
-from .models import User, UserProfile, ImagesUser, Compatibilite
+from .models import User, UserProfile, ImagesUser,Match
+
+# Create your views here.
 
 def index(request):
     return redirect("connexion")
@@ -72,7 +74,7 @@ def connexion(request):
 def accueil(request):
     """Vue pour la page d'accueil après connexion"""
     user = request.user
-    return render(request, "utilisateurs/accueil.html")
+    return render(request, "utilisateurs/accueil.html", {"user": user})
 
 @login_required
 def profil_view(request):
@@ -100,49 +102,75 @@ def modifier_view(request):
     return render(request, "utilisateurs/modifier_profil.html", {"form": form})
 
 @login_required
-def test_compatibilite(request, match_id):
-    match = get_object_or_404(User, id=match_id)
-    
-    if request.method == "POST":
-        form = TestCompatibiliteForm(request.POST)
-        if form.is_valid():
-            user_answers = form.cleaned_data
-            score = 0
-            total = len(user_answers)
-
-            for value in user_answers.values():
-                if value == "oui":
-                    score += 1
-
-            score_final = (score / total) * 100
-
-            Compatibilite.objects.update_or_create(
-                utilisateur=request.user,
-                match=match,
-                score=score_final
-            )
-
-            return render(request, "utilisateurs/compatibilite_resultat.html", {
-                "match": match,
-                "score": score_final
-            })
-    else:
-        form = TestCompatibiliteForm()
-
-    return render(request, "utilisateurs/compatibilite_form.html", {
-        "form": form,
-        "match": match
-    })
-        
-
 def profil_perfectmatch_view(request):
-    """Vue pour afficher le profil PerfectMatch de l'utilisateur connecté"""
-
     user = request.user
-    user_profile = UserProfile.objects.get(user=user)
+    try:
+        user_profile = UserProfile.objects.get(user=user)
+    except UserProfile.DoesNotExist:
+        user_profile = None
+
     imagesUser = ImagesUser.objects.filter(user=user)
 
-    form1 = userProfileForm(instance=user_profile)
-    form2 = ImagesUserForm()
+    if request.method == "POST":
+        form1 = userProfileForm(request.POST, instance=user_profile)
+        form2 = ImagesUserForm(request.POST, request.FILES)
 
-    return render(request, "utilisateurs/profilePerfectMatch.html", {"form1": form1, "form2": form2, "ImagesUser": imagesUser})
+        # Si formulaire profil soumis
+        if 'occupation' in request.POST or 'bio' in request.POST:
+            if form1.is_valid():
+                form1.save(user=user)
+                user_profile = UserProfile.objects.get(user=user)
+
+        # Si formulaire image soumis
+        if 'image' in request.FILES:
+            if form2.is_valid():
+                form2.save(user=user)
+                imagesUser = ImagesUser.objects.filter(user=user)
+
+    else:
+        form1 = userProfileForm(instance=user_profile)
+        form2 = ImagesUserForm()
+
+    return render(
+        request,
+        "utilisateurs/profilePerfectMatch.html",
+        {
+            "form1": form1,
+            "form2": form2,
+            "ImagesUser": imagesUser
+        }
+    )
+@login_required
+def obtenir_profil(request):
+    user = request.user
+    user_profile = UserProfile.objects.get(user=user)
+    matchs = Match.objects.filter(user1__user=user_profile)
+    utilisateurs_profiles = UserProfile.objects.filter(id__exclude=[match.user2.id for match in matchs if match.is_mutual])
+    # Filtres ici
+
+    return JsonResponse({'user':user})
+    # Convertir les profils en dictionnaires
+    # return JsonResponse({
+    #     'profiles': [
+    #         {
+    #             'bio' : utilisateurs_profiles.bio,
+    #             'occupation': utilisateurs_profiles.occupation,
+    #             'Interets': [interest.name for interest in utilisateurs_profiles.interests.all()],
+    #         }]
+    # })
+
+# @login_required
+# def profil_user_view(request, id):
+#     """Vue pour afficher le profil d’un utilisateur donné"""
+#     user = get_object_or_404(User, id=id)
+#     user_profile = UserProfile.objects.get(user=user)
+#     imagesUser = ImagesUser.objects.filter(user=user)
+
+#     form1 = userProfileForm(instance=user_profile)
+#     form2 = ImagesUserForm()
+
+#     return render(
+#         request,
+#         "utilisateurs/profilePerfectMatch.html",
+#         {"form1": form1, "form2": form2, "ImagesUser": imagesUser}
+#     )
