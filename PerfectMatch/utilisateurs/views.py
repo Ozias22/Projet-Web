@@ -5,8 +5,8 @@ from .forms import InscriptionForm, AbonnementForm,ConnectionForm,ProfilForm,use
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import logout, authenticate, login
-from .models import User, UserProfile, ImagesUser,Match
-
+from .models import User, UserProfile, ImagesUser, Match, Message
+from django.db.models import Q
 # Create your views here.
 
 def index(request):
@@ -174,3 +174,58 @@ def obtenir_profil(request):
 #         "utilisateurs/profilePerfectMatch.html",
 #         {"form1": form1, "form2": form2, "ImagesUser": imagesUser}
 #     )
+
+def discussions(request):
+    user = request.user
+    # discussions = messages.objects.all().distinct().filter(receiver_id=user)
+    # messages = m
+    return render(request,"utilisateurs/discussions.html")
+
+async def get_discussions(request):
+    """Retourne les discussions selon l'ordre du dernier message,"""
+    current_user = request.user
+    # Obtient les utilisateurs qui on interagis avec l'utilisateur courant
+    discussions = Message.objects.filter(Q(sender=current_user) | Q(receiver=current_user)) \
+        .values_list('sender', 'receiver') \
+        .distinct()
+        
+    # Filtre les utilisateurs en contact pour l'affichage des discussions
+    discussions_ids = []
+    for sender, recipient in discussions:
+        if sender != current_user.id:
+            discussions_ids.push(sender)
+        if recipient != current_user.id:
+            discussions_ids.push(recipient)
+            
+    # Obtentions des donnes autres utilisateurs
+    otherUsers = User.objects.filter(id__in=discussions_ids)
+    
+    data = [
+        {
+            "id": otherUser.id,
+            "username": otherUser.username,
+        }
+        for otherUser in otherUsers
+    ]
+    
+    return JsonResponse(data, safe=False)
+
+
+def get_messages(request, p_other_user_id):
+    current_user = request.user
+    messages = Message.objects.filter(
+        Q(sender=current_user, receiver=p_other_user_id) |
+        Q(sender=p_other_user_id, receiver=current_user)
+    ).order_by('timestamp')
+
+    data = [
+        {
+            "sender": msg.sender.username,
+            "receiver": msg.receiver.username,
+            "content": msg.content,
+            "timestamp": msg.timestamp.strftime("%Y-%m-%d %H:%M")
+        }
+        for msg in messages
+    ]
+
+    return JsonResponse(data, safe=False)

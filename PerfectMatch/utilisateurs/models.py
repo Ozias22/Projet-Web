@@ -35,7 +35,8 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=30, blank=False)
     country = models.CharField(max_length=50, blank=False)
     city = models.CharField(max_length=50, blank=False)
-    password = models.CharField(max_length=12)
+    # Vosa, l'inscription est fonctionnelle pour moi lorsque que j'utilise le champs derive de AbstranctUser
+    # password = models.CharField(max_length=12)
     birthday = models.DateField(null=True, blank=False)
 
     class Meta:
