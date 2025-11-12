@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 import datetime
 import re
 
+
 User = get_user_model()
 
 class ConnectionForm(forms.Form):
@@ -226,6 +227,47 @@ class InscriptionForm(UserCreationForm):
         if commit:
             user.save()
         return user
+
+User = get_user_model()
+
+class ProfilForm(forms.ModelForm):
+    age = forms.IntegerField(
+        label="Âge",
+        required=False,
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'readonly': 'readonly'})
+    )
+
+    class Meta:
+        model = User
+        fields = [
+            'photo_profil', 'first_name', 'last_name',
+            'city', 'country', 'email'
+        ]
+        labels = {
+            'photo_profil': "Photo de profil",
+            'first_name': "Prénom",
+            'last_name': "Nom",
+            'city': "Ville",
+            'country': "Pays",
+            'email': "Email",
+        }
+        widgets = {
+            'photo_profil': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'city': forms.TextInput(attrs={'class': 'form-control'}),
+            'country': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance and self.instance.birthday:
+            today = datetime.date.today()
+            age = today.year - self.instance.birthday.year - (
+                (today.month, today.day) < (self.instance.birthday.month, self.instance.birthday.day)
+            )
+            self.fields['age'].initial = age
 
 
 class AbonnementForm(forms.ModelForm):

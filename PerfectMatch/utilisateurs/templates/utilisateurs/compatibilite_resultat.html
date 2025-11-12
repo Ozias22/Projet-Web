@@ -1,0 +1,25 @@
+{% extends "utilisateurs/_modele.html" %}
+
+{% block main %}
+<div class="container-fluid d-flex align-items-center justify-content-center" style="min-height: 100vh;">
+    <div class="card shadow-lg w-75" style="border-radius: 1.2rem; border: 2px solid var(--bs-pink); min-height: 80vh;">
+        <div class="card-header bg-dark-subtle text-center">
+            <h2 class="mb-0">Résultat de compatibilité</h2>
+        </div>
+        <div class="card-body p-5 text-center d-flex flex-column justify-content-center">
+            <p class="fs-4">Ton score avec <strong>{{ match.username }}</strong> est de <strong>{{ score|floatformat:1 }}%</strong>.</p>
+            
+            {% if score > 70 %}
+                <p class="fs-5 text-success">✨ Très bonne compatibilité ! Vous partagez beaucoup de valeurs communes.</p>
+            {% elif score > 40 %}
+                <p class="fs-5 text-warning">🙂 Moyenne compatibilité. Vous pourriez bien vous entendre !</p>
+            {% else %}
+                <p class="fs-5 text-danger">💔 Faible compatibilité. Peut-être trop de différences ?</p>
+            {% endif %}
+            
+            <a href="{% url 'accueil' %}" class="btn btn-secondary btn-lg mt-3 mx-auto">Retour à l'accueil</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

@@ -3,16 +3,13 @@ from django.contrib import messages
 from django.http import JsonResponse
 from .forms import InscriptionForm, AbonnementForm,ConnectionForm,ProfilForm,userProfileForm,ImagesUserForm
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.contrib.auth import logout, authenticate, login
 from .models import User, UserProfile, ImagesUser,Match
 
 # Create your views here.
 
-# def index(request):
-#     form = ConnectionForm()
-#     return render(request, "utilisateurs/connecter_compte.html", {"form": form})
 def index(request):
-    # return render(request, "utilisateurs/accueil.html")
     return redirect("connexion")
 
 def inscription_view(request):
@@ -28,7 +25,6 @@ def inscription_view(request):
         form = InscriptionForm()
 
     return render(request, "utilisateurs/inscription.html", {"form": form})
-
 
 def valider_abonement(request):
     if request.method == "POST":

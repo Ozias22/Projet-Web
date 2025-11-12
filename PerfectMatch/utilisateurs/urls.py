@@ -7,6 +7,8 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('connexion/', views.connexion, name='connexion'),
     path("inscription/", views.inscription_view, name="inscription"),
+    #path('login/', views.login_view, name='login'),
+    path('compatibilite/<int:match_id>/', views.test_compatibilite, name='test_compatibilite'),
     path("deconnexion/", views.deconnexion, name="deconnexion"),
     # path("connecter_compte/", views.index, name="connecter_compte"),
     path("valider_abonement/", views.valider_abonement, name="valider_abonement"),
@@ -17,6 +19,3 @@ urlpatterns = [
     # path('profilPerfectMatch/', views.profil_perfectmatch_view, name='profilPerfectMatch'),
     # path('ajout-image/', views.ajout_image, name='ajout-image'),
 ]
-
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
