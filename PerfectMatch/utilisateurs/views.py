@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import logout, authenticate, login
 from .models import User, UserProfile, ImagesUser, Compatibilite
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 def index(request):
     return redirect("connexion")
@@ -147,48 +149,48 @@ def test_compatibilite(request, match_id):
 
 @login_required
 def mes_matchs(request):
-    # récupérer les tests de compatibilité pour l'utilisateur courant
     tests = Compatibilite.objects.filter(utilisateur=request.user).exclude(match=None)
 
     return render(request, "utilisateurs/mes_matchs.html", {"matchs": tests})
 
-        
+@login_required
 def profil_perfectmatch_view(request):
-    """Vue pour afficher le profil PerfectMatch de l'utilisateur connecté"""
-
     user = request.user
-
     try:
         user_profile = UserProfile.objects.get(user=user)
     except UserProfile.DoesNotExist:
-        user_profile = None  # profil vide
+        user_profile = None
 
     imagesUser = ImagesUser.objects.filter(user=user)
 
     if request.method == "POST":
         form1 = userProfileForm(request.POST, instance=user_profile)
         form2 = ImagesUserForm(request.POST, request.FILES)
-        if form1.is_valid() and form2.is_valid():
-            profile = form1.save(commit=False)
-            profile.user = user
-            profile.save()
-            form1.save_m2m()  # pour les ManyToMany (interests)
-            
-            # Si image uploadée
-            if form2.cleaned_data.get('image'):
-                image = form2.save(commit=False)
-                image.user = user
-                image.save()
-            
-            return redirect('profil_perfectmatch')  # ou une autre page
+
+        # Si formulaire profil soumis
+        if 'occupation' in request.POST or 'bio' in request.POST:
+            if form1.is_valid():
+                form1.save(user=user)
+                user_profile = UserProfile.objects.get(user=user)
+
+        # Si formulaire image soumis
+        if 'image' in request.FILES:
+            if form2.is_valid():
+                form2.save(user=user)
+                imagesUser = ImagesUser.objects.filter(user=user)
+
     else:
         form1 = userProfileForm(instance=user_profile)
         form2 = ImagesUserForm()
 
     return render(
-        request, 
-        "utilisateurs/profilePerfectMatch.html", 
-        {"form1": form1, "form2": form2, "ImagesUser": imagesUser}
+        request,
+        "utilisateurs/profilePerfectMatch.html",
+        {
+            "form1": form1,
+            "form2": form2,
+            "ImagesUser": imagesUser
+        }
     )
 
 
@@ -208,3 +210,16 @@ def profil_user_view(request, id):
         {"form1": form1, "form2": form2, "ImagesUser": imagesUser}
     )
 
+
+@login_required
+def supprimer_image_ajax(request):
+    image_id = request.POST.get("image_id")
+    print("Image ID reçu:", image_id)
+    image = ImagesUser.objects.filter(id=image_id).first()
+
+    if not image:
+        return JsonResponse({"success": False, "error": "introuvable"})
+
+    image.image.delete(save=False)
+    image.delete()
+    return JsonResponse({"success": True})

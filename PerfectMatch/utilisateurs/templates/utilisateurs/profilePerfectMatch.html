@@ -1,4 +1,6 @@
-{% extends "utilisateurs/_modele.html"%}
+{% extends "utilisateurs/_modele.html" %}
+
+{% load static %}
 
 {% block title %}
 PerfectMatch - Mon Profil PerfectMatch
@@ -29,14 +31,12 @@ PerfectMatch - Mon Profil PerfectMatch
                     <h4 class="mb-0">Mon Profil PerfectMatch</h4>
                 </div>
                 <div class="card-body p-4">
-                    <form action="#" method="post" novalidate>
+                    <form action="{% url 'profilPerfectMatch' %}" method="post" enctype="multipart/form-data" novalidate>
                         {% csrf_token %}
-                        
                         <div class="mb-4">
                             <label for="{{ form1.bio.id_for_label }}" class="form-label fw-semibold">Biographie</label>
                             {{ form1.bio }}
                         </div>
-                        
                         <div class="mb-4">
                             <label class="form-label fw-semibold">Genre</label>
                             <div class="d-flex gap-3">
@@ -54,7 +54,6 @@ PerfectMatch - Mon Profil PerfectMatch
                                 </div>
                             </div>
                         </div>
-
                         <div class="mb-4">
                             <label class="form-label fw-semibold">Intérêts</label>
                             <div class="d-flex flex-wrap gap-2 mb-2">
@@ -66,41 +65,49 @@ PerfectMatch - Mon Profil PerfectMatch
                                 {% endfor %}
                             </div>
                         </div>
-
                         <div class="mb-4">
                             <label for="id_occupation" class="form-label fw-semibold">Occupation</label>
                             <input type="text" 
-                                name="{{ form1.occupation.name }}" 
-                                id="id_occupation" 
-                                class="form-control" 
-                                value="{{ form1.occupation.value|default_if_none:'' }}" 
-                                placeholder="Occupation">
+                                   name="{{ form1.occupation.name }}" 
+                                   id="id_occupation" 
+                                   class="form-control" 
+                                   value="{{ form1.occupation.value|default_if_none:'' }}" 
+                                   placeholder="Occupation">
                         </div>
 
-                        <div class="d-grid">
+                        <div class="d-grid mb-4">
                             <button type="submit" class="btn btn-primary btn-lg">Enregistrer</button>
+                        </div>
+                        <div class="mb-3 text-center">
+                            {{ form2.image }}
+                            <button type="submit" class="btn btn-primary mt-2">Ajouter l'image</button>
                         </div>
                     </form>
                     {% if ImagesUser %}
                         <h5 class="mt-5 mb-3 text-center">Vos Images</h5>
-                        <div class="row">
-                            {% for image in ImagesUser %}
-                                <div class="col-6 col-md-3 mb-3">
-                                    <img src="{{ image.image_url }}" alt="Image utilisateur" class="img-fluid rounded shadow-sm border border-secondary">
-                                </div>
-                            {% endfor %}
-                        </div>
+                        <div class="row justify-content-center">
+                           <div class="row justify-content-center">
+                        {% for image in ImagesUser %}
+                            <div class="col-6 col-md-3 mb-3 text-center" id="image-{{ image.id }}">
+                                <a href="{{ image.image.url }}" target="_blank">
+                                    <img src="{{ image.image.url }}" 
+                                        alt="Image utilisateur" 
+                                        class="img-fluid rounded shadow-sm border border-secondary"
+                                        style="width: 200px; height: 200px; object-fit: cover;">
+                                </a>
+                                <button class="btn btn-sm btn-danger mt-2 btn-supprimer-image" data-id="{{ image.id }}">
+                                    Supprimer
+                                </button>
+                            </div>
+                        {% endfor %}
+                </div>
+                    </div>
                     {% endif %}
-                    <form action="#" method="post" enctype="multipart/form-data" class="mt-3 text-center">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            {{ form2.image }}
-                        </div>
-                        <button type="submit" class="btn btn-primary">Ajouter l'image</button>
-                    </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script src="{% static 'js/script.js' %}"></script>
 {% endblock %}

@@ -17,4 +17,5 @@ urlpatterns = [
     path('profilPerfectMatch/', views.profil_perfectmatch_view, name='profilPerfectMatch'),
     path("mes-matchs/", views.mes_matchs, name="mes_matchs"),
     path('profil/<int:id>/', views.profil_user_view, name='profil'),
+    path('profilPerfectMatch/supprimer-image-ajax/', views.supprimer_image_ajax, name='supprimer_image_ajax'),
 ]

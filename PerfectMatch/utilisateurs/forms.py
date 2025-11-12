@@ -404,16 +404,13 @@ class userProfileForm(forms.ModelForm):
     def clean_interests(self):
         interests = self.cleaned_data.get("interests")
         return interests
-    def save(self, commit=True):
+    def save(self, commit=True, user=None):
         profile = super().save(commit=False)
-        profile.user = User
-        profile.gender = self.cleaned_data['gender']
-        profile.occupation = self.cleaned_data['occupation']
-        profile.bio = self.cleaned_data['bio']
-        profile.interests.set(self.cleaned_data['interests'])
+        if user is not None:
+            profile.user = user
         if commit:
             profile.save()
-
+            self.save_m2m()
         return profile
 
 
@@ -427,13 +424,15 @@ class ImagesUserForm(forms.ModelForm):
         labels = {
             'image': "Ajouter une image",
         }
+
     def clean_image(self):
         image = self.cleaned_data.get("image")
         return image
-    def save(self, commit=True):
+
+    def save(self, commit=True, user=None):
         image_instance = super().save(commit=False)
-        image_instance.user = User
-        image_instance.image = self.cleaned_data['image']
+        if user is not None:
+            image_instance.user = user
         if commit:
             image_instance.save()
         return image_instance
