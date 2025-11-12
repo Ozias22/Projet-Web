@@ -101,6 +101,11 @@ def modifier_view(request):
 
 @login_required
 def test_compatibilite(request, match_id):
+
+    if request.user.id == match_id:
+        messages.error(request, "Vous ne pouvez pas faire un test de compatibilité avec vous-même.")
+        return redirect("mes_matchs") 
+
     match = get_object_or_404(User, id=match_id)
     
     if request.method == "POST":
@@ -116,14 +121,12 @@ def test_compatibilite(request, match_id):
 
             score_final = (score / total) * 100
 
-            # Compatibilité principale
             Compatibilite.objects.update_or_create(
                 utilisateur=request.user,
                 match=match,
                 defaults={'score': score_final}
             )
 
-            # Compatibilité réciproque (facultatif mais recommandé pour le matching)
             Compatibilite.objects.update_or_create(
                 utilisateur=match,
                 match=request.user,
@@ -144,19 +147,64 @@ def test_compatibilite(request, match_id):
 
 @login_required
 def mes_matchs(request):
-    matchs = Compatibilite.objects.filter(utilisateur=request.user).order_by('-score')
-    return render(request, "utilisateurs/liste_matchs.html", {"matchs": matchs})
+    # récupérer les tests de compatibilité pour l'utilisateur courant
+    tests = Compatibilite.objects.filter(utilisateur=request.user).exclude(match=None)
+
+    return render(request, "utilisateurs/mes_matchs.html", {"matchs": tests})
 
         
-
 def profil_perfectmatch_view(request):
     """Vue pour afficher le profil PerfectMatch de l'utilisateur connecté"""
 
     user = request.user
+
+    try:
+        user_profile = UserProfile.objects.get(user=user)
+    except UserProfile.DoesNotExist:
+        user_profile = None  # profil vide
+
+    imagesUser = ImagesUser.objects.filter(user=user)
+
+    if request.method == "POST":
+        form1 = userProfileForm(request.POST, instance=user_profile)
+        form2 = ImagesUserForm(request.POST, request.FILES)
+        if form1.is_valid() and form2.is_valid():
+            profile = form1.save(commit=False)
+            profile.user = user
+            profile.save()
+            form1.save_m2m()  # pour les ManyToMany (interests)
+            
+            # Si image uploadée
+            if form2.cleaned_data.get('image'):
+                image = form2.save(commit=False)
+                image.user = user
+                image.save()
+            
+            return redirect('profil_perfectmatch')  # ou une autre page
+    else:
+        form1 = userProfileForm(instance=user_profile)
+        form2 = ImagesUserForm()
+
+    return render(
+        request, 
+        "utilisateurs/profilePerfectMatch.html", 
+        {"form1": form1, "form2": form2, "ImagesUser": imagesUser}
+    )
+
+
+@login_required
+def profil_user_view(request, id):
+    """Vue pour afficher le profil d’un utilisateur donné"""
+    user = get_object_or_404(User, id=id)
     user_profile = UserProfile.objects.get(user=user)
     imagesUser = ImagesUser.objects.filter(user=user)
 
     form1 = userProfileForm(instance=user_profile)
     form2 = ImagesUserForm()
 
-    return render(request, "utilisateurs/profilePerfectMatch.html", {"form1": form1, "form2": form2, "ImagesUser": imagesUser})
+    return render(
+        request, 
+        "utilisateurs/profilePerfectMatch.html", 
+        {"form1": form1, "form2": form2, "ImagesUser": imagesUser}
+    )
+

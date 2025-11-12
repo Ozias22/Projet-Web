@@ -16,4 +16,5 @@ urlpatterns = [
     path('accueil/', views.accueil, name='accueil'),
     path('profilPerfectMatch/', views.profil_perfectmatch_view, name='profilPerfectMatch'),
     path("mes-matchs/", views.mes_matchs, name="mes_matchs"),
+    path('profil/<int:id>/', views.profil_user_view, name='profil'),
 ]

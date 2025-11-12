@@ -375,7 +375,7 @@ class userProfileForm(forms.ModelForm):
             'gender': forms.Select(attrs={'class': 'form-control'}),
             'occupation': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Occupation'}),
             'bio': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Bio', 'rows': 4}),
-            'interests': forms.CheckboxSelectMultiple(attrs={'class': 'form-control'}),
+            'interests': forms.CheckboxSelectMultiple(),
         }
         error_messages = {
             'gender': {
