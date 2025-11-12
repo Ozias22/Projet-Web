@@ -102,7 +102,7 @@ function creerCardProfil(){
 
 async function RecupereProfils(){
     try{
-        const response = await fetch('api/obtenir_profil/');
+        const response = await fetch('/api/obtenir_profil/');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }

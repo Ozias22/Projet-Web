@@ -1,15 +1,26 @@
 {
-  "dependencies": {
-    "bootstrap": "^5.3.8"
-  },
   "name": "projet-web",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "dependencies": {
+    "bootstrap": "^5.3.8",
+    "sass": "^1.93.2"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-css": "sass PerfectMatch/static/scss/styles.scss PerfectMatch/static/css/styles.css"
+
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ozias22/Projet-Web.git"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ozias22/Projet-Web/issues"
+  },
+  "homepage": "https://github.com/Ozias22/Projet-Web#readme"
 }
