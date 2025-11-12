@@ -13,6 +13,7 @@ urlpatterns = [
     path('profil/', views.profil_view, name='profil'),
     path('accueil/', views.accueil, name='accueil'),
     path('profilPerfectMatch/', views.profil_perfectmatch_view, name='profilPerfectMatch'),
+    path('ajout-image/', views.ajout_image, name='ajout-image'),
 ]
 
 if settings.DEBUG:

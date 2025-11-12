@@ -50,3 +50,18 @@ a{
 .alignement-gauche{
     text-align: left;
 }
+.card-abonnement{
+    @extend .col-3;
+    @extend .rounded-2;
+    @extend .border-secondary;
+    @extend .border;
+    @extend .border-2;
+    @extend .mx-1;
+    @extend .p-2;
+}
+.card-abonnement:hover{
+    background-color: #cb637396;
+}
+.chkbox{
+    width: 15px;
+}

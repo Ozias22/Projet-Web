@@ -855,7 +855,7 @@ progress {
   width: 16.66666667%;
 }
 
-.col-3 {
+.col-3, .card-abonnement {
   flex: 0 0 auto;
   width: 25%;
 }
@@ -7438,7 +7438,7 @@ textarea.form-control-lg {
   transform: translateY(-50%) !important;
 }
 
-.border {
+.border, .card-abonnement {
   border: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
 }
 
@@ -7483,7 +7483,7 @@ textarea.form-control-lg {
   border-color: rgba(var(--bs-primary-rgb), var(--bs-border-opacity)) !important;
 }
 
-.border-secondary {
+.border-secondary, .card-abonnement {
   --bs-border-opacity: 1;
   border-color: rgba(var(--bs-secondary-rgb), var(--bs-border-opacity)) !important;
 }
@@ -7564,7 +7564,7 @@ textarea.form-control-lg {
   border-width: 1px !important;
 }
 
-.border-2 {
+.border-2, .card-abonnement {
   border-width: 2px !important;
 }
 
@@ -7869,7 +7869,7 @@ textarea.form-control-lg {
   margin-left: 0 !important;
 }
 
-.mx-1 {
+.mx-1, .card-abonnement {
   margin-right: 0.25rem !important;
   margin-left: 0.25rem !important;
 }
@@ -8054,7 +8054,7 @@ textarea.form-control-lg {
   padding: 0.25rem !important;
 }
 
-.p-2 {
+.p-2, .card-abonnement {
   padding: 0.5rem !important;
 }
 
@@ -8894,7 +8894,7 @@ textarea.form-control-lg {
   border-radius: var(--bs-border-radius-sm) !important;
 }
 
-.rounded-2 {
+.rounded-2, .card-abonnement {
   border-radius: var(--bs-border-radius) !important;
 }
 
@@ -12016,4 +12016,12 @@ a {
 
 .alignement-gauche {
   text-align: left;
+}
+
+.card-abonnement:hover {
+  background-color: rgba(203, 99, 115, 0.5882352941);
+}
+
+.chkbox {
+  width: 15px;
 }/*# sourceMappingURL=styles.css.map */

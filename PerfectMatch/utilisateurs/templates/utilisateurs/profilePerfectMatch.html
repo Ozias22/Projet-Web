@@ -31,11 +31,15 @@ PerfectMatch - Mon Profil PerfectMatch
             </div>
 
             <div class="mb-3">
-                <label>Intérêts</label>
-                {% for checkbox in form1.interests %}
-                <div>{{ checkbox.tag }} {{ checkbox.choice_label }}</div>
-                {% endfor %}
+                <label class="my-3">Intérêts</label>
+                <div class="col-6 d-flex flex-wrap">
+                    {% for checkbox in form1.interests %}
+                    <div class="col-md-2 d-flex align-content-center mx-2 my-2">
+                        <span class="chkbox mx-2">{{ checkbox.tag }}</span> {{ checkbox.choice_label }}
+                    </div>
+                    {% endfor %}
 
+                </div>
                 {{ form1.new_interest.label_tag }} {{ form1.new_interest }}
             </div>
             <div class="mb-3">
@@ -55,7 +59,7 @@ PerfectMatch - Mon Profil PerfectMatch
         </div>
         {% endfor %}
         {% endif %}
-        <form action="#" method="post" novalidate>
+        <form action="{% url 'ajout-image' %}" method="post" novalidate>
             {% csrf_token %}
             <div class="text-center mt-4">
                 {{ form2.image }}
