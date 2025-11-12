@@ -1,74 +1,113 @@
-{% extends "utilisateurs/_modele.html"%}
+
+
+{% extends "utilisateurs/_modele.html" %}
 
 {% block title %}
 PerfectMatch - Mon Profil PerfectMatch
 {% endblock %}
 
-
-{% block main%}
-<div class="container">
+{% block main %}
+<div class="container mt-5">
     {% if messages %}
-    {% for message in messages %}
-    <div class="alert alert-{{ message.tags }}">
-        {{ message }}
-    </div>
-    {% endfor %}
-    {% endif %}
-    <div class="row mt-3">
-        <div class="col-6 mx-auto">
-            <a href="#" id="modifierProfil" class="active">Modifier Profil PerfectMatch</a>
-        </div>
-        <div class="col-6 mx-auto">
-            <a href="#" id="apercuProfil">Aperçu Profil PerfectMatch</a>
-        </div>
-    </div>
-    <div class="row mt-3">
-        <form action="#" method="post">
-            {% csrf_token %}
-            <div class="mb-3">
-                <label for="id_biography" class="form-label">Biographie</label>
-                {{ form1.biography }}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-
-            <div class="mb-3">
-                <label class="my-3">Intérêts</label>
-                <div class="col-6 d-flex flex-wrap">
-                    {% for checkbox in form1.interests %}
-                    <div class="col-md-2 d-flex align-content-center mx-2 my-2">
-                        <span class="chkbox mx-2">{{ checkbox.tag }}</span> {{ checkbox.choice_label }}
-                    </div>
-                    {% endfor %}
-
-                </div>
-                {{ form1.new_interest.label_tag }} {{ form1.new_interest }}
-            </div>
-            <div class="mb-3">
-                <label for="id_location" class="form-label">Occupation</label>
-                {{ form1.occupation }}
-            </div>
-            <div class="text-center mt-4">
-                <button type="submit" class="btn btn-primary w-100">Enregistrer</button>
-            </div>
-        </form>
-        <div class="row mt-4"></div>
-        {% if ImagesUser %}
-        <h4 class="mb-3">Vos Images</h4>
-        {% for image in Imagesuser %}
-        <div class="col-md-3 mb-3">
-            <img src="{{ image.image_url }}" alt="Image utilisateur" class="img-fluid rounded">
-        </div>
         {% endfor %}
-        {% endif %}
-        <form action="{% url 'ajout-image' %}" method="post" novalidate>
-            {% csrf_token %}
-            <div class="text-center mt-4">
-                {{ form2.image }}
-                <button type="submit" class="btn btn-pink w-25">Ajouter l'image</button>
-            </div>
-        </form>
+    {% endif %}
+
+    <div class="row mb-4 text-center">
+        <div class="col">
+            <a href="#" id="modifierProfil" class="btn btn-primary me-2 active">Modifier Profil</a>
+            <a href="#" id="apercuProfil" class="btn btn-secondary">Aperçu Profil</a>
+        </div>
     </div>
 
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm rounded-4 border-secondary">
+                <div class="card-header bg-secondary text-white text-center rounded-top-4">
+                    <h4 class="mb-0">Mon Profil PerfectMatch</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form action="{% url 'profilPerfectMatch' %}" method="post" enctype="multipart/form-data" novalidate>
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label for="{{ form1.bio.id_for_label }}" class="form-label fw-semibold">Biographie</label>
+                            {{ form1.bio }}
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Genre</label>
+                            <div class="d-flex gap-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="{{ form1.gender.name }}" id="gender_male" value="male" {% if form1.gender.value == "male" %}checked{% endif %}>
+                                    <label class="form-check-label" for="gender_male">Homme</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="{{ form1.gender.name }}" id="gender_female" value="female" {% if form1.gender.value == "female" %}checked{% endif %}>
+                                    <label class="form-check-label" for="gender_female">Femme</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="{{ form1.gender.name }}" id="gender_other" value="other" {% if form1.gender.value == "other" %}checked{% endif %}>
+                                    <label class="form-check-label" for="gender_other">Autre</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Intérêts</label>
+                            <div class="d-flex flex-wrap gap-2 mb-2">
+                                {% for checkbox in form1.interests %}
+                                    <div class="form-check form-check-inline">
+                                        {{ checkbox.tag }}
+                                        <label class="form-check-label">{{ checkbox.choice_label }}</label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="id_occupation" class="form-label fw-semibold">Occupation</label>
+                            <input type="text"
+                                   name="{{ form1.occupation.name }}"
+                                   id="id_occupation"
+                                   class="form-control"
+                                   value="{{ form1.occupation.value|default_if_none:'' }}"
+                                   placeholder="Occupation">
+                        </div>
+
+                        <div class="d-grid mb-4">
+                            <button type="submit" class="btn btn-primary btn-lg">Enregistrer</button>
+                        </div>
+                        <div class="mb-3 text-center">
+                            {{ form2.image }}
+                            <button type="submit" class="btn btn-primary mt-2">Ajouter l'image</button>
+                        </div>
+                    </form>
+                    {% if ImagesUser %}
+                        <h5 class="mt-5 mb-3 text-center">Vos Images</h5>
+                        <div class="row justify-content-center">
+                           <div class="row justify-content-center">
+                        {% for image in ImagesUser %}
+                            <div class="col-6 col-md-3 mb-3 text-center" id="image-{{ image.id }}">
+                                <a href="{{ image.image.url }}" target="_blank">
+                                    <img src="{{ image.image.url }}"
+                                        alt="Image utilisateur"
+                                        class="img-fluid rounded shadow-sm border border-secondary"
+                                        style="width: 200px; height: 200px; object-fit: cover;">
+                                </a>
+                                <button class="btn btn-sm btn-danger mt-2 btn-supprimer-image" data-id="{{ image.id }}">
+                                    Supprimer
+                                </button>
+                            </div>
+                        {% endfor %}
+                </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-</div>
+
 {% endblock %}

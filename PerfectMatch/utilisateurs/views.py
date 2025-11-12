@@ -1,9 +1,10 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib import messages
+from django.http import JsonResponse
 from .forms import InscriptionForm, AbonnementForm,ConnectionForm,ProfilForm,userProfileForm,ImagesUserForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout, authenticate, login
-from .models import User, UserProfile, ImagesUser
+from .models import User, UserProfile, ImagesUser,Match
 
 # Create your views here.
 
@@ -106,27 +107,74 @@ def modifier_view(request):
 
 @login_required
 def profil_perfectmatch_view(request):
-    """Vue pour afficher le profil PerfectMatch de l'utilisateur connecté"""
-
     user = request.user
-    user_profile = UserProfile.objects.get(user=user)
+    try:
+        user_profile = UserProfile.objects.get(user=user)
+    except UserProfile.DoesNotExist:
+        user_profile = None
+
     imagesUser = ImagesUser.objects.filter(user=user)
 
-    form1 = userProfileForm(instance=user_profile)
-    form2 = ImagesUserForm(instance=user)
-
-    return render(request, "utilisateurs/profilePerfectMatch.html", {"form1": form1, "form2": form2, "ImagesUser": imagesUser})
-
-def ajout_image(request):
-    """Vue pour ajouter une image au profil PerfectMatch de l'utilisateur connecté"""
     if request.method == "POST":
-        form = ImagesUserForm(request.POST, request.FILES)
-        if form.is_valid():
-            image_user = form.save(commit=False)
-            image_user.user = request.user
-            image_user.save()
-            print(form.errors)
-            messages.success(request, "Image ajoutée avec succès !")
-        else:
-            messages.error(request, "Erreur lors de l'ajout de l'image. Veuillez réessayer.")
-    return redirect("profilPerfectMatch")
+        form1 = userProfileForm(request.POST, instance=user_profile)
+        form2 = ImagesUserForm(request.POST, request.FILES)
+
+        # Si formulaire profil soumis
+        if 'occupation' in request.POST or 'bio' in request.POST:
+            if form1.is_valid():
+                form1.save(user=user)
+                user_profile = UserProfile.objects.get(user=user)
+
+        # Si formulaire image soumis
+        if 'image' in request.FILES:
+            if form2.is_valid():
+                form2.save(user=user)
+                imagesUser = ImagesUser.objects.filter(user=user)
+
+    else:
+        form1 = userProfileForm(instance=user_profile)
+        form2 = ImagesUserForm()
+
+    return render(
+        request,
+        "utilisateurs/profilePerfectMatch.html",
+        {
+            "form1": form1,
+            "form2": form2,
+            "ImagesUser": imagesUser
+        }
+    )
+@login_required
+def obtenir_profil(request):
+    user = request.user
+    user_profile = UserProfile.objects.get(user=user)
+    matchs = Match.objects.filter(user1__user=user_profile)
+    utilisateurs_profiles = UserProfile.objects.filter(id__exclude=[match.user2.id for match in matchs if match.is_mutual])
+    # Filtres ici
+
+    return JsonResponse({'user':user})
+    # Convertir les profils en dictionnaires
+    # return JsonResponse({
+    #     'profiles': [
+    #         {
+    #             'bio' : utilisateurs_profiles.bio,
+    #             'occupation': utilisateurs_profiles.occupation,
+    #             'Interets': [interest.name for interest in utilisateurs_profiles.interests.all()],
+    #         }]
+    # })
+
+# @login_required
+# def profil_user_view(request, id):
+#     """Vue pour afficher le profil d’un utilisateur donné"""
+#     user = get_object_or_404(User, id=id)
+#     user_profile = UserProfile.objects.get(user=user)
+#     imagesUser = ImagesUser.objects.filter(user=user)
+
+#     form1 = userProfileForm(instance=user_profile)
+#     form2 = ImagesUserForm()
+
+#     return render(
+#         request,
+#         "utilisateurs/profilePerfectMatch.html",
+#         {"form1": form1, "form2": form2, "ImagesUser": imagesUser}
+#     )

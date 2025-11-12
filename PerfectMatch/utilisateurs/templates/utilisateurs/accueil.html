@@ -1,5 +1,7 @@
 {% extends "utilisateurs/_modele.html"%}
 
+{% load static %}
+
 {% block title %}
 PerfectMatch - Accueil
 {% endblock %}
@@ -39,45 +41,13 @@ PerfectMatch - Accueil
                 Filtrer
             </div>
         </div>
-        <div class="justify-content-center row" id="matchs">
-            <div class="col-md-8">
-                <div class="card w-100 mb-4">
-                    <img src="../../static/images/Untitled.jpg" class="card-img-top" alt="image profil utilisateur">
-                    <div class="card-body">
-                        <h5 class="card-title fw-semibold">Ozias, 22</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of
-                            the card’s content.</p>
-                    </div>
-                    <ul class="w-25 alignement-gauche">
-                        <div class="d-flex justify-content-between mb-2">
-                            <i class="bi bi-geo-alt"></i>
-                            <li class="list-group-item">Localisation</li>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <i class="bi bi-briefcase"></i>
-                            <li class="list-group-item">Job</li>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <i class="bi bi-geo-alt"></i>
-                            <li class="list-group-item">An item</li>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <i class="bi bi-geo-alt"></i>
-                            <li class="list-group-item">An item</li>
-                        </div>
-                    </ul>
-                    <div class="d-flex justify-content-between mx-4 w-75">
-                        <div class="fs-1 text-dark mx-2" id="!jaime"><i class="bi bi-x-lg"></i></div>
-                        <div class="fs-1 text-primary" id="jaime"><i class="bi bi-heart-fill"></i></div>
-                    </div>
-                    <div class="card-body">
-                        <a href="#" class="card-link">Card link</a>
-                        <a href="#" class="card-link">Another link</a>
-                    </div>
-                </div>
-            </div>
+        <div class="justify-content-center row" id="bloc_profils">
+            <!-- Les profils seront insérés ici par JavaScript -->
 
         </div>
     </div>
 </div>
 {% endblock %}
+{% block scriptjs %}
+<script src="{% static 'js/script.js' %}" defer></script>
+{% endblock scriptjs %}
