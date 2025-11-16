@@ -1,26 +1,42 @@
+document.addEventListener("DOMContentLoaded", function () {
 
-document.querySelectorAll('.btn-supprimer-image').forEach(button => {
-    button.addEventListener('click', function() {
-        const imageId = this.dataset.id;
-        const csrfToken = '{{ csrf_token }}';
-        
-        fetch("{% url 'supprimer_image_ajax' %}", {
-            method: "POST",
-            headers: {
-                "X-CSRFToken": csrfToken,
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-            body: `image_id=${imageId}`
-        })
-        .then(response => response.json())
-        .then(data => {
-            if(data.success) {
-                const imageDiv = document.getElementById(`image-${imageId}`);
-                if(imageDiv) imageDiv.remove();
-            } else {
-                alert("Erreur lors de la suppression de l'image.");
+    const buttons = document.querySelectorAll('.btn-supprimer-image');
+
+    buttons.forEach(btn => {
+        btn.addEventListener('click', function () {
+
+            const imageId = this.dataset.id;
+            const url = window.urlSupprimerImage;
+            const csrf = window.csrfToken;
+
+            if (!imageId) {
+                console.error("Pas d'ID image");
+                return;
             }
-        })
-        .catch(() => alert("Erreur lors de la suppression de l'image."));
+
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": csrf,
+                    "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                    "X-Requested-With": "XMLHttpRequest"
+                },
+                body: new URLSearchParams({ image_id: imageId }).toString()
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const div = document.getElementById(`image-${imageId}`);
+                    if (div) div.remove();
+                } else {
+                    alert(data.error || "Erreur lors de la suppression.");
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Erreur réseau.");
+            });
+        });
     });
+
 });

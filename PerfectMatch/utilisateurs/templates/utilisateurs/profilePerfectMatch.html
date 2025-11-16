@@ -95,9 +95,10 @@ PerfectMatch - Mon Profil PerfectMatch
                                         class="img-fluid rounded shadow-sm border border-secondary"
                                         style="width: 200px; height: 200px; object-fit: cover;">
                                 </a>
-                                <button class="btn btn-sm btn-danger mt-2 btn-supprimer-image" data-id="{{ image.id }}">
-                                    Supprimer
-                                </button>
+                                <button type="button" class="btn btn-sm btn-danger mt-2 btn-supprimer-image" data-id="{{ image.id }}">
+                                     Supprimer
+                           </button>
+
                             </div>
                         {% endfor %}
                 </div>
@@ -109,5 +110,9 @@ PerfectMatch - Mon Profil PerfectMatch
     </div>
 </div>
 
+<script>
+    window.csrfToken = "{{ csrf_token }}";
+    window.urlSupprimerImage = "{% url 'supprimer_image_ajax' %}";
+</script>
 <script src="{% static 'js/script.js' %}"></script>
 {% endblock %}

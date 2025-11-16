@@ -47,6 +47,7 @@ def deconnexion(request):
     messages.success(request, "Vous avez été déconnecté avec succès.")
     return redirect('connexion')
 
+
 def connexion(request):
     """Comment"""
     if request.user.is_authenticated:
@@ -62,12 +63,22 @@ def connexion(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, "Connexion réussie !")
+
+                from utilisateurs.models import UserProfile
+
+                profile, created = UserProfile.objects.get_or_create(user=user)
+
+                if profile.first_login:
+                    profile.first_login = False
+                    profile.save()
+                    return redirect('profilPerfectMatch')
                 return redirect('accueil')
             else:
                 form.add_error(None, "Nom d'utilisateur ou mot de passe incorrect.")
     else:
         form = ConnectionForm()
-    return render(request, "utilisateurs/connecter_compte.html",{'form': form})
+
+    return render(request, "utilisateurs/connecter_compte.html", {'form': form})
 
 
 @login_required
