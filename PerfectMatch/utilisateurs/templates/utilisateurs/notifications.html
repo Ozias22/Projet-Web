@@ -1,0 +1,14 @@
+{% extends "utilisateurs/_modele.html" %}
+
+{% block main %}
+    <h2>Vos notifications</h2>
+
+    {% for msg in unread_messages %}
+        <div class="notification-box">
+            <p><strong>{{ msg.sender.user.username }}</strong> vous a envoyé un message.</p>
+            <a href="{% url 'view_message' msg.id %}">Voir le message</a>
+        </div>
+    {% empty %}
+        <p>Aucune notification.</p>
+    {% endfor %}
+{% endblock %}

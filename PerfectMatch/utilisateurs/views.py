@@ -5,7 +5,7 @@ from .forms import InscriptionForm, AbonnementForm,ConnectionForm,ProfilForm,use
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import logout, authenticate, login
-from .models import User, UserProfile, ImagesUser, Compatibilite
+from .models import User, UserProfile, ImagesUser, Compatibilite, Message
 
 def index(request):
     return redirect("connexion")
@@ -134,7 +134,6 @@ def test_compatibilite(request, match_id):
         "match": match
     })
         
-
 def profil_perfectmatch_view(request):
     """Vue pour afficher le profil PerfectMatch de l'utilisateur connecté"""
 
@@ -146,3 +145,28 @@ def profil_perfectmatch_view(request):
     form2 = ImagesUserForm()
 
     return render(request, "utilisateurs/profilePerfectMatch.html", {"form1": form1, "form2": form2, "ImagesUser": imagesUser})
+
+@login_required
+def notifications_view(request):
+    user_p = UserProfile.objects.get(user=request.user)
+
+    unread_messages = Message.objects.filter(
+        receiver=user_p,
+        is_read=False
+    ).order_by('-timestamp')
+
+    return render(request, "utilisateurs/notifications.html", {
+        "unread_messages": unread_messages
+    })
+
+@login_required
+def view_message(request, message_id):
+    message = get_object_or_404(Message, id=message_id)
+
+    if request.user.Userprofile == message.receiver:
+        message.is_read = True
+        message.save()
+
+    return render(request, "utilisateurs/view_message.html", {
+        "message": message
+    })

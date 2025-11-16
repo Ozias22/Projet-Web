@@ -52,6 +52,13 @@
                         <li class="nav-item d-flex">
                             <a href="{% url 'deconnexion' %}"><i class="bi bi-box-arrow-in-right text-danger"></i></a>
                         </li>
+                        <li>
+                            <a href="{% url 'notifications' %}">Notifications
+                                {% if notif_count > 0 %}
+                                    <span class="badge">{{ notif_count }}</span>
+                                {% endif %}
+                            </a>
+                        </li>
                     </ul>
                     {% else %}
                     <div class="navbar-nav">

@@ -15,4 +15,6 @@ urlpatterns = [
     path('profil/', views.profil_view, name='profil'),
     path('accueil/', views.accueil, name='accueil'),
     path('profilPerfectMatch/', views.profil_perfectmatch_view, name='profilPerfectMatch'),
+     path("notifications/", views.notifications_view, name="notifications"),
+    path("message/<int:message_id>/", views.view_message, name="view_message"),
 ]
