@@ -2,7 +2,7 @@
 
 const  divProfils = document.getElementById("bloc_profils");
 
-function creerCardProfil(){
+function creerCardProfil(unProfil,imagesProfil){
         const container = document.createElement("div");
         container.classList.add("col-md-8");
 
@@ -11,7 +11,7 @@ function creerCardProfil(){
 
         // Image
         const img = document.createElement("img");
-        img.src = "../../static/images/Untitled.jpg";
+        img.src = imagesProfil[0];
         img.classList.add("card-img-top");
         img.alt = "image profil utilisateur";
         card.appendChild(img);
@@ -20,16 +20,16 @@ function creerCardProfil(){
         const cardBody1 = document.createElement("div");
         cardBody1.classList.add("card-body");
 
-        const title = document.createElement("h5");
-        title.classList.add("card-title", "fw-semibold");
-        title.textContent = "Ozias, 22";
+        const nom = document.createElement("h5");
+        nom.classList.add("card-title", "fw-semibold");
+        nom.textContent = unProfil.name;
 
-        const text = document.createElement("p");
-        text.classList.add("card-text");
-        text.textContent = "Some quick example text to build on the card title and make up the bulk of the card’s content.";
+        const bio = document.createElement("p");
+        bio.classList.add("card-text");
+        bio.textContent = unProfil.bio;
 
-        cardBody1.appendChild(title);
-        cardBody1.appendChild(text);
+        cardBody1.appendChild(nom);
+        cardBody1.appendChild(bio);
         card.appendChild(cardBody1);
 
         const ul = document.createElement("ul");
@@ -100,6 +100,20 @@ function creerCardProfil(){
         divProfils.appendChild(container);
 }
 
+function afficherProfils(){
+    let response = RecupereProfils()
+    let profils = response.values.profiles;
+    let imagesProfils = response.values.images;
+    var unProfil = profils.pop();
+    var imagesProfil = [];
+    for(let img of imagesProfils){
+        if(img.user_id === unProfil.user_id){
+            imagesProfil.push(img.image);
+        }
+    }
+    creerCardProfil(unProfil,imagesProfil);
+}
+
 async function RecupereProfils(){
     try{
         const response = await fetch('/api/obtenir_profil/');
@@ -107,8 +121,8 @@ async function RecupereProfils(){
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         console.log("Profiles retrieved successfully.");
-        const data = await response.json();
-        console.log(data);
+        const data = response.json();
+        return data;
     }
     catch(error){
         console.error("Error fetching profiles:", error);
@@ -117,9 +131,8 @@ async function RecupereProfils(){
 }
 
 function initialisation() {
-    creerCardProfil();
     console.log("Script loaded successfully.");
-    RecupereProfils();
+    afficherProfils();
 }
 
 window.addEventListener('DOMContentLoaded', initialisation);

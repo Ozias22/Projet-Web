@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import logout, authenticate, login
 from .models import User, UserProfile, ImagesUser,Match
+from django.core import serializers
+
 
 # Create your views here.
 
@@ -140,24 +142,20 @@ def profil_perfectmatch_view(request):
             "ImagesUser": imagesUser
         }
     )
-@login_required
+
 def obtenir_profil(request):
     user = request.user
     user_profile = UserProfile.objects.get(user=user)
-    matchs = Match.objects.filter(user1__user=user_profile)
-    utilisateurs_profiles = UserProfile.objects.filter(id__exclude=[match.user2.id for match in matchs if match.is_mutual])
-    # Filtres ici
+    matchs = Match.objects.filter(user1_id__user=user.id)
 
-    return JsonResponse({'user':user})
-    # Convertir les profils en dictionnaires
-    # return JsonResponse({
-    #     'profiles': [
-    #         {
-    #             'bio' : utilisateurs_profiles.bio,
-    #             'occupation': utilisateurs_profiles.occupation,
-    #             'Interets': [interest.name for interest in utilisateurs_profiles.interests.all()],
-    #         }]
-    # })
+    if matchs is not None:
+        profiles_non_valides = [i for i in matchs if i.is_mutual]
+        utilisateurs_profiles = UserProfile.objects.exclude(id__in=[profiles_non_valide.user2_id for profiles_non_valide in profiles_non_valides])
+        imagesUsers = ImagesUser.objects.filter(user__in=[utilisateur_profile.user for utilisateur_profile in utilisateurs_profiles])
+    else:
+        utilisateurs_profiles = UserProfile.objects.all()
+        imagesUsers = ImagesUser.objects.filter(user__in=[utilisateur_profile.user for utilisateur_profile in utilisateurs_profiles])
+    return JsonResponse({'profiles': serializers.serialize('json', utilisateurs_profiles),'Images':serializers.serialize('json', imagesUsers)}, safe=False)
 
 # @login_required
 # def profil_user_view(request, id):
