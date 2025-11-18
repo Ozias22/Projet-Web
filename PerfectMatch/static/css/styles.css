@@ -8,7 +8,25 @@
  * Copyright 2011-2023 The Bootstrap Authors
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
-.bg-pink-dark {
+ 
+.notif-popup {
+    display: none;
+    position: absolute;
+    right: 20px;
+    top: 60px;
+    background: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 250px;
+    max-height: 300px;
+    overflow-y: auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    z-index: 999;
+}
+
+
+ .bg-pink-dark {
     background-color: #c2185b !important;
     color: #fff;
 }

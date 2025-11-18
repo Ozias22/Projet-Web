@@ -146,27 +146,24 @@ def profil_perfectmatch_view(request):
 
     return render(request, "utilisateurs/profilePerfectMatch.html", {"form1": form1, "form2": form2, "ImagesUser": imagesUser})
 
+from django.http import JsonResponse
+
 @login_required
 def notifications_view(request):
-    user_p = UserProfile.objects.get(user=request.user)
+    # Récupère le profile du user connecté
+    profile = get_object_or_404(UserProfile, user=request.user)
 
-    unread_messages = Message.objects.filter(
-        receiver=user_p,
-        is_read=False
-    ).order_by('-timestamp')
+    unread_messages = Message.objects.filter(receiver=profile, is_read=False).order_by('-timestamp')
 
-    return render(request, "utilisateurs/notifications.html", {
-        "unread_messages": unread_messages
-    })
+    data = [
+        {
+            "id": msg.id,
+            "sender": msg.sender.user.username,
+            "content": msg.content,
+            "timestamp": msg.timestamp.strftime("%Y-%m-%d %H:%M")
+        }
+        for msg in unread_messages
+    ]
+    unread_messages.update(is_read=True)
 
-@login_required
-def view_message(request, message_id):
-    message = get_object_or_404(Message, id=message_id)
-
-    if request.user.Userprofile == message.receiver:
-        message.is_read = True
-        message.save()
-
-    return render(request, "utilisateurs/view_message.html", {
-        "message": message
-    })
+    return JsonResponse({"messages": data})
