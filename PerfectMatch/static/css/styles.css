@@ -8050,7 +8050,7 @@ textarea.form-control-lg {
   padding: 0 !important;
 }
 
-.p-1 {
+.p-1, footer {
   padding: 0.25rem !important;
 }
 
@@ -8480,7 +8480,7 @@ textarea.form-control-lg {
   color: rgba(var(--bs-black-rgb), var(--bs-text-opacity)) !important;
 }
 
-.text-white {
+.text-white, footer {
   --bs-text-opacity: 1;
   color: rgba(var(--bs-white-rgb), var(--bs-text-opacity)) !important;
 }
@@ -11981,6 +11981,12 @@ textarea.form-control-lg {
   }
 }
 /*** Début des styles personnalisés ***/
+footer {
+  bottom: 0;
+  background-color: #3D2F32;
+  margin-top: 3rem;
+}
+
 img {
   -o-object-fit: cover;
      object-fit: cover;
@@ -12024,4 +12030,82 @@ a {
 
 .chkbox {
   width: 15px;
+}
+
+.profile-avatar {
+  width: 310px;
+  height: 280px;
+  display: flex;
+  justify-content: center;
+}
+
+/* Card swipe animations */
+.card-stack {
+  position: relative;
+}
+
+.card-stack > .col-md-8 {
+  transition: transform 350ms cubic-bezier(0.22, 0.9, 0.32, 1), opacity 350ms ease;
+  will-change: transform, opacity;
+}
+
+.card-enter {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.card-in {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.swipe-right {
+  transform: translateX(120%);
+  opacity: 0;
+}
+
+.swipe-left {
+  transform: translateX(-120%);
+  opacity: 0;
+}
+
+.bloc-images {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+}
+
+.profile-card {
+  position: absolute;
+  transition: transform 0.45s cubic-bezier(0.22, 0.9, 0.32, 1), opacity 0.45s ease;
+  width: 300px;
+  height: 400px;
+  background: #CB6372;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Badge shown during swipe or after click */
+.swipe-badge {
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-weight: 700;
+  z-index: 40;
+  color: #fff;
+  opacity: 0.95;
+  pointer-events: none;
+  transition: transform 200ms ease, opacity 200ms ease;
+}
+
+.swipe-badge.liked {
+  background: rgba(15, 185, 80, 0.95);
+}
+
+.swipe-badge.disliked {
+  background: rgba(220, 40, 40, 0.95);
 }/*# sourceMappingURL=styles.css.map */

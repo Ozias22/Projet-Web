@@ -16,6 +16,7 @@ urlpatterns = [
     path('accueil/', views.accueil, name='accueil'),
     path('profilPerfectMatch/', views.profil_perfectmatch_view, name='profilPerfectMatch'),
     path('api/obtenir_profil/', views.obtenir_profil, name='obtenir_profil'),
+    path('api/action_like/', views.action_like, name='action_like'),
     # path('profilPerfectMatch/', views.profil_perfectmatch_view, name='profilPerfectMatch'),
     # path('ajout-image/', views.ajout_image, name='ajout-image'),
 ]

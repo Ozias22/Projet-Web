@@ -7,6 +7,8 @@ from django.contrib import messages
 from django.contrib.auth import logout, authenticate, login
 from .models import User, UserProfile, ImagesUser,Match
 from django.core import serializers
+import json
+from django.views.decorators.csrf import csrf_exempt
 
 
 # Create your views here.
@@ -155,7 +157,84 @@ def obtenir_profil(request):
     else:
         utilisateurs_profiles = UserProfile.objects.all()
         imagesUsers = ImagesUser.objects.filter(user__in=[utilisateur_profile.user for utilisateur_profile in utilisateurs_profiles])
-    return JsonResponse({'profiles': serializers.serialize('json', utilisateurs_profiles),'Images':serializers.serialize('json', imagesUsers)}, safe=False)
+    # return JsonResponse({'profiles': serializers.serialize('json', utilisateurs_profiles),'Images':serializers.serialize('json', imagesUsers)}, safe=False)
+
+    # Construire une liste de profils avec l'objet user inclus (dictionnaire sérialisable)
+    profils_serialises = []
+    for up in utilisateurs_profiles:
+        user = up.user
+        profils_serialises.append({
+            'id': up.id,
+            'user': {
+                'id': user.id,
+                'username': user.username,
+                'email': user.email,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'birthday': user.birthday.strftime('%Y-%m-%d') if user.birthday else None,
+                'country': user.country,
+                'city': user.city,
+                'photo_profil': f"/media/{user.photo_profil.name}",
+            },
+            'gender': up.gender,
+            'occupation': up.occupation,
+            'bio': up.bio,
+            'interests': [i.name for i in up.interests.all()],
+        })
+
+    imagesUsers = list(imagesUsers.values())
+    for img in imagesUsers:
+        img['image'] = f"/media/{img['image']}"
+
+    return JsonResponse({'profiles': profils_serialises, 'Images': imagesUsers})
+
+
+@csrf_exempt
+def action_like(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
+
+    try:
+        donnees = json.loads(request.body)
+    except Exception:
+        return JsonResponse({'error': 'JSON Invalide'}, status=400)
+
+    target_user_id = donnees.get('user_id')
+    action = donnees.get('action')
+
+    if not target_user_id or not action:
+        return JsonResponse({'error': 'Champs manquants'}, status=400)
+
+
+    if not request.user or not request.user.is_authenticated:
+        return JsonResponse({'error': 'Authentication requise'}, status=401)
+
+    try:
+        target_user = User.objects.get(id=target_user_id)
+    except User.DoesNotExist:
+        return JsonResponse({'error': 'Utilisateur inexistant'}, status=404)
+
+    try:
+        profil_actuel = UserProfile.objects.get(user=request.user)
+        profil_recherche = UserProfile.objects.get(user=target_user)
+    except UserProfile.DoesNotExist:
+        return JsonResponse({'error': 'Profil utilisateur manquant'}, status=404)
+
+    if action == 'like':
+        match = Match.objects.get_or_create(user1=profil_actuel, user2=profil_recherche)
+        # si l'autre a déjà liké, marquer mutuel
+        reverse = Match.objects.filter(user1=profil_recherche, user2=profil_actuel).first()
+        if reverse:
+            match.is_mutual = True
+            reverse.is_mutual = True
+            match.save()
+            reverse.save()
+            return JsonResponse({'result': 'match', 'mutual': True})
+        return JsonResponse({'result': 'liked', 'mutual': False})
+    elif action == 'dislike':
+        return JsonResponse({'result': 'disliked'})
+    else:
+        return JsonResponse({'error': 'Unknown action'}, status=400)
 
 # @login_required
 # def profil_user_view(request, id):
