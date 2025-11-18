@@ -19,5 +19,8 @@ urlpatterns = [
     # path('profilPerfectMatch/', views.profil_perfectmatch_view, name='profilPerfectMatch'),
     # path('ajout-image/', views.ajout_image, name='ajout-image'),
     path('discussions/', views.discussions, name='discussions'),
-    
+    #API
+    path('api/discussions/', views.get_discussions, name='get_discussions'),
+    path('api/messages/<int:user_id>/', views.get_messages, name='get_messages'),
 ]
+

@@ -174,58 +174,59 @@ def obtenir_profil(request):
 #         "utilisateurs/profilePerfectMatch.html",
 #         {"form1": form1, "form2": form2, "ImagesUser": imagesUser}
 #     )
-
+@login_required
 def discussions(request):
-    user = request.user
-    # discussions = messages.objects.all().distinct().filter(receiver_id=user)
-    # messages = m
     return render(request,"utilisateurs/discussions.html")
 
-async def get_discussions(request):
-    """Retourne les discussions selon l'ordre du dernier message,"""
-    current_user = request.user
+@login_required
+def get_discussions(request):
+    current_profile = request.user.profile
+
     # Obtient les utilisateurs qui on interagis avec l'utilisateur courant
-    discussions = Message.objects.filter(Q(sender=current_user) | Q(receiver=current_user)) \
-        .values_list('sender', 'receiver') \
-        .distinct()
-        
+    pairs = Message.objects.filter(
+        Q(sender=current_profile) | Q(receiver=current_profile)
+    ).values_list("sender_id", "receiver_id").distinct()
+
+    discussion_profile_ids = set()
     # Filtre les utilisateurs en contact pour l'affichage des discussions
-    discussions_ids = []
-    for sender, recipient in discussions:
-        if sender != current_user.id:
-            discussions_ids.push(sender)
-        if recipient != current_user.id:
-            discussions_ids.push(recipient)
-            
+    for sender_id, receiver_id in pairs:
+        if sender_id != current_profile.id:
+            discussion_profile_ids.add(sender_id)
+        if receiver_id != current_profile.id:
+            discussion_profile_ids.add(receiver_id)
+
     # Obtentions des donnes autres utilisateurs
-    otherUsers = User.objects.filter(id__in=discussions_ids)
-    
+    other_users = User.objects.filter(profile__id__in=discussion_profile_ids)
+
     data = [
         {
-            "id": otherUser.id,
-            "username": otherUser.username,
+            "id": user.id,
+            "username": user.username,
         }
-        for otherUser in otherUsers
+        for user in other_users
     ]
-    
+
     return JsonResponse(data, safe=False)
 
+@login_required
+@login_required
+def get_messages(request, user_id):
+    current_profile = request.user.profile
 
-def get_messages(request, p_other_user_id):
-    current_user = request.user
     messages = Message.objects.filter(
-        Q(sender=current_user, receiver=p_other_user_id) |
-        Q(sender=p_other_user_id, receiver=current_user)
+        Q(sender=current_profile, receiver__id=user_id) |
+        Q(sender__id=user_id, receiver=current_profile)
     ).order_by('timestamp')
 
-    data = [
-        {
-            "sender": msg.sender.username,
-            "receiver": msg.receiver.username,
+    data = []
+    for msg in messages:
+        data.append({
+            "id": msg.id,
+            "sender": msg.sender.user.username,
+            "receiver": msg.receiver.user.username,
             "content": msg.content,
-            "timestamp": msg.timestamp.strftime("%Y-%m-%d %H:%M")
-        }
-        for msg in messages
-    ]
+            "timestamp": msg.timestamp.strftime("%Y-%m-%d %H:%M"),
+            "is_self": (msg.sender == current_profile)
+        })
 
     return JsonResponse(data, safe=False)
