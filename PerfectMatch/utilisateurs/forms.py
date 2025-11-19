@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import User, Abonement
+from .models import User, Abonement, UserProfile,ImagesUser
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 import datetime
@@ -61,7 +61,7 @@ def validate_text(value):
     if not re.match(r'^[A-Za-zÀ-ÿ \'-]+$', value):
         raise ValidationError("Le champ ne doit contenir que des lettres, espaces, apostrophes ou tirets.")
 
-        
+
 
 class InscriptionForm(UserCreationForm):
     """Permet à un nouvel utilisateur de s'incrire et d'avoir accès au site web"""
@@ -207,7 +207,7 @@ class InscriptionForm(UserCreationForm):
             )
 
         return password2
-    
+
     def clean_birthday(self):
         birthday = self.cleaned_data.get("birthday")
         if birthday is None:
@@ -361,122 +361,153 @@ class ProfilForm(forms.ModelForm):
             )
             self.fields['age'].initial = age
 
+class userProfileForm(forms.ModelForm):
+    new_interest = forms.CharField(
+        required=False,
+        label="Ajouter un intérêt",
+        help_text="Tape un intérêt qui n’est pas dans la liste."
+        )
+
+    class Meta:
+        model = UserProfile
+        fields = ['gender', 'occupation', 'bio', 'interests', 'new_interest']
+        widgets = {
+            'gender': forms.Select(attrs={'class': 'form-control'}),
+            'occupation': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Occupation'}),
+            'bio': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Bio', 'rows': 4}),
+            'interests': forms.CheckboxSelectMultiple(),
+        }
+        error_messages = {
+            'gender': {
+                'required': "Veuillez sélectionner un genre."
+            },
+            'occupation': {
+                'required': "L'occupation est obligatoire."
+            }
+        }
+        labels = {
+            'gender': "Genre",
+            'occupation': "Occupation",
+            'bio': "Bio",
+            'interests': "Centres d'intérêt",
+        }
+    def clean_occupation(self):
+        occupation = self.cleaned_data.get("occupation")
+        if not occupation:
+            raise ValidationError("L'occupation est obligatoire.")
+        return occupation
+    def clean_bio(self):
+        bio = self.cleaned_data.get("bio")
+        if bio and len(bio) > 500:
+            raise ValidationError("La bio ne doit pas dépasser 500 caractères.")
+        return bio
+    def clean_interests(self):
+        interests = self.cleaned_data.get("interests")
+        return interests
+    def save(self, commit=True, user=None):
+        profile = super().save(commit=False)
+        if user is not None:
+            profile.user = user
+        if commit:
+            profile.save()
+            self.save_m2m()
+        return profile
 
 
+class ImagesUserForm(forms.ModelForm):
+    class Meta:
+        model = ImagesUser
+        fields = ['image']
+        widgets = {
+            'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+        }
+        labels = {
+            'image': "Ajouter une image",
+        }
 
-# class AbonementForm(forms.Form):
-#     """Permet à un utilisateur de choisir un abonnement"""
-#     ABONNEMENT_CHOICES = [
-#         ('mensuel', 'Abonnement Mensuel - 9.99€'),
-#         ('trimestriel', 'Abonnement Trimestriel - 24.99€'),
-#         ('annuel', 'Abonnement Annuel - 79.99€'),
-#     ]
-#     nom = forms.CharField(
-#         label="Nom",
-#         max_length=30,
-#         required=True,
-#         widget=forms.TextInput(attrs={
-#             'class': 'form-control'}))
-#     prenom = forms.CharField(
-#         label="Prénom",
-#         max_length=30,
-#         required=True,
-#         widget=forms.TextInput(attrs={
-#             'class': 'form-control'}))
-#     email = forms.EmailField(
-#         label="Email",
-#         required=True,
-#         widget=forms.EmailInput(attrs={
-#             'class': 'form-control'}))
+    def clean_image(self):
+        image = self.cleaned_data.get("image")
+        return image
 
-#     abonnement = forms.CharField(
-#         choices=ABONNEMENT_CHOICES,
-#         widget=forms.RadioSelect(attrs={
-#             'class': 'form-control'
-#         }),
-#         error_messages={
-#             'required': "Veuillez sélectionner un type d'abonnement."
-#         }
-#     )
-#     numero_carte = forms.CharField(
-#         label="Numéro de carte",
-#         max_length=16,
-#         required=True,
-#         widget=forms.TextInput(attrs={
-#             'class': 'form-control',
-#             'placeholder': '1234 5678 9012 3456'
-#         }),
-#         error_messages={
-#             'required': "Le numéro de carte est obligatoire.",
-#         }
-#     )
-#     date_expiration = forms.DateField(
-#         label="Date d'expiration",
-#         required=True,
-#         widget=forms.DateInput(attrs={
-#             'class': 'form-control'}),
-#         error_messages={
-#             'required': "La date d'expiration est obligatoire."
-#         })
-#     cvv = forms.CharField(
-#         label="CVV",
-#         max_length=4,
-#         required=True,
-#         widget=forms.TextInput(attrs={
-#             'class': 'form-control',
-#             'placeholder': '123'
-#         }),
-#         error_messages={
-#             'required': "Le CVV est obligatoire.",
-#         })
-
-#     def clean_numero_carte(self):
-#         numero_carte = self.cleaned_data.get("numero_carte")
-#         if not numero_carte.isdigit() or len(numero_carte) != 16:
-#             raise ValidationError("Le numéro de carte doit contenir 16 chiffres.")
-#         return numero_carte
-#     def clean_cvv(self):
-#         cvv = self.cleaned_data.get("cvv")
-#         if not cvv.isdigit() or len(cvv) not in [3, 4]:
-#             raise ValidationError("Le CVV doit contenir 3 ou 4 chiffres.")
-#         return cvv
-#     def clean_date_expiration(self):
-#         date_expiration = self.cleaned_data.get("date_expiration")
-#         if date_expiration is None:
-#             raise ValidationError("La date d'expiration est obligatoire.")
-#         if date_expiration < datetime.date.today():
-#             raise ValidationError("La date d'expiration ne peut pas être dans le passé.")
-#         return date_expiration
-
-#     def save(self):
-#         # Logique pour traiter le paiement et enregistrer l'abonnement
-#         pass
+    def save(self, commit=True, user=None):
+        image_instance = super().save(commit=False)
+        if user is not None:
+            image_instance.user = user
+        if commit:
+            image_instance.save()
+        return image_instance
 
 
 
 class TestCompatibiliteForm(forms.Form):
-    aime_voyager = forms.ChoiceField(
-        label="Aimes-tu voyager ?",
+    optimiste = forms.ChoiceField(
+        label="Te considères-tu optimiste ?",
         choices=[("oui", "Oui"), ("non", "Non")],
-        widget=forms.RadioSelect
+        widget=forms.RadioSelect,
+        required=False
     )
-    animal = forms.ChoiceField(
-        label="Aimes-tu les animaux ?",
+    sociable = forms.ChoiceField(
+        label="Es-tu plutôt sociable ?",
         choices=[("oui", "Oui"), ("non", "Non")],
-        widget=forms.RadioSelect
+        widget=forms.RadioSelect,
+        required=False
     )
-    sport = forms.ChoiceField(
-        label="Fais-tu souvent du sport ?",
+    organise = forms.ChoiceField(
+        label="Aimes-tu que les choses soient bien organisées ?",
         choices=[("oui", "Oui"), ("non", "Non")],
-        widget=forms.RadioSelect
+        widget=forms.RadioSelect,
+        required=False
     )
-    fumeur = forms.ChoiceField(
-        label="Es-tu fumeur/fumeuse ?",
+    patience = forms.ChoiceField(
+        label="Es-tu patient(e) dans les situations difficiles ?",
         choices=[("oui", "Oui"), ("non", "Non")],
-        widget=forms.RadioSelect
+        widget=forms.RadioSelect,
+        required=False
     )
-    musique = forms.ChoiceField(
-        label="La musique est-elle importante pour toi ?",
+    aventureux = forms.ChoiceField(
+        label="Aimes-tu tenter de nouvelles expériences ?",
         choices=[("oui", "Oui"), ("non", "Non")],
-        widget=forms.RadioSelect
+        widget=forms.RadioSelect,
+        required=False
     )
+    empathique = forms.ChoiceField(
+        label="Te considères-tu empathique envers les autres ?",
+        choices=[("oui", "Oui"), ("non", "Non")],
+        widget=forms.RadioSelect,
+        required=False
+    )
+    humour = forms.ChoiceField(
+        label="L'humour est-il important pour toi ?",
+        choices=[("oui", "Oui"), ("non", "Non")],
+        widget=forms.RadioSelect,
+        required=False
+    )
+    sportif = forms.ChoiceField(
+        label="Aimes-tu faire du sport régulièrement ?",
+        choices=[("oui", "Oui"), ("non", "Non")],
+        widget=forms.RadioSelect,
+        required=False
+    )
+    spontaneite = forms.ChoiceField(
+        label="Es-tu spontané(e) dans tes décisions ?",
+        choices=[("oui", "Oui"), ("non", "Non")],
+        widget=forms.RadioSelect,
+        required=False
+    )
+    lecture = forms.ChoiceField(
+        label="Aimes-tu passer du temps à lire ou apprendre de nouvelles choses ?",
+        choices=[("oui", "Oui"), ("non", "Non")],
+        widget=forms.RadioSelect,
+        required=False
+    )
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        for field_name in self.fields:
+            if not cleaned_data.get(field_name):
+                raise forms.ValidationError(
+                    "Veuillez répondre à toutes les questions avant de soumettre le test."
+                )
+                
+        return cleaned_data

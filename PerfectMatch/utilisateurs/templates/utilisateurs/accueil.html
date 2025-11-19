@@ -1,23 +1,83 @@
-{% extends 'utilisateurs/_base_accueil.html' %}
-{% load static %}
+{% extends "utilisateurs/_modele.html"%}
 
 {% block title %}
-  PerfectMatch - Accueil
+PerfectMatch - Accueil
 {% endblock %}
 
-{% block script %}
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script>
-{% endblock %}
 
-{% block main %}
-  <div class="container d-flex justify-content-center">
-    <div class="card text-center" style="width: 18rem;">
-      <img src="{% static 'utilisateurs/images/happy.png' %}" class="card-img-top" alt="..." />
-      <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
-        <a href="#" class="btn btn-primary">Go somewhere</a>
-      </div>
+{% block main%}
+<div class="row mt-5">
+    <div class="aside-accueil">
+        <div>
+            <h4 class="mb-4">Bienvenue sur PerfectMatch</h4>
+            <p class="lead">Découvrez des profils qui vous correspondent et commencez votre aventure dès aujourd'hui !
+            </p>
+
+            <div class="mt-5">
+                <div class="d-flex w-50 justify-content-between survol">
+                    <i class="bi bi-person text-secondary"></i>
+                    <a href="{% url 'profilPerfectMatch' %}" class="mb-3 w-100"> Mon Profil PerfectMatch</a>
+                </div>
+                <div class="d-flex justify-content-between survol">
+                    <i class="bi bi-pencil-square text-secondary"></i>
+                    <a href="{% url 'profil' %}" class="mb-3 w-75"> Modifier Profil</a>
+                </div>
+                <div class="d-flex w-50 justify-content-between survol">
+                    <i class="bi bi-credit-card-2-front text-secondary"></i>
+                    <a href="{% url 'valider_abonement' %}" class="mb-3 w-75">Abonnement</a>
+                </div>
+
+
+            </div>
+        </div>
     </div>
-  </div>
+    <div class="col-md-8 mx-auto">
+        <div class="d-flex justify-content-between mx-4">
+            <h2 class="mb-4 text-center">Vos Matchs</h2>
+            <div>
+                <i class="bi bi-funnel fs-4"></i>
+                Filtrer
+            </div>
+        </div>
+        <div class="justify-content-center row" id="matchs">
+            <div class="col-md-8">
+                <div class="card w-100 mb-4">
+                    <img src="../../static/images/Untitled.jpg" class="card-img-top" alt="image profil utilisateur">
+                    <div class="card-body">
+                        <h5 class="card-title fw-semibold">Ozias, 22</h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of
+                            the card’s content.</p>
+                    </div>
+                    <ul class="w-25 alignement-gauche">
+                        <div class="d-flex justify-content-between mb-2">
+                            <i class="bi bi-geo-alt"></i>
+                            <li class="list-group-item">Localisation</li>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <i class="bi bi-briefcase"></i>
+                            <li class="list-group-item">Job</li>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <i class="bi bi-geo-alt"></i>
+                            <li class="list-group-item">An item</li>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <i class="bi bi-geo-alt"></i>
+                            <li class="list-group-item">An item</li>
+                        </div>
+                    </ul>
+                    <div class="d-flex justify-content-between mx-4 w-75">
+                        <div class="fs-1 text-dark mx-2" id="!jaime"><i class="bi bi-x-lg"></i></div>
+                        <div class="fs-1 text-primary" id="jaime"><i class="bi bi-heart-fill"></i></div>
+                    </div>
+                    <div class="card-body">
+                        <a href="#" class="card-link">Card link</a>
+                        <a href="#" class="card-link">Another link</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
 {% endblock %}
