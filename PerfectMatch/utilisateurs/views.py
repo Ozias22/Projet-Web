@@ -2,6 +2,7 @@ import json
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib import messages
 from django.http import JsonResponse
+from django.db.models import Q
 from .forms import InscriptionForm, AbonnementForm,ConnectionForm,ProfilForm,userProfileForm,ImagesUserForm,TestCompatibiliteForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -201,26 +202,25 @@ def profil_perfectmatch_view(request):
             "ImagesUser": imagesUser
         }
     )
-
 @login_required
 def obtenir_profil(request):
     user = request.user
     user_profile = UserProfile.objects.get(user=user)
- 
+
     # PARAMETRES FILTRES
     gender = request.GET.get("gender")
     city = request.GET.get("city")
     country = request.GET.get("country")
     min_age = request.GET.get("min_age")
     max_age = request.GET.get("max_age")
- 
+
     # Parse en int des ages
     if min_age:
         min_age = int(min_age)
     if max_age:
         max_age = int(max_age)
- 
- 
+
+
     matchs = Match.objects.filter(user1_id__user=user.id)
     if matchs is not None:
         profiles_non_valides = []
@@ -233,9 +233,9 @@ def obtenir_profil(request):
         for profil in utilisateurs_profiles:
             if profil.user_id:  # évite les profils orphelins
                 users.append(profil.user)
- 
+
         imagesUsers = ImagesUser.objects.filter(user__in=users)
- 
+
     else:
         utilisateurs_profiles = UserProfile.objects.exclude(user=user)
         imagesUsers = ImagesUser.objects.filter(user__in=[utilisateur_profile.user for utilisateur_profile in utilisateurs_profiles])
@@ -327,18 +327,16 @@ def action_like(request):
         return JsonResponse({'error': 'Profil utilisateur manquant'}, status=404)
 
     if action == 'like':
-        match = Match.objects.get_or_create(user1=profil_actuel, user2=profil_recherche)
-        print(profil_actuel, profil_recherche)
-        print("Match créé ou récupéré:", match.is_mutual)
+        match = Match.objects.create(user1=profil_actuel, user2=profil_recherche)
+        print("Match créé ou récupéré:", match)
         # si l'autre a déjà liké, marquer mutuel
         reverse = Match.objects.filter(user1=profil_recherche, user2=profil_actuel).first()
-        print("Match reverse trouvé:", reverse)
         if reverse:
             match.is_mutual = 1
             reverse.is_mutual = 1
             match.save()
             reverse.save()
-            return JsonResponse({'result': 'liked', 'mutual': 1})
+            return JsonResponse({'result': 'liked', 'mutual': 1,'utilisateur': target_user.username,'match': match.id})
         return JsonResponse({'result': 'liked', 'mutual': 0})
     elif action == 'dislike':
         return JsonResponse({'result': 'disliked'})
@@ -398,14 +396,16 @@ def get_discussions(request):
 @login_required
 def get_messages(request, user_id):
     current_profile = request.user.profile
+    sender_profile = get_object_or_404(UserProfile, user__id=user_id)
 
-    messages = Message.objects.filter(
-        Q(sender=current_profile, receiver__id=user_id) |
-        Q(sender__id=user_id, receiver=current_profile)
+    print(sender_profile)
+    messages_list = Message.objects.filter(
+        Q(receiver_id=current_profile.id, sender_id=sender_profile.id) |
+        Q(receiver_id=sender_profile.id, sender_id=current_profile.id)
     ).order_by('timestamp')
 
     data = []
-    for msg in messages:
+    for msg in messages_list:
         data.append({
             "id": msg.id,
             "sender": msg.sender.user.username,
@@ -436,4 +436,36 @@ def notifications_view(request):
     unread_messages.update(is_read=True)
 
     return JsonResponse({"messages": data})
+
+@csrf_exempt
+@login_required
+def envoyer_message(request,receiver_Id):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
+
+    try:
+        donnees = json.loads(request.body)
+    except Exception:
+        return JsonResponse({'error': 'JSON Invalide'}, status=400)
+
+    content = donnees.get('content')
+
+    if not receiver_Id or not content:
+        return JsonResponse({'error': 'Champs manquants'}, status=400)
+    try:
+        receiver_profile = UserProfile.objects.get(user__id=receiver_Id)
+    except UserProfile.DoesNotExist:
+        return JsonResponse({'error': 'Profil utilisateur manquant'}, status=404)
+    sender_profile = request.user.profile
+    message = Message.objects.create(
+        sender=sender_profile,
+        receiver=receiver_profile,
+        content=content
+    )
+    if message:
+        message.save()
+        return JsonResponse({'result': 'Message envoyé avec succès'})
+    else:
+        return JsonResponse({'error': 'Échec de l\'envoi du message'}, status=500)
+
 

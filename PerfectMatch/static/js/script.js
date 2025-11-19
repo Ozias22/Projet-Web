@@ -10,6 +10,8 @@ let isAnimating;
 divProfils.classList.add('card-stack');
 const imgDefaut = '/media/images/profiles/default.jpg';
 
+
+
 function CalculerAge(unedate){
     let today = new Date();
     let birthDate = new Date(unedate);
@@ -274,22 +276,31 @@ function creerModalMatch(contenu,match_id){
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-            <button type="button" id="btnModalTest" class="btn btn-primary">Test de Compatibilité</button>
+            <a href="/compatibilite/${match_id}/" class="btn btn-success">Test de Compatibilité</a>
         </div>
         </div>
     </div>`;
 
-    btnModalTest = modal.querySelector('#btnModalTest');
-    btnModalTest.addEventListener('click', testCompatibilite(match_id));
+    // let btnModalTest = document.getElementById('btnModalTest');
+    // btnModalTest.addEventListener('click', testCompatibilite(match_id));
     document.body.appendChild(modal);
 
 }
 
+function testCompatibilite(match_id){
+    fetch(`/api/compatibilite/${match_id}/`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: 'param1=valeur1&param2=valeur2'
+    });
+}
 function gestionInteractions(data){
     if (data.result === 'liked') {
         if (data.mutual) {
             // Afficher un modal ou une notification de "match"
-            contenu = `Félicitations ! ${data.utilisateur} vous aime aussi!, vérifiez si vous êtes compatibles en cliquant sur le bouton ci-dessous.`;
+            let contenu = `Félicitations ! ${data.utilisateur} vous aime aussi!, vérifiez si vous êtes compatibles en cliquant sur le bouton ci-dessous.`;
             creerModalMatch(contenu,data.match);
             const myModal = new bootstrap.Modal(document.getElementById('myModal'));
             myModal.show();
@@ -298,7 +309,7 @@ function gestionInteractions(data){
 }
 
 function testCompatibilite(match_id){
-    fetch(`api/compatibilite/${match_id}/`, {
+    fetch(`/api/compatibilite/${match_id}/`, {
     method: 'GET',
     headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
@@ -370,10 +381,38 @@ function initialisation() {
     console.log("Script loaded successfully.");
     DefinirDonnees().then(afficherProfils);
     supprimerImage();
-    // afficherProfils();
+    // afficherProfils()
+    applyFilters();
 }
 
 window.addEventListener('DOMContentLoaded', initialisation);
+function applyFilters() {
+    const filterForm = document.getElementById("filter-panel");
+    const applyBtn = document.getElementById("apply-filters");
+
+    if (filterForm) {
+        filterForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            console.log("Applicage des filtres...");
+
+            const gender = document.getElementById("filter-gender").value;
+            const country = document.getElementById("filter-country").value;
+            const city = document.getElementById("filter-city").value;
+            const minAge = document.getElementById("filter-age-min").value;
+            const maxAge = document.getElementById("filter-age-max").value;
+
+            applyFilters({
+                gender,
+                country,
+                city,
+                minAge,
+                maxAge
+            });
+        });
+    }
+}
+
 
 function supprimerImage() {
     const buttons = document.querySelectorAll('.btn-supprimer-image');
@@ -442,7 +481,7 @@ function toggleNotifications() {
                             <strong>${msg.sender}</strong><br>
                             ${msg.content}<br>
                             <small>${msg.timestamp}</small><br>
-                            <a href="/messages/${msg.id}/" class="btn btn-sm btn-success mt-1">Voir</a>
+                            <a href="/discussions/" class="btn btn-sm btn-success mt-1">Voir</a>
                         </div>
                     `;
                 });
