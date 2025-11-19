@@ -227,7 +227,7 @@ class InscriptionForm(UserCreationForm):
         if commit:
             user.save()
         return user
-    
+
 User = get_user_model()
 
 class ProfilForm(forms.ModelForm):
@@ -236,7 +236,7 @@ class ProfilForm(forms.ModelForm):
         required=False,
         widget=forms.NumberInput(attrs={'class': 'form-control', 'readonly': 'readonly'})
     )
- 
+
     class Meta:
         model = User
         fields = [
@@ -259,7 +259,7 @@ class ProfilForm(forms.ModelForm):
             'country': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
         }
- 
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.instance and self.instance.birthday:
@@ -276,7 +276,7 @@ class AbonnementForm(forms.ModelForm):
         model = Abonement
         fields = ['type_abonement', 'card_number', 'expiration_date','cvv']
         widgets = {
-            'type_abonnement': forms.Select(attrs={'class': 'form-control'}),
+            'type_abonnement': forms.HiddenInput(),
             'card_number': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '1234 5678 9012 3456'}),
             'expiration_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'cvv': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '123'}),
@@ -509,5 +509,5 @@ class TestCompatibiliteForm(forms.Form):
                 raise forms.ValidationError(
                     "Veuillez répondre à toutes les questions avant de soumettre le test."
                 )
-                
+
         return cleaned_data

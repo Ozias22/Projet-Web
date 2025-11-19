@@ -67,11 +67,11 @@ PerfectMatch - Mon Profil PerfectMatch
                         </div>
                         <div class="mb-4">
                             <label for="id_occupation" class="form-label fw-semibold">Occupation</label>
-                            <input type="text" 
-                                   name="{{ form1.occupation.name }}" 
-                                   id="id_occupation" 
-                                   class="form-control" 
-                                   value="{{ form1.occupation.value|default_if_none:'' }}" 
+                            <input type="text"
+                                   name="{{ form1.occupation.name }}"
+                                   id="id_occupation"
+                                   class="form-control"
+                                   value="{{ form1.occupation.value|default_if_none:'' }}"
                                    placeholder="Occupation">
                         </div>
 
@@ -90,8 +90,8 @@ PerfectMatch - Mon Profil PerfectMatch
                         {% for image in ImagesUser %}
                             <div class="col-6 col-md-3 mb-3 text-center" id="image-{{ image.id }}">
                                 <a href="{{ image.image.url }}" target="_blank">
-                                    <img src="{{ image.image.url }}" 
-                                        alt="Image utilisateur" 
+                                    <img src="{{ image.image.url }}"
+                                        alt="Image utilisateur"
                                         class="img-fluid rounded shadow-sm border border-secondary"
                                         style="width: 200px; height: 200px; object-fit: cover;">
                                 </a>

@@ -1,7 +1,7 @@
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from . import views 
+from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -18,4 +18,7 @@ urlpatterns = [
     path("mes-matchs/", views.mes_matchs, name="mes_matchs"),
     path('profil/<int:id>/', views.profil_user_view, name='profil'),
     path('profilPerfectMatch/supprimer-image-ajax/', views.supprimer_image_ajax, name='supprimer_image_ajax'),
+    path('api/obtenir_profil/', views.obtenir_profil, name='obtenir_profil'),
+    # path('profilPerfectMatch/', views.profil_perfectmatch_view, name='profilPerfectMatch'),
+    # path('ajout-image/', views.ajout_image, name='ajout-image'),
 ]
