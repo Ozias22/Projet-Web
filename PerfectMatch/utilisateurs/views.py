@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import logout, authenticate, login
 from .models import User, UserProfile, ImagesUser, Compatibilite, Message
+from django.http import JsonResponse
 
 def index(request):
     return redirect("connexion")
@@ -146,15 +147,13 @@ def profil_perfectmatch_view(request):
 
     return render(request, "utilisateurs/profilePerfectMatch.html", {"form1": form1, "form2": form2, "ImagesUser": imagesUser})
 
-from django.http import JsonResponse
-
 @login_required
 def notifications_view(request):
-    # Récupère le profile du user connecté
+   
     profile = get_object_or_404(UserProfile, user=request.user)
-
+ 
     unread_messages = Message.objects.filter(receiver=profile, is_read=False).order_by('-timestamp')
-
+ 
     data = [
         {
             "id": msg.id,
@@ -165,5 +164,6 @@ def notifications_view(request):
         for msg in unread_messages
     ]
     unread_messages.update(is_read=True)
-
+ 
     return JsonResponse({"messages": data})
+

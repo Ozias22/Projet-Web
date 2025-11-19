@@ -50,25 +50,26 @@
                         <a class="nav-link text-white" href="#">Mon compte</a>
                     </li>
                 </ul>
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item d-flex">
-                        <a href="{% url 'deconnexion' %}"><i class="bi bi-box-arrow-in-right text-danger"></i></a>
+                <ul class="navbar-nav ms-auto d-flex flex-row align-items-center">
+                    <li class="nav-item text-center mx-2">
+                        <a href="{% url 'deconnexion' %}" class="nav-link text-decoration-none">
+                            <i class="bi bi-box-arrow-in-right fs-4 text-danger"></i><br>
+                            <small class="text-white">Déconnexion</small>
+                        </a>
                     </li>
-                    <li class="nav-item">
-    <a class="nav-link position-relative" href="javascript:void(0);" onclick="toggleNotifications()">
+                    
+                    <li class="nav-item text-center mx-2">
+                        <a class="nav-link position-relative text-decoration-none" onclick="toggleNotifications()">
+                            <i class="bi bi-bell fs-4 text-white"></i><br>
+                            <small class="text-white">Notifications</small>
 
-        <!-- Icône cloche -->
-        <i class="bi bi-bell fs-4 text-white"></i>
-
-        <!-- Badge rouge -->
-        {% if notif_count > 0 %}
-        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-            {{ notif_count }}
-        </span>
-        {% endif %}
-    </a>
-</li>
-
+                            {% if notif_count > 0 %}
+                            <span class="badge bg-danger notif-badge">
+                                {{ notif_count }}
+                            </span>
+                            {% endif %}
+                        </a>
+                    </li>
                 </ul>
 
                 {% else %}
@@ -82,9 +83,8 @@
             </div>
         </div>
     </nav>
-   <div id="notif-popup" class="notif-popup"></div>
+    <div id="notif-popup"></div>
 </header>
-
     <main class="mb-4">
         {%block main%}{%endblock main%}
     </main>
