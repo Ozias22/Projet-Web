@@ -1,7 +1,7 @@
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from . import views # Importe le fichier views depuis le dossier courant
+from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -15,8 +15,14 @@ urlpatterns = [
     path('profil/', views.profil_view, name='profil'),
     path('accueil/', views.accueil, name='accueil'),
     path('profilPerfectMatch/', views.profil_perfectmatch_view, name='profilPerfectMatch'),
+    path("notifications/", views.notifications_view, name="notifications"),
     path('api/obtenir_profil/', views.obtenir_profil, name='obtenir_profil'),
     path('api/action_like/', views.action_like, name='action_like'),
     # path('profilPerfectMatch/', views.profil_perfectmatch_view, name='profilPerfectMatch'),
     # path('ajout-image/', views.ajout_image, name='ajout-image'),
+    path('discussions/', views.discussions, name='discussions'),
+    #API
+    path('api/discussions/', views.get_discussions, name='get_discussions'),
+    path('api/messages/<int:user_id>/', views.get_messages, name='get_messages'),
 ]
+
