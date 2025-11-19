@@ -381,12 +381,12 @@ function initialisation() {
     console.log("Script loaded successfully.");
     DefinirDonnees().then(afficherProfils);
     supprimerImage();
-    // afficherProfils();
+    // afficherProfils()
+    applyFilters();
 }
 
 window.addEventListener('DOMContentLoaded', initialisation);
-document.addEventListener("DOMContentLoaded", () => {
-
+function applyFilters() {
     const filterForm = document.getElementById("filter-panel");
     const applyBtn = document.getElementById("apply-filters");
 
@@ -411,7 +411,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
     }
-});
+}
 
 
 function supprimerImage() {
