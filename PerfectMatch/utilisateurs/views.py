@@ -100,21 +100,18 @@ def profil_view(request):
 
 @login_required
 def modifier_view(request):
-    """Vue pour modifier le profil de l'utilisateur connecté"""
     user = request.user
-
     if request.method == "POST":
-        form = ProfilForm(request.POST, request.FILES, instance=user)
+        form = ProfilForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
-            messages.success(request, "Votre profil a été mis à jour avec succès")
-            return redirect("profil")
+            messages.success(request, "✅ Votre profil a été mis à jour avec succès !")
+            return redirect('modif_profil') 
         else:
             messages.error(request, "Veuillez corriger les erreurs dans le formulaire.")
     else:
         form = ProfilForm(instance=user)
-
-    return render(request, "utilisateurs/modifier_profil.html", {"form": form, "user": user})
+    return render(request, "utilisateurs/modif_profil.html", {"form": form})
 
 @login_required
 def test_compatibilite(request, match_id):
