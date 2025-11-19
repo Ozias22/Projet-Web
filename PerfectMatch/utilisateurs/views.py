@@ -25,11 +25,8 @@ def inscription_view(request):
         form = InscriptionForm()
 
     return render(request, "utilisateurs/inscription.html", {"form": form})
-<<<<<<< .mine
 
-=======
 
->>>>>>> .theirs
 
 def valider_abonement(request):
     if request.method == "POST":
@@ -66,7 +63,7 @@ def connexion(request):
 @login_required
 def test_compatibilite(request, match_id):
     match = get_object_or_404(User, id=match_id)
-    
+
     if request.method == "POST":
         form = TestCompatibiliteForm(request.POST)
         if form.is_valid():
@@ -97,7 +94,7 @@ def test_compatibilite(request, match_id):
         "form": form,
         "match": match
     })
-        
+
 
 
 
