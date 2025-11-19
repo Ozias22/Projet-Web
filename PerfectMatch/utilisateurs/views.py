@@ -203,7 +203,7 @@ def profil_perfectmatch_view(request):
             "ImagesUser": imagesUser
         }
     )
-
+@login_required
 def obtenir_profil(request):
     user = request.user
     user_profile = UserProfile.objects.get(user=user)
@@ -229,7 +229,14 @@ def obtenir_profil(request):
             if i.is_mutual:
                 profiles_non_valides.append(i)
         utilisateurs_profiles = UserProfile.objects.exclude(id__in=[profiles_non_valide.user2_id for profiles_non_valide in profiles_non_valides]).exclude(user=user)
-        imagesUsers = ImagesUser.objects.filter(user__in=[utilisateur_profile.user for utilisateur_profile in utilisateurs_profiles])
+        # imagesUsers = ImagesUser.objects.filter(user__in=[utilisateur_profile.user for utilisateur_profile in utilisateurs_profiles])
+        users = []
+        for profil in utilisateurs_profiles:
+            if profil.user_id:  # évite les profils orphelins
+                users.append(profil.user)
+
+        imagesUsers = ImagesUser.objects.filter(user__in=users)
+
     else:
         utilisateurs_profiles = UserProfile.objects.exclude(user=user)
         imagesUsers = ImagesUser.objects.filter(user__in=[utilisateur_profile.user for utilisateur_profile in utilisateurs_profiles])
