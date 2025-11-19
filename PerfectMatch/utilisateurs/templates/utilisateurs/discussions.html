@@ -1,0 +1,49 @@
+{% extends 'utilisateurs/_modele.html' %}
+{% load static %}
+
+{% block title %}
+  PerfectMatch - Discussions
+{% endblock %}
+
+{% block header %}
+  <h2><a href="{% url "accueil" %}"></a></h2>
+{% endblock %}
+
+{% block main %}
+<div class="container-fluid py-4 format-discussions" style="height:85vh;">
+  <div class="row h-100">
+
+    <!-- LISTE DES DISCUSSIONS -->
+    <div class="col-4 border-end bg-white h-100 overflow-auto">
+      <h1 class="mt-2 mb-3">Discussions</h1>
+
+      <ul class="list-group" id="list-partenaire"></ul>
+
+    </div>
+
+    <!-- FENETRE DE CONVERSATIONS -->
+    <div class="col-8 d-flex flex-column h-100">
+
+      <!-- BOITE DE MESSAGES -->
+      <div id="messages"
+           class="flex-grow-1 p-3 overflow-auto"
+           style="background:white; border-radius:10px;">
+        <p class="text-muted">Sélectionnez une discussion…</p>
+      </div>
+
+      <!-- ENTREE MESSAGES NON FONCTIONNEL -->
+      <div class="mt-2">
+        <div class="input-group">
+          <input type="text" id="message-input" class="form-control" placeholder="Yo je peux seulement afficher les discussions et les conversations, je peuxp as enovyer messages">
+          <button class="btn btn-primary" id="send-btn">Envoyer</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scriptjs %}
+<script src="{% static 'js/discussions.js' %}" defer></script>
+{% endblock %}

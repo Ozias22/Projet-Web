@@ -5,7 +5,8 @@ from .forms import InscriptionForm, AbonnementForm,ConnectionForm,ProfilForm,use
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import logout, authenticate, login
-from .models import User, UserProfile, ImagesUser, Compatibilite,Match
+from .models import User, UserProfile, ImagesUser, Compatibilite, Match, Message
+from django.db.models import Q
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
@@ -207,3 +208,84 @@ def obtenir_profil(request):
     # Filtres ici
 
     return JsonResponse({'user':user})
+    # Convertir les profils en dictionnaires
+    # return JsonResponse({
+    #     'profiles': [
+    #         {
+    #             'bio' : utilisateurs_profiles.bio,
+    #             'occupation': utilisateurs_profiles.occupation,
+    #             'Interets': [interest.name for interest in utilisateurs_profiles.interests.all()],
+    #         }]
+    # })
+
+# @login_required
+# def profil_user_view(request, id):
+#     """Vue pour afficher le profil d’un utilisateur donné"""
+#     user = get_object_or_404(User, id=id)
+#     user_profile = UserProfile.objects.get(user=user)
+#     imagesUser = ImagesUser.objects.filter(user=user)
+
+#     form1 = userProfileForm(instance=user_profile)
+#     form2 = ImagesUserForm()
+
+#     return render(
+#         request,
+#         "utilisateurs/profilePerfectMatch.html",
+#         {"form1": form1, "form2": form2, "ImagesUser": imagesUser}
+#     )
+@login_required
+def discussions(request):
+    return render(request,"utilisateurs/discussions.html")
+
+@login_required
+def get_discussions(request):
+    current_profile = request.user.profile
+
+    # Obtient les utilisateurs qui on interagis avec l'utilisateur courant
+    pairs = Message.objects.filter(
+        Q(sender=current_profile) | Q(receiver=current_profile)
+    ).values_list("sender_id", "receiver_id").distinct()
+
+    discussion_profile_ids = set()
+    # Filtre les utilisateurs en contact pour l'affichage des discussions
+    for sender_id, receiver_id in pairs:
+        if sender_id != current_profile.id:
+            discussion_profile_ids.add(sender_id)
+        if receiver_id != current_profile.id:
+            discussion_profile_ids.add(receiver_id)
+
+    # Obtentions des donnes autres utilisateurs
+    other_users = User.objects.filter(profile__id__in=discussion_profile_ids)
+
+    data = [
+        {
+            "id": user.id,
+            "username": user.username,
+        }
+        for user in other_users
+    ]
+
+    return JsonResponse(data, safe=False)
+
+@login_required
+@login_required
+def get_messages(request, user_id):
+    current_profile = request.user.profile
+
+    messages = Message.objects.filter(
+        Q(sender=current_profile, receiver__id=user_id) |
+        Q(sender__id=user_id, receiver=current_profile)
+    ).order_by('timestamp')
+
+    data = []
+    for msg in messages:
+        data.append({
+            "id": msg.id,
+            "sender": msg.sender.user.username,
+            "receiver": msg.receiver.user.username,
+            "content": msg.content,
+            "timestamp": msg.timestamp.strftime("%Y-%m-%d %H:%M"),
+            "is_self": (msg.sender == current_profile)
+        })
+
+    return JsonResponse(data, safe=False)
