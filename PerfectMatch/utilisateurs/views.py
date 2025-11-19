@@ -11,6 +11,8 @@ from django.core import serializers
 from django.db.models import Q
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from datetime import date
+from django.db.models.functions import Random
 
 def index(request):
     return redirect("connexion")
@@ -204,19 +206,57 @@ def profil_perfectmatch_view(request):
 def obtenir_profil(request):
     user = request.user
     user_profile = UserProfile.objects.get(user=user)
+
     matchs = Match.objects.filter(user1_id=user_profile.id)
 
+    # PARAMETRES FILTRES
+    gender = request.GET.get("gender")
+    city = request.GET.get("city")
+    country = request.GET.get("country")
+    min_age = request.GET.get("min_age")
+    max_age = request.GET.get("max_age")
+    
+    # Parse en int des ages
+    if min_age:
+        min_age = int(min_age)
+    if max_age:
+        max_age = int(max_age)
+    
+        
+    matchs = Match.objects.filter(user1_id__user=user.id)
     if matchs is not None:
         profiles_non_valides = []
         for i in matchs:
             if i.is_mutual:
                 profiles_non_valides.append(i)
         utilisateurs_profiles = UserProfile.objects.exclude(id__in=[profiles_non_valide.user2_id for profiles_non_valide in profiles_non_valides])
-        imagesUsers = ImagesUser.objects.filter(user__in=[utilisateur_profile.user for utilisateur_profile in utilisateurs_profiles])
     else:
         utilisateurs_profiles = UserProfile.objects.exclude(user=user)
         imagesUsers = ImagesUser.objects.filter(user__in=[utilisateur_profile.user for utilisateur_profile in utilisateurs_profiles])
+        utilisateurs_profiles = UserProfile.objects.all()
+    imagesUsers = ImagesUser.objects.filter(user__in=[utilisateur_profile.user for utilisateur_profile in utilisateurs_profiles])
     # return JsonResponse({'profiles': serializers.serialize('json', utilisateurs_profiles),'Images':serializers.serialize('json', imagesUsers)}, safe=False)
+
+    # AJOUT DES FILTRES POUR GET PROFILES
+    # Genre selon UseProfile
+    if gender:
+        utilisateurs_profiles = utilisateurs_profiles.filter(gender__iexact=gender)
+    # Ville selon User
+    if city:
+        utilisateurs_profiles = utilisateurs_profiles.filter(user__city__icontains=city)
+    # Pays selon User
+    if country:
+        utilisateurs_profiles = utilisateurs_profiles.filter(user__country__icontains=country)
+    # Age selon date et aujourdhui
+    today = date.today()
+    if min_age:
+        max_birthdate = today.replace(year=today.year - min_age)
+        utilisateurs_profiles = utilisateurs_profiles.filter(user__birthday__lte=max_birthdate)
+    if max_age:
+        min_birthdate = today.replace(year=today.year - max_age)
+        utilisateurs_profiles = utilisateurs_profiles.filter(user__birthday__gte=min_birthdate)
+    # Mettre la liste en aleatoire
+    utilisateurs_profiles = utilisateurs_profiles.order_by(Random())
 
     # Construire une liste de profils avec l'objet user inclus (dictionnaire sérialisable)
     profils_serialises = []

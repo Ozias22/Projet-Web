@@ -1,56 +1,94 @@
-{% extends "utilisateurs/_modele.html"%}
+{% extends 'utilisateurs/_modele.html' %}
 
 {% load static %}
 
 {% block title %}
-PerfectMatch - Accueil
+  PerfectMatch - Accueil
 {% endblock %}
 
-
-{% block main%}
-<div class="row mt-5">
+{% block main %}
+  <div class="row mt-5">
     <div class="aside-accueil">
-        <div>
-            <h4 class="mb-4">Bienvenue sur PerfectMatch</h4>
-            <p class="lead">Découvrez des profils qui vous correspondent et commencez votre aventure dès aujourd'hui !
-            </p>
+      <div>
+        <h4 class="mb-4">Bienvenue sur PerfectMatch</h4>
+        <p class="lead">Découvrez des profils qui vous correspondent et commencez votre aventure dès aujourd'hui !</p>
 
-            <div class="mt-5">
-                <div class="d-flex w-50 justify-content-between survol">
-                    <i class="bi bi-person text-secondary"></i>
-                    <a href="{% url 'profilPerfectMatch' %}" class="mb-3 w-100"> Mon Profil PerfectMatch </a>
-                </div>
-                <div class="d-flex justify-content-between survol">
-                    <i class="bi bi-pencil-square text-secondary"></i>
-                    <a href="{% url 'profil' %}" class="mb-3 w-75"> Modifier Profil</a>
-                </div>
-                <div class="d-flex w-50 justify-content-between survol">
-                    <i class="bi bi-credit-card-2-front text-secondary"></i>
-                    <a href="{% url 'valider_abonement' %}" class="mb-3 w-75">Abonnement</a>
-                </div>
-                <div class="d-flex w-50 justify-content-between survol">
-                    <i class="bi bi-credit-card-2-front text-secondary"></i>
-                    <a href="{% url 'discussions' %}" class="mb-3 w-75">Discussions</a>
-                </div>
-
-            </div>
+        <div class="mt-5">
+          <div class="d-flex w-50 justify-content-between survol">
+            <i class="bi bi-person text-secondary"></i>
+            <a href="{% url 'profilPerfectMatch' %}" class="mb-3 w-100">Mon Profil PerfectMatch</a>
+          </div>
+          <div class="d-flex justify-content-between survol">
+            <i class="bi bi-pencil-square text-secondary"></i>
+            <a href="{% url 'profil' %}" class="mb-3 w-75">Modifier Profil</a>
+          </div>
+          <div class="d-flex w-50 justify-content-between survol">
+            <i class="bi bi-credit-card-2-front text-secondary"></i>
+            <a href="{% url 'valider_abonement' %}" class="mb-3 w-75">Abonnement</a>
+          </div>
+          <div class="d-flex w-50 justify-content-between survol">
+            <i class="bi bi-credit-card-2-front text-secondary"></i>
+            <a href="{% url 'discussions' %}" class="mb-3 w-75">Discussions</a>
+          </div>
         </div>
+      </div>
     </div>
     <div class="col-md-8 mx-auto">
-        <div class="d-flex justify-content-between mx-4">
-            <h2 class="mb-4 text-center">Vos Matchs</h2>
-            <div>
-                <i class="bi bi-funnel fs-4"></i>
-                Filtrer
+      <!-- FORM FILTRER -->
+      <div id="filter-panel-container" class="border rounded p-3 mb-4 mx-4">
+        <form id="filter-panel" class="border rounded p-3 mb-4 mx-4" style="display:none;" novalidate>
+          {% csrf_token %}
+          <div class="row g-3">
+            <div class="col-md-3">
+              <label class="form-label">Genre</label>
+              <select id="filter-gender" class="form-control">
+                <option value="">Tous</option>
+                <option value="Male">Homme</option>
+                <option value="Female">Femme</option>
+                <option value="Other">Autre</option>
+              </select>
             </div>
-        </div>
-        <div class="justify-content-center row" id="bloc_profils">
-            <!-- Les profils seront insérés ici par JavaScript -->
 
+            <div class="col-md-3">
+              <label class="form-label">Pays</label>
+              <input type="text" id="filter-country" class="form-control" placeholder="Canada" />
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label">Ville</label>
+              <input type="text" id="filter-city" class="form-control" placeholder="Montréal" />
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label">Âge min</label>
+              <input type="number" id="filter-age-min" class="form-control" min="18" value="" />
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label">Âge max</label>
+              <input type="number" id="filter-age-max" class="form-control" min="18" value="" />
+            </div>
+
+            <div class="col-12 text-end mt-2">
+              <button type="submit" class="btn btn-primary" id="apply-filters">Appliquer</button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="d-flex justify-content-between mx-4">
+        <h2 class="mb-4 text-center">Vos Matchs</h2>
+        <!-- FILTER BUTTON -->
+        <div class="text-end me-4 mb-2">
+          <button class="btn btn-outline-dark" id="btn-filters"><i class="bi bi-funnel"></i> Filtrer</button>
         </div>
+      </div>
+      <div class="justify-content-center row" id="bloc_profils">
+        <!-- Les profils seront insérés ici par JavaScript -->
+      </div>
     </div>
-</div>
+  </div>
 {% endblock %}
 {% block scriptjs %}
-<script src="{% static 'js/script.js' %}" defer></script>
-{% endblock scriptjs %}
+  <script src="{% static 'js/script.js' %}" defer></script>
+{% endblock %}
