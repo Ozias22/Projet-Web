@@ -227,7 +227,7 @@ class InscriptionForm(UserCreationForm):
         if commit:
             user.save()
         return user
-    
+
 User = get_user_model()
 
 class ProfilForm(forms.ModelForm):
@@ -236,7 +236,7 @@ class ProfilForm(forms.ModelForm):
         required=False,
         widget=forms.NumberInput(attrs={'class': 'form-control', 'readonly': 'readonly'})
     )
- 
+
     class Meta:
         model = User
         fields = [
@@ -259,7 +259,7 @@ class ProfilForm(forms.ModelForm):
             'country': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
         }
- 
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.instance and self.instance.birthday:
@@ -276,7 +276,7 @@ class AbonnementForm(forms.ModelForm):
         model = Abonement
         fields = ['type_abonement', 'card_number', 'expiration_date','cvv']
         widgets = {
-            'type_abonnement': forms.Select(attrs={'class': 'form-control'}),
+            'type_abonnement': forms.HiddenInput(),
             'card_number': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '1234 5678 9012 3456'}),
             'expiration_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'cvv': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '123'}),
@@ -375,7 +375,7 @@ class userProfileForm(forms.ModelForm):
             'gender': forms.Select(attrs={'class': 'form-control'}),
             'occupation': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Occupation'}),
             'bio': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Bio', 'rows': 4}),
-            'interests': forms.CheckboxSelectMultiple(attrs={'class': 'form-control'}),
+            'interests': forms.CheckboxSelectMultiple(),
         }
         error_messages = {
             'gender': {
@@ -404,16 +404,13 @@ class userProfileForm(forms.ModelForm):
     def clean_interests(self):
         interests = self.cleaned_data.get("interests")
         return interests
-    def save(self, commit=True):
+    def save(self, commit=True, user=None):
         profile = super().save(commit=False)
-        profile.user = User
-        profile.gender = self.cleaned_data['gender']
-        profile.occupation = self.cleaned_data['occupation']
-        profile.bio = self.cleaned_data['bio']
-        profile.interests.set(self.cleaned_data['interests'])
+        if user is not None:
+            profile.user = user
         if commit:
             profile.save()
-
+            self.save_m2m()
         return profile
 
 
@@ -427,13 +424,15 @@ class ImagesUserForm(forms.ModelForm):
         labels = {
             'image': "Ajouter une image",
         }
+
     def clean_image(self):
         image = self.cleaned_data.get("image")
         return image
-    def save(self, commit=True):
+
+    def save(self, commit=True, user=None):
         image_instance = super().save(commit=False)
-        image_instance.user = User
-        image_instance.image = self.cleaned_data['image']
+        if user is not None:
+            image_instance.user = user
         if commit:
             image_instance.save()
         return image_instance
@@ -444,50 +443,71 @@ class TestCompatibiliteForm(forms.Form):
     optimiste = forms.ChoiceField(
         label="Te considères-tu optimiste ?",
         choices=[("oui", "Oui"), ("non", "Non")],
-        widget=forms.RadioSelect
+        widget=forms.RadioSelect,
+        required=False
     )
     sociable = forms.ChoiceField(
         label="Es-tu plutôt sociable ?",
         choices=[("oui", "Oui"), ("non", "Non")],
-        widget=forms.RadioSelect
+        widget=forms.RadioSelect,
+        required=False
     )
     organise = forms.ChoiceField(
         label="Aimes-tu que les choses soient bien organisées ?",
         choices=[("oui", "Oui"), ("non", "Non")],
-        widget=forms.RadioSelect
+        widget=forms.RadioSelect,
+        required=False
     )
     patience = forms.ChoiceField(
         label="Es-tu patient(e) dans les situations difficiles ?",
         choices=[("oui", "Oui"), ("non", "Non")],
-        widget=forms.RadioSelect
+        widget=forms.RadioSelect,
+        required=False
     )
     aventureux = forms.ChoiceField(
         label="Aimes-tu tenter de nouvelles expériences ?",
         choices=[("oui", "Oui"), ("non", "Non")],
-        widget=forms.RadioSelect
+        widget=forms.RadioSelect,
+        required=False
     )
     empathique = forms.ChoiceField(
         label="Te considères-tu empathique envers les autres ?",
         choices=[("oui", "Oui"), ("non", "Non")],
-        widget=forms.RadioSelect
+        widget=forms.RadioSelect,
+        required=False
     )
     humour = forms.ChoiceField(
         label="L'humour est-il important pour toi ?",
         choices=[("oui", "Oui"), ("non", "Non")],
-        widget=forms.RadioSelect
+        widget=forms.RadioSelect,
+        required=False
     )
     sportif = forms.ChoiceField(
         label="Aimes-tu faire du sport régulièrement ?",
         choices=[("oui", "Oui"), ("non", "Non")],
-        widget=forms.RadioSelect
+        widget=forms.RadioSelect,
+        required=False
     )
     spontaneite = forms.ChoiceField(
         label="Es-tu spontané(e) dans tes décisions ?",
         choices=[("oui", "Oui"), ("non", "Non")],
-        widget=forms.RadioSelect
+        widget=forms.RadioSelect,
+        required=False
     )
     lecture = forms.ChoiceField(
         label="Aimes-tu passer du temps à lire ou apprendre de nouvelles choses ?",
         choices=[("oui", "Oui"), ("non", "Non")],
-        widget=forms.RadioSelect
+        widget=forms.RadioSelect,
+        required=False
     )
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        for field_name in self.fields:
+            if not cleaned_data.get(field_name):
+                raise forms.ValidationError(
+                    "Veuillez répondre à toutes les questions avant de soumettre le test."
+                )
+
+        return cleaned_data
