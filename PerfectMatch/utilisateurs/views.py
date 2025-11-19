@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib import messages
 from django.http import JsonResponse
@@ -203,14 +204,17 @@ def profil_perfectmatch_view(request):
 def obtenir_profil(request):
     user = request.user
     user_profile = UserProfile.objects.get(user=user)
-    matchs = Match.objects.filter(user1_id__user=user.id)
+    matchs = Match.objects.filter(user1_id=user_profile.id)
 
     if matchs is not None:
-        profiles_non_valides = [i for i in matchs if i.is_mutual]
+        profiles_non_valides = []
+        for i in matchs:
+            if i.is_mutual:
+                profiles_non_valides.append(i)
         utilisateurs_profiles = UserProfile.objects.exclude(id__in=[profiles_non_valide.user2_id for profiles_non_valide in profiles_non_valides])
         imagesUsers = ImagesUser.objects.filter(user__in=[utilisateur_profile.user for utilisateur_profile in utilisateurs_profiles])
     else:
-        utilisateurs_profiles = UserProfile.objects.all()
+        utilisateurs_profiles = UserProfile.objects.exclude(user=user)
         imagesUsers = ImagesUser.objects.filter(user__in=[utilisateur_profile.user for utilisateur_profile in utilisateurs_profiles])
     # return JsonResponse({'profiles': serializers.serialize('json', utilisateurs_profiles),'Images':serializers.serialize('json', imagesUsers)}, safe=False)
 
@@ -277,15 +281,18 @@ def action_like(request):
 
     if action == 'like':
         match = Match.objects.get_or_create(user1=profil_actuel, user2=profil_recherche)
+        print(profil_actuel, profil_recherche)
+        print("Match créé ou récupéré:", match.is_mutual)
         # si l'autre a déjà liké, marquer mutuel
         reverse = Match.objects.filter(user1=profil_recherche, user2=profil_actuel).first()
+        print("Match reverse trouvé:", reverse)
         if reverse:
-            match.is_mutual = True
-            reverse.is_mutual = True
+            match.is_mutual = 1
+            reverse.is_mutual = 1
             match.save()
             reverse.save()
-            return JsonResponse({'result': 'match', 'mutual': True})
-        return JsonResponse({'result': 'liked', 'mutual': False})
+            return JsonResponse({'result': 'liked', 'mutual': 1})
+        return JsonResponse({'result': 'liked', 'mutual': 0})
     elif action == 'dislike':
         return JsonResponse({'result': 'disliked'})
     else:
