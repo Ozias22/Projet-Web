@@ -62,6 +62,7 @@ class UserProfile(models.Model):
     occupation = models.CharField(max_length=100, blank=True)
     bio = models.CharField(max_length=500, blank=True)
     interests = models.ManyToManyField('Interest', blank=True)
+    first_login = models.BooleanField(default=True)
 
     def __str__(self):
         return f"Profile of {self.user.username}"

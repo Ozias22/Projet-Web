@@ -1,13 +1,13 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib import messages
 from django.http import JsonResponse
-from .forms import InscriptionForm, AbonnementForm,ConnectionForm,ProfilForm,userProfileForm,ImagesUserForm
+from .forms import InscriptionForm, AbonnementForm,ConnectionForm,ProfilForm,userProfileForm,ImagesUserForm,TestCompatibiliteForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import logout, authenticate, login
-from .models import User, UserProfile, ImagesUser,Match
-
-# Create your views here.
+from .models import User, UserProfile, ImagesUser, Compatibilite,Match
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 def index(request):
     return redirect("connexion")
@@ -47,6 +47,7 @@ def deconnexion(request):
     messages.success(request, "Vous avez été déconnecté avec succès.")
     return redirect('connexion')
 
+
 def connexion(request):
     """Comment"""
     if request.user.is_authenticated:
@@ -62,12 +63,22 @@ def connexion(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, "Connexion réussie !")
+
+                from utilisateurs.models import UserProfile
+
+                profile, created = UserProfile.objects.get_or_create(user=user)
+
+                if profile.first_login:
+                    profile.first_login = False
+                    profile.save()
+                    return redirect('profilPerfectMatch')
                 return redirect('accueil')
             else:
                 form.add_error(None, "Nom d'utilisateur ou mot de passe incorrect.")
     else:
         form = ConnectionForm()
-    return render(request, "utilisateurs/connecter_compte.html",{'form': form})
+
+    return render(request, "utilisateurs/connecter_compte.html", {'form': form})
 
 
 @login_required
@@ -99,10 +110,57 @@ def modifier_view(request):
     else:
         form = ProfilForm(instance=user)
 
-    return render(request, "utilisateurs/modifier_profil.html", {"form": form})
+    return render(request, "utilisateurs/modifier_profil.html", {"form": form, "user": user})
 
 @login_required
+def test_compatibilite(request, match_id):
+    if request.user.id == match_id:
+        messages.error(request, "Vous ne pouvez pas faire un test de compatibilité avec vous-même.")
+        return redirect("mes_matchs")
+
+    match = get_object_or_404(User, id=match_id)
+
+    if request.method == "POST":
+        form = TestCompatibiliteForm(request.POST)
+        if form.is_valid():
+            user_answers = form.cleaned_data
+            score = 0
+            total = len(user_answers)
+
+            for value in user_answers.values():
+                if value == "oui":
+                    score += 1
+
+            score_final = (score / total) * 100
+
+            Compatibilite.objects.update_or_create(
+                utilisateur=request.user,
+                match=match,
+                defaults={'score': score_final}
+            )
+
+            Compatibilite.objects.update_or_create(
+                utilisateur=match,
+                match=request.user,
+                defaults={'score': score_final}
+            )
+
+            return render(request, "utilisateurs/compatibilite_resultat.html", {
+                "match": match,
+                "score": score_final
+            })
+    else:
+        form = TestCompatibiliteForm()
+
+    return render(request, "utilisateurs/compatibilite_form.html", {
+        "form": form,
+        "match": match
+    })
+
+
+
 def profil_perfectmatch_view(request):
+    """Vue pour afficher le profil PerfectMatch de l'utilisateur connecté"""
     user = request.user
     try:
         user_profile = UserProfile.objects.get(user=user)
@@ -149,28 +207,3 @@ def obtenir_profil(request):
     # Filtres ici
 
     return JsonResponse({'user':user})
-    # Convertir les profils en dictionnaires
-    # return JsonResponse({
-    #     'profiles': [
-    #         {
-    #             'bio' : utilisateurs_profiles.bio,
-    #             'occupation': utilisateurs_profiles.occupation,
-    #             'Interets': [interest.name for interest in utilisateurs_profiles.interests.all()],
-    #         }]
-    # })
-
-# @login_required
-# def profil_user_view(request, id):
-#     """Vue pour afficher le profil d’un utilisateur donné"""
-#     user = get_object_or_404(User, id=id)
-#     user_profile = UserProfile.objects.get(user=user)
-#     imagesUser = ImagesUser.objects.filter(user=user)
-
-#     form1 = userProfileForm(instance=user_profile)
-#     form2 = ImagesUserForm()
-
-#     return render(
-#         request,
-#         "utilisateurs/profilePerfectMatch.html",
-#         {"form1": form1, "form2": form2, "ImagesUser": imagesUser}
-#     )
