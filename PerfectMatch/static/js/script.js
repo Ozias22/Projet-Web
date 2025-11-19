@@ -273,6 +273,45 @@ async function RecupereProfils(){
     }
 }
 
+// Toggle filter panel
+document.getElementById("btn-filters").addEventListener("click", () => {
+    const panel = document.getElementById("filter-panel");
+    panel.style.display = panel.style.display === "none" ? "block" : "none";
+});
+
+// Apply filters
+document.getElementById("apply-filters").addEventListener("click", async () => {
+
+    const gender = document.getElementById("filter-gender").value;
+    const country = document.getElementById("filter-country").value;
+    const city = document.getElementById("filter-city").value;
+    const minAge = document.getElementById("filter-age-min").value;
+    const maxAge = document.getElementById("filter-age-max").value;
+
+    // Build query string
+    const params = new URLSearchParams();
+
+    if (gender) params.append("gender", gender);
+    if (country) params.append("country", country);
+    if (city) params.append("city", city);
+    if (minAge) params.append("min_age", minAge);
+    if (maxAge) params.append("max_age", maxAge);
+
+    const url = `/api/obtenir_profil/?${params.toString()}`;
+
+    console.log("Calling:", url);
+
+    const response = await fetch(url);
+    const data = await response.json();
+
+    profils = data.profiles;
+    imagesProfils = data.Images;
+
+    divProfils.innerHTML = ""; // Clear old stack
+    afficherProfils();         // Show filtered stack
+});
+
+
 
 function initialisation() {
     console.log("Script loaded successfully.");
@@ -281,3 +320,30 @@ function initialisation() {
 }
 
 window.addEventListener('DOMContentLoaded', initialisation);
+document.addEventListener("DOMContentLoaded", () => {
+
+    const filterForm = document.getElementById("filter-panel");
+    const applyBtn = document.getElementById("apply-filters");
+
+    if (filterForm) {
+        filterForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            console.log("Applicage des filtres...");
+
+            const gender = document.getElementById("filter-gender").value;
+            const country = document.getElementById("filter-country").value;
+            const city = document.getElementById("filter-city").value;
+            const minAge = document.getElementById("filter-age-min").value;
+            const maxAge = document.getElementById("filter-age-max").value;
+
+            applyFilters({
+                gender,
+                country,
+                city,
+                minAge,
+                maxAge
+            });
+        });
+    }
+});
