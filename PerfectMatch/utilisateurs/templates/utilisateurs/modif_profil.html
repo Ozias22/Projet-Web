@@ -1,0 +1,79 @@
+{% extends "utilisateurs/_modele.html" %}
+
+{% load static %}
+
+{% block main %}
+<div class="container py-5">
+    <div class="card shadow-sm p-4" style="max-width: 600px; margin: auto; border-radius: 15px;">
+        <h3 class="text-center mb-4">Modifier mon profil</h3>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} mb-3" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label">Nom</label>
+                {{ form.last_name }}
+                {% if form.last_name.errors %}
+                    <div class="text-danger">
+                        {{ form.last_name.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Prénom</label>
+                {{ form.first_name }}
+                {% if form.first_name.errors %}
+                    <div class="text-danger">
+                        {{ form.first_name.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Date de naissance</label>
+              {{ form.birthday }}
+              {% if form.birthday.errors %}
+                  <div class="text-danger small">{{ form.birthday.errors }}</div>
+              {% endif %}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <div class="text-danger">
+                        {{ form.email.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Ville</label>
+                {{ form.city }}
+                {% if form.city.errors %}
+                    <div class="text-danger">
+                        {{ form.city.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Pays</label>
+                {{ form.country }}
+                {% if form.country.errors %}
+                    <div class="text-danger">
+                        {{ form.country.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary w-100">Enregistrer</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+{% endblock %}

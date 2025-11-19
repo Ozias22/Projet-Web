@@ -6,7 +6,7 @@ const btnJaime = document.getElementById("jaime");
 const btnJaimePas = document.getElementById("!jaime");
 var profils;
 var imagesProfils;
-let isAnimating = false;
+let isAnimating;
 divProfils.classList.add('card-stack');
 const imgDefaut = '/media/images/profiles/default.jpg';
 
@@ -218,13 +218,14 @@ function showBadge(badge, type, intensity = 1) {
     badge.classList.add(type === 'liked' ? 'liked' : 'disliked');
 }
 
-function handleSwipe(container, direction) {
+async function handleSwipe(container, direction) {
     if (isAnimating) return;
     isAnimating = true;
     const className = direction === 'right' ? 'swipe-right' : 'swipe-left';
     container.classList.add(className);
 
-    var data = action_like(container,direction);
+    var data = await action_like(container,direction);
+    gestionInteractions(data);
     // attendre la transition
     const onEnd = (e) => {
         if (e.propertyName && e.propertyName !== 'transform') return;
@@ -237,23 +238,75 @@ function handleSwipe(container, direction) {
     container.addEventListener('transitionend', onEnd);
 }
 
-function action_like(container,direction){
+async function action_like(container,direction){
     try {
         const userId = container.dataset.userId;
-        fetch('/api/action_like/', {
+        const response = await fetch('/api/action_like/', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ user_id: userId, action: direction === 'right' ? 'like' : 'dislike' })
-        }).then(res => res.json()).then(data => {
-            console.log('action_like response', data);
-            return data;
-        }).catch(err => console.error('action_like error', err));
+        });
+        const data = await response.json();
+        console.log('action_like response', data);
+        return data;
     } catch (e) {
         console.error('Failed to send like/dislike', e);
     }
 }
 
+function creerModalMatch(contenu,match_id){
+    const modal = document.createElement('div');
+    modal.className = 'modal fade';
+    modal.id = 'myModal';
+    modal.setAttribute('tabindex', '-1');
+    modal.setAttribute('aria-labelledby', 'myModalLabel');
+    modal.setAttribute('aria-hidden', 'true');
 
+    modal.innerHTML = `
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="myModalLabel">Titre du Modal</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+        <div class="modal-body">
+            ${contenu}
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+            <button type="button" id="btnModalTest" class="btn btn-primary">Test de Compatibilité</button>
+        </div>
+        </div>
+    </div>`;
+
+    btnModalTest = modal.querySelector('#btnModalTest');
+    btnModalTest.addEventListener('click', testCompatibilite(match_id));
+    document.body.appendChild(modal);
+
+}
+
+function gestionInteractions(data){
+    if (data.result === 'liked') {
+        if (data.mutual) {
+            // Afficher un modal ou une notification de "match"
+            contenu = `Félicitations ! ${data.utilisateur} vous aime aussi!, vérifiez si vous êtes compatibles en cliquant sur le bouton ci-dessous.`;
+            creerModalMatch(contenu,data.match);
+            const myModal = new bootstrap.Modal(document.getElementById('myModal'));
+            myModal.show();
+        }
+    }
+}
+
+function testCompatibilite(match_id){
+    fetch(`api/compatibilite/${match_id}/`, {
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: 'param1=valeur1&param2=valeur2'
+});
+
+}
 
 async function RecupereProfils(){
     try{
@@ -316,10 +369,90 @@ document.getElementById("apply-filters").addEventListener("click", async () => {
 function initialisation() {
     console.log("Script loaded successfully.");
     DefinirDonnees().then(afficherProfils);
+    supprimerImage();
     // afficherProfils();
 }
 
 window.addEventListener('DOMContentLoaded', initialisation);
+
+function supprimerImage() {
+    const buttons = document.querySelectorAll('.btn-supprimer-image');
+
+    buttons.forEach(btn => {
+        btn.addEventListener('click', function () {
+
+            const imageId = this.dataset.id;
+            const url = window.urlSupprimerImage;
+            const csrf = window.csrfToken;
+
+            if (!imageId) {
+                console.error("Pas d'ID image");
+                return;
+            }
+
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": csrf,
+                    "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                    "X-Requested-With": "XMLHttpRequest"
+                },
+                body: new URLSearchParams({ image_id: imageId }).toString()
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const div = document.getElementById(`image-${imageId}`);
+                    if (div) div.remove();
+                } else {
+                    alert(data.error || "Erreur lors de la suppression.");
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Erreur réseau.");
+            });
+        });
+    });
+
+}
+
+function toggleNotifications() {
+    const badge = document.querySelector(".notif-badge");
+    if (badge) badge.style.display = "none";
+
+    let popup = document.getElementById("notif-popup");
+
+    if (popup.style.display === "block") {
+        popup.style.display = "none";
+        return;
+    }
+
+    fetch("/notifications/")
+        .then(response => response.json())
+        .then(data => {
+            popup.innerHTML = "";
+
+            if (data.messages.length === 0) {
+                popup.innerHTML = "<p>Aucune nouvelle notification.</p>";
+            } else {
+                data.messages.forEach(msg => {
+                    popup.innerHTML += `
+                        <div style="background:#d4edda; border-bottom:1px solid #eee; padding:5px; border-radius:4px; margin-bottom:3px;">
+                            <strong>${msg.sender}</strong><br>
+                            ${msg.content}<br>
+                            <small>${msg.timestamp}</small><br>
+                            <a href="/messages/${msg.id}/" class="btn btn-sm btn-success mt-1">Voir</a>
+                        </div>
+                    `;
+                });
+            }
+
+            popup.style.display = "block";
+        })
+        .catch(err => console.error("Erreur notifications:", err));
+}
+
 document.addEventListener("DOMContentLoaded", () => {
 
     const filterForm = document.getElementById("filter-panel");

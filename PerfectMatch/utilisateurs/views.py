@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib import messages
 from django.http import JsonResponse
@@ -10,6 +11,8 @@ from django.core import serializers
 from django.db.models import Q
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from datetime import date
+from django.db.models.functions import Random
 from datetime import date
 from django.db.models.functions import Random
 
@@ -100,21 +103,18 @@ def profil_view(request):
 
 @login_required
 def modifier_view(request):
-    """Vue pour modifier le profil de l'utilisateur connecté"""
     user = request.user
-
     if request.method == "POST":
-        form = ProfilForm(request.POST, request.FILES, instance=user)
+        form = ProfilForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
-            messages.success(request, "Votre profil a été mis à jour avec succès")
-            return redirect("profil")
+            messages.success(request, "✅ Votre profil a été mis à jour avec succès !")
+            return redirect('modif_profil') 
         else:
             messages.error(request, "Veuillez corriger les erreurs dans le formulaire.")
     else:
         form = ProfilForm(instance=user)
-
-    return render(request, "utilisateurs/modifier_profil.html", {"form": form, "user": user})
+    return render(request, "utilisateurs/modif_profil.html", {"form": form})
 
 @login_required
 def test_compatibilite(request, match_id):
@@ -202,33 +202,45 @@ def profil_perfectmatch_view(request):
         }
     )
 
+@login_required
 def obtenir_profil(request):
     user = request.user
     user_profile = UserProfile.objects.get(user=user)
-    
+ 
     # PARAMETRES FILTRES
     gender = request.GET.get("gender")
     city = request.GET.get("city")
     country = request.GET.get("country")
     min_age = request.GET.get("min_age")
     max_age = request.GET.get("max_age")
-    
+ 
     # Parse en int des ages
     if min_age:
         min_age = int(min_age)
     if max_age:
         max_age = int(max_age)
-    
-        
+ 
+ 
     matchs = Match.objects.filter(user1_id__user=user.id)
     if matchs is not None:
-        profiles_non_valides = [i for i in matchs if i.is_mutual]
-        utilisateurs_profiles = UserProfile.objects.exclude(id__in=[profiles_non_valide.user2_id for profiles_non_valide in profiles_non_valides])
+        profiles_non_valides = []
+        for i in matchs:
+            if i.is_mutual:
+                profiles_non_valides.append(i)
+        utilisateurs_profiles = UserProfile.objects.exclude(id__in=[profiles_non_valide.user2_id for profiles_non_valide in profiles_non_valides]).exclude(user=user)
+        # imagesUsers = ImagesUser.objects.filter(user__in=[utilisateur_profile.user for utilisateur_profile in utilisateurs_profiles])
+        users = []
+        for profil in utilisateurs_profiles:
+            if profil.user_id:  # évite les profils orphelins
+                users.append(profil.user)
+ 
+        imagesUsers = ImagesUser.objects.filter(user__in=users)
+ 
     else:
-        utilisateurs_profiles = UserProfile.objects.all()
-    imagesUsers = ImagesUser.objects.filter(user__in=[utilisateur_profile.user for utilisateur_profile in utilisateurs_profiles])
+        utilisateurs_profiles = UserProfile.objects.exclude(user=user)
+        imagesUsers = ImagesUser.objects.filter(user__in=[utilisateur_profile.user for utilisateur_profile in utilisateurs_profiles])
     # return JsonResponse({'profiles': serializers.serialize('json', utilisateurs_profiles),'Images':serializers.serialize('json', imagesUsers)}, safe=False)
-
+ 
     # AJOUT DES FILTRES POUR GET PROFILES
     # Genre selon UseProfile
     if gender:
@@ -249,7 +261,7 @@ def obtenir_profil(request):
         utilisateurs_profiles = utilisateurs_profiles.filter(user__birthday__gte=min_birthdate)
     # Mettre la liste en aleatoire
     utilisateurs_profiles = utilisateurs_profiles.order_by(Random())
-
+ 
     # Construire une liste de profils avec l'objet user inclus (dictionnaire sérialisable)
     profils_serialises = []
     for up in utilisateurs_profiles:
@@ -272,12 +284,15 @@ def obtenir_profil(request):
             'bio': up.bio,
             'interests': [i.name for i in up.interests.all()],
         })
-
+ 
     imagesUsers = list(imagesUsers.values())
     for img in imagesUsers:
         img['image'] = f"/media/{img['image']}"
-
+ 
     return JsonResponse({'profiles': profils_serialises, 'Images': imagesUsers})
+ 
+ 
+ 
 
 
 @csrf_exempt
@@ -313,15 +328,18 @@ def action_like(request):
 
     if action == 'like':
         match = Match.objects.get_or_create(user1=profil_actuel, user2=profil_recherche)
+        print(profil_actuel, profil_recherche)
+        print("Match créé ou récupéré:", match.is_mutual)
         # si l'autre a déjà liké, marquer mutuel
         reverse = Match.objects.filter(user1=profil_recherche, user2=profil_actuel).first()
+        print("Match reverse trouvé:", reverse)
         if reverse:
-            match.is_mutual = True
-            reverse.is_mutual = True
+            match.is_mutual = 1
+            reverse.is_mutual = 1
             match.save()
             reverse.save()
-            return JsonResponse({'result': 'match', 'mutual': True})
-        return JsonResponse({'result': 'liked', 'mutual': False})
+            return JsonResponse({'result': 'liked', 'mutual': 1})
+        return JsonResponse({'result': 'liked', 'mutual': 0})
     elif action == 'dislike':
         return JsonResponse({'result': 'disliked'})
     else:
