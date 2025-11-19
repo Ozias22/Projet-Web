@@ -26,46 +26,65 @@
 </head>
 
 <body>
-    <!-- Accescibilitee avec tabulation-->
     <a href="#" class="visually-hidden">Access au contenu</a>
-    <header>
-        <nav class="navbar navbar-expand-lg w-100" style="background-color: #F559CE;" data-bs-theme="light">
-            <div class="container-fluid">
-                <a class="navbar-brand mx-4" href="#"><img src="{% static 'images/Untitled.jpg' %}" alt="logo"
-                        class="w-75"></a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    {% if user.is_authenticated %}
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link active text-white" aria-current="page"
-                                href="{% url 'accueil' %}">Accueil</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" href="#">Mon compte</a>
-                        </li>
+  <header>
+    <nav class="navbar navbar-expand-lg w-100" style="background-color: #F559CE;" data-bs-theme="light">
+        <div class="container-fluid">
+            <a class="navbar-brand mx-4" href="#"><img src="{% static 'images/Untitled.jpg' %}" alt="logo"
+                    class="w-75"></a>
 
-                        <li class="nav-item d-flex">
-                            <a href="{% url 'deconnexion' %}"><i class="bi bi-box-arrow-in-right text-danger"></i></a>
-                        </li>
-                    </ul>
-                    {% else %}
-                    <div class="navbar-nav">
-                        <a class="nav-link active btn btn-light fw-bold text-white" aria-current="page"
-                            href="{% url 'connexion' %}">Connexion</a>
-                        <a class="nav-link btn btn-info mx-2 fw-bold text-white"
-                            href="{% url 'inscription' %}">Inscription</a>
-                    </div>
-                    {% endif %}
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                {% if user.is_authenticated %}
+                <ul class="navbar-nav mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active text-white" aria-current="page"
+                            href="{% url 'accueil' %}">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="#">Mon compte</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto d-flex flex-row align-items-center">
+                    <li class="nav-item text-center mx-2">
+                        <a href="{% url 'deconnexion' %}" class="nav-link text-decoration-none">
+                            <i class="bi bi-box-arrow-in-right fs-4 text-danger"></i><br>
+                            <small class="text-white">Déconnexion</small>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item text-center mx-2">
+                        <a class="nav-link position-relative text-decoration-none" onclick="toggleNotifications()">
+                            <i class="bi bi-bell fs-4 text-white"></i><br>
+                            <small class="text-white">Notifications</small>
+
+                            {% if notif_count > 0 %}
+                            <span class="badge bg-danger notif-badge">
+                                {{ notif_count }}
+                            </span>
+                            {% endif %}
+                        </a>
+                    </li>
+                </ul>
+
+                {% else %}
+                <div class="navbar-nav ms-auto">
+                    <a class="nav-link active btn btn-light fw-bold text-white" aria-current="page"
+                        href="{% url 'connexion' %}">Connexion</a>
+                    <a class="nav-link btn btn-info mx-2 fw-bold text-white"
+                        href="{% url 'inscription' %}">Inscription</a>
                 </div>
+                {% endif %}
             </div>
-        </nav>
-    </header>
-
+        </div>
+    </nav>
+    <div id="notif-popup"></div>
+</header>
     <main class="mb-4">
         {%block main%}{%endblock main%}
     </main>
@@ -78,5 +97,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     {% block scriptjs %}{% endblock scriptjs %}
 </body>
+
+<script src="{% static 'js/script.js' %}"></script>
 
 </html>

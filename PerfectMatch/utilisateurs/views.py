@@ -5,7 +5,8 @@ from .forms import InscriptionForm, AbonnementForm,ConnectionForm,ProfilForm,use
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import logout, authenticate, login
-from .models import User, UserProfile, ImagesUser, Compatibilite, Match, Message
+from .models import User, UserProfile, ImagesUser, Compatibilite, Message, Match
+from django.http import JsonResponse
 from django.db.models import Q
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -159,7 +160,6 @@ def test_compatibilite(request, match_id):
     })
 
 
-
 def profil_perfectmatch_view(request):
     """Vue pour afficher le profil PerfectMatch de l'utilisateur connecté"""
     user = request.user
@@ -289,3 +289,24 @@ def get_messages(request, user_id):
         })
 
     return JsonResponse(data, safe=False)
+
+@login_required
+def notifications_view(request):
+
+    profile = get_object_or_404(UserProfile, user=request.user)
+
+    unread_messages = Message.objects.filter(receiver=profile, is_read=False).order_by('-timestamp')
+
+    data = [
+        {
+            "id": msg.id,
+            "sender": msg.sender.user.username,
+            "content": msg.content,
+            "timestamp": msg.timestamp.strftime("%Y-%m-%d %H:%M")
+        }
+        for msg in unread_messages
+    ]
+    unread_messages.update(is_read=True)
+
+    return JsonResponse({"messages": data})
+
