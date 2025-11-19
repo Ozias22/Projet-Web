@@ -15,6 +15,7 @@ urlpatterns = [
     path('profil/', views.profil_view, name='profil'),
     path('accueil/', views.accueil, name='accueil'),
     path('profilPerfectMatch/', views.profil_perfectmatch_view, name='profilPerfectMatch'),
+
     path("notifications/", views.notifications_view, name="notifications"),
     path('api/obtenir_profil/', views.obtenir_profil, name='obtenir_profil'),
     path('api/action_like/', views.action_like, name='action_like'),
@@ -25,5 +26,6 @@ urlpatterns = [
     path('api/discussions/', views.get_discussions, name='get_discussions'),
     path('api/messages/<int:user_id>/', views.get_messages, name='get_messages'),
     path('api/envoyer_message/<int:receiver_Id>/', views.envoyer_message, name='envoyer_message'),
+    path('modif_profil/', views.modifier_view, name='modif_profil'),
 ]
 

@@ -288,7 +288,7 @@ function creerModalMatch(contenu,match_id){
 }
 
 function testCompatibilite(match_id){
-    fetch(`api/compatibilite/${match_id}/`, {
+    fetch(`/api/compatibilite/${match_id}/`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -309,7 +309,7 @@ function gestionInteractions(data){
 }
 
 function testCompatibilite(match_id){
-    fetch(`api/compatibilite/${match_id}/`, {
+    fetch(`/api/compatibilite/${match_id}/`, {
     method: 'GET',
     headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
@@ -491,3 +491,31 @@ function toggleNotifications() {
         })
         .catch(err => console.error("Erreur notifications:", err));
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const filterForm = document.getElementById("filter-panel");
+    const applyBtn = document.getElementById("apply-filters");
+
+    if (filterForm) {
+        filterForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            console.log("Applicage des filtres...");
+
+            const gender = document.getElementById("filter-gender").value;
+            const country = document.getElementById("filter-country").value;
+            const city = document.getElementById("filter-city").value;
+            const minAge = document.getElementById("filter-age-min").value;
+            const maxAge = document.getElementById("filter-age-max").value;
+
+            applyFilters({
+                gender,
+                country,
+                city,
+                minAge,
+                maxAge
+            });
+        });
+    }
+});
