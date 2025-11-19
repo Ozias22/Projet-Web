@@ -8,6 +8,7 @@ var profils;
 var imagesProfils;
 let isAnimating = false;
 divProfils.classList.add('card-stack');
+const imgDefaut = '/media/images/profiles/default.jpg';
 
 function CalculerAge(unedate){
     let today = new Date();
@@ -30,7 +31,7 @@ function creerCardProfil(unProfil,imagesProfil){
 
         // Image
         const img = document.createElement("img");
-        img.src = imagesProfil[0];
+        img.src = imagesProfil === null? imgDefaut : imagesProfil[0];
         img.classList.add("card-img-top", "profile-avatar");
         img.alt = "image profil utilisateur";
         card.appendChild(img);
@@ -204,7 +205,7 @@ function afficherProfils(){
     }
         // fallback image si aucune image disponible
         if (imagesProfil.length === 0) {
-            imagesProfil.push('/static/images/signup.jpg');
+            imagesProfil.push(imgDefaut);
         }
         creerCardProfil(unProfil, imagesProfil);
     }
@@ -223,20 +224,7 @@ function handleSwipe(container, direction) {
     const className = direction === 'right' ? 'swipe-right' : 'swipe-left';
     container.classList.add(className);
 
-    // requete de l'api pour créer le match si il y a lieu
-    try {
-        const userId = container.dataset.userId;
-        fetch('/api/action_like/', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ user_id: userId, action: direction === 'right' ? 'like' : 'dislike' })
-        }).then(res => res.json()).then(data => {
-            console.log('action_like response', data);
-        }).catch(err => console.error('action_like error', err));
-    } catch (e) {
-        console.error('Failed to send like/dislike', e);
-    }
-
+    var data = action_like(container,direction);
     // attendre la transition
     const onEnd = (e) => {
         if (e.propertyName && e.propertyName !== 'transform') return;
@@ -248,6 +236,24 @@ function handleSwipe(container, direction) {
     };
     container.addEventListener('transitionend', onEnd);
 }
+
+function action_like(container,direction){
+    try {
+        const userId = container.dataset.userId;
+        fetch('/api/action_like/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_id: userId, action: direction === 'right' ? 'like' : 'dislike' })
+        }).then(res => res.json()).then(data => {
+            console.log('action_like response', data);
+            return data;
+        }).catch(err => console.error('action_like error', err));
+    } catch (e) {
+        console.error('Failed to send like/dislike', e);
+    }
+}
+
+
 
 async function RecupereProfils(){
     try{
