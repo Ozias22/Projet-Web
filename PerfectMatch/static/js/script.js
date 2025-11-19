@@ -288,7 +288,7 @@ function creerModalMatch(contenu,match_id){
 }
 
 function testCompatibilite(match_id){
-    fetch(`api/compatibilite/${match_id}/`, {
+    fetch(`/api/compatibilite/${match_id}/`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -309,7 +309,7 @@ function gestionInteractions(data){
 }
 
 function testCompatibilite(match_id){
-    fetch(`api/compatibilite/${match_id}/`, {
+    fetch(`/api/compatibilite/${match_id}/`, {
     method: 'GET',
     headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
