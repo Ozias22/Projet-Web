@@ -14,6 +14,8 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from datetime import date
 from django.db.models.functions import Random
+from datetime import date
+from django.db.models.functions import Random
 
 def index(request):
     return redirect("connexion")
@@ -102,21 +104,18 @@ def profil_view(request):
 
 @login_required
 def modifier_view(request):
-    """Vue pour modifier le profil de l'utilisateur connecté"""
     user = request.user
-
     if request.method == "POST":
-        form = ProfilForm(request.POST, request.FILES, instance=user)
+        form = ProfilForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
-            messages.success(request, "Votre profil a été mis à jour avec succès")
-            return redirect("profil")
+            messages.success(request, "✅ Votre profil a été mis à jour avec succès !")
+            return redirect('modif_profil') 
         else:
             messages.error(request, "Veuillez corriger les erreurs dans le formulaire.")
     else:
         form = ProfilForm(instance=user)
-
-    return render(request, "utilisateurs/modifier_profil.html", {"form": form, "user": user})
+    return render(request, "utilisateurs/modif_profil.html", {"form": form})
 
 @login_required
 def test_compatibilite(request, match_id):
@@ -241,7 +240,7 @@ def obtenir_profil(request):
         utilisateurs_profiles = UserProfile.objects.exclude(user=user)
         imagesUsers = ImagesUser.objects.filter(user__in=[utilisateur_profile.user for utilisateur_profile in utilisateurs_profiles])
     # return JsonResponse({'profiles': serializers.serialize('json', utilisateurs_profiles),'Images':serializers.serialize('json', imagesUsers)}, safe=False)
-
+ 
     # AJOUT DES FILTRES POUR GET PROFILES
     # Genre selon UseProfile
     if gender:
@@ -262,7 +261,7 @@ def obtenir_profil(request):
         utilisateurs_profiles = utilisateurs_profiles.filter(user__birthday__gte=min_birthdate)
     # Mettre la liste en aleatoire
     utilisateurs_profiles = utilisateurs_profiles.order_by(Random())
-
+ 
     # Construire une liste de profils avec l'objet user inclus (dictionnaire sérialisable)
     profils_serialises = []
     for up in utilisateurs_profiles:
@@ -285,12 +284,15 @@ def obtenir_profil(request):
             'bio': up.bio,
             'interests': [i.name for i in up.interests.all()],
         })
-
+ 
     imagesUsers = list(imagesUsers.values())
     for img in imagesUsers:
         img['image'] = f"/media/{img['image']}"
-
+ 
     return JsonResponse({'profiles': profils_serialises, 'Images': imagesUsers})
+ 
+ 
+ 
 
 
 @csrf_exempt

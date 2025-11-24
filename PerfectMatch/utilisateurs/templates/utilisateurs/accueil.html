@@ -75,41 +75,41 @@ PerfectMatch - Accueil
       <h4 class="mb-4">Bienvenue sur PerfectMatch</h4>
       <p class="lead">Découvrez des profils qui vous correspondent et commencez votre aventure dès aujourd'hui !</p>
 
-      <div class="mt-5">
-        <div class="d-flex w-50 justify-content-between survol">
-          <i class="bi bi-person text-secondary"></i>
-          <a href="{% url 'profilPerfectMatch' %}" class="mb-3 w-100">Mon Profil PerfectMatch</a>
-        </div>
-        <div class="d-flex justify-content-between survol">
-          <i class="bi bi-pencil-square text-secondary"></i>
-          <a href="{% url 'profil' %}" class="mb-3 w-75">Modifier Profil</a>
-        </div>
-        <div class="d-flex w-50 justify-content-between survol">
-          <i class="bi bi-credit-card-2-front text-secondary"></i>
-          <a href="{% url 'valider_abonement' %}" class="mb-3 w-75">Abonnement</a>
-        </div>
-        <div class="d-flex w-50 justify-content-between survol">
-          <i class="bi bi-credit-card-2-front text-secondary"></i>
-          <a href="{% url 'discussions' %}" class="mb-3 w-75">Discussions</a>
+        <div class="mt-5">
+          <div class="d-flex w-50 justify-content-between survol">
+            <i class="bi bi-person text-secondary"></i>
+            <a href="{% url 'profilPerfectMatch' %}" class="mb-3 w-100">Mon Profil PerfectMatch</a>
+          </div>
+          <div class="d-flex justify-content-between survol">
+                <i class="bi bi-pencil-square text-secondary"></i>
+                <a href="{% url 'modif_profil' %}" class="mb-3 w-75"> Modifier Profil</a>
+            </div>
+          <div class="d-flex w-50 justify-content-between survol">
+            <i class="bi bi-credit-card-2-front text-secondary"></i>
+            <a href="{% url 'valider_abonement' %}" class="mb-3 w-75">Abonnement</a>
+          </div>
+          <div class="d-flex w-50 justify-content-between survol">
+            <i class="bi bi-credit-card-2-front text-secondary"></i>
+            <a href="{% url 'discussions' %}" class="mb-3 w-75">Discussions</a>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="col-md-8 mx-auto">
-    <!-- FORM FILTRER -->
-    <div id="filter-panel-container" class="border rounded p-3 mb-4 mx-4">
-      <form id="filter-panel" class="border rounded p-3 mb-4 mx-4" style="display:none;" novalidate>
-        {% csrf_token %}
-        <div class="row g-3">
-          <div class="col-md-3">
-            <label class="form-label">Genre</label>
-            <select id="filter-gender" class="form-control">
-              <option value="">Tous</option>
-              <option value="Male">Homme</option>
-              <option value="Female">Femme</option>
-              <option value="Other">Autre</option>
-            </select>
-          </div>
+    <div class="col-md-8 mx-auto">
+      <!-- FORM FILTRER -->
+      <div id="filter-panel-container" class="border rounded p-3 mb-4 mx-4">
+        <form id="filter-panel" class="border rounded p-3 mb-4 mx-4" style="display:none;" novalidate>
+          {% csrf_token %}
+          <div class="row g-3">
+            <div class="col-md-3">
+              <label class="form-label">Genre</label>
+              <select id="filter-gender" class="form-control">
+                <option value="">Tous</option>
+                <option value="Male">Homme</option>
+                <option value="Female">Femme</option>
+                <option value="Other">Autre</option>
+              </select>
+            </div>
 
           <div class="col-md-3">
             <label class="form-label">Pays</label>
