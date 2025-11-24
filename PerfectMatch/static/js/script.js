@@ -26,10 +26,10 @@ function CalculerAge(unedate){
 function creerCardProfil(unProfil,imagesProfil){
         // créer un container local pour chaque profil (éviter la réutilisation globale)
         const container = document.createElement("div");
-        container.classList.add("col-md-8");
+        container.classList.add("col-md-8","position-relative");
 
         const card = document.createElement("div");
-        card.classList.add("card", "w-100", "mb-4", "position-relative");
+        card.classList.add("card", "w-100", "mb-4", "d-flex", "justify-content-center");
 
         // Image
         const img = document.createElement("img");
@@ -55,7 +55,7 @@ function creerCardProfil(unProfil,imagesProfil){
         card.appendChild(cardBody1);
 
         const ul = document.createElement("ul");
-        ul.classList.add("w-25", "alignement-gauche");
+        ul.classList.add("w-50", "alignement-gauche");
 
         const items = [
         { icon: "bi-geo-alt", text: `${unProfil.user.country}, ${unProfil.user.city}` },
@@ -66,7 +66,7 @@ function creerCardProfil(unProfil,imagesProfil){
 
         items.forEach(item => {
         const wrapper = document.createElement("div");
-        wrapper.classList.add("d-flex", "justify-content-between", "mb-2");
+        wrapper.classList.add("d-flex", "justify-content-around", "mb-2", "mx-2");
 
         const icon = document.createElement("i");
         icon.classList.add("bi", item.icon);
