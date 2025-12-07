@@ -2,56 +2,66 @@
 {% load static %}
 
 {% block title %}
-PerfectMatch - Se connecter
-{% endblock %}
-
-{% block header%}
-<h2>
-    <a href="/">
-
-    </a>
-</h2>
+PerfectMatch - Connexion
 {% endblock %}
 
 {% block main %}
-<div class="container p-5">
-    <div class="bg-light rounded-4">
-        <h1>Connexion de compte utilisateur</h1>
-        <form class="p-5 w-75" action="#" method="post" novalidate >
+<div class="container py-5">
+
+    <!-- Carte connexion -->
+    <div class="login-card mx-auto text-center">
+        <h2 class="mb-4 text-primary">Connexion</h2>
+        <form class="login-form" action="#" method="post" novalidate>
             {% csrf_token %}
             {{ form }}
-            <div class="d-flex justify-content-end">
-                <input class="btn btn-secondary m-2" type="reset" value="Réinitaliser" />
-                <input class="btn btn-primary m-2" type="submit" value="Envoyer" />
+            <div class="d-flex justify-content-center mt-4">
+                <input class="btn btn-outline-secondary btn-md me-2" type="reset" value="Réinitialiser" />
+                <input class="btn btn-primary btn-md" type="submit" value="Envoyer" />
             </div>
         </form>
     </div>
-    <section class="mt-4">
-        <div class="w-100 d-inline-block row mb-3">
-            <img src="../../static/images/system-2521728_640.jpg" alt="image2"
-                class="img-fluid float-md-start col-lg-4">
-            <h5>Ne perdez plus de temps</h5>
-            <p class="text-center p-2 fs-5"> Grâce à notre système intelligent de filtrage et de compatibilité, vous
-                accédez rapidement à des profils
-                qui répondent précisément à vos critères. Que vous cherchiez une affinité professionnelle, amicale ou
-                amoureuse, notre plateforme v
-                ous permet de cibler les bons profils dès le départ</p>
+
+    <!-- Section promotionnelle -->
+    <section class="promo-section mt-5">
+
+        <!-- Bloc 1 -->
+        <div class="row align-items-center mb-5">
+            <div class="col-lg-6 text-center mb-3 mb-lg-0">
+                <img src="{% static 'images/system-2521728_640.jpg' %}" alt="Illustration" class="promo-img">
+            </div>
+            <div class="col-lg-6">
+                <h3 class="fw-bold mb-3">Ne perdez plus de temps</h3>
+                <p class="fs-5">Grâce à notre système intelligent de filtrage et de compatibilité, vous accédez rapidement à des profils
+                    qui répondent précisément à vos critères. Que vous cherchiez une affinité professionnelle, amicale ou amoureuse,
+                    notre plateforme vous permet de cibler les bons profils dès le départ.</p>
+            </div>
         </div>
-        <div class="w-100 d-inline-block row mb-3">
-            <p class="text-center p-2 fs-5"> Notre plateforme vous permet d’identifier rapidement les profils qui
-                répondent à vos attentes, grâce
-                à des filtres précis et une technologie de matching intelligente. Que vous soyez en quête d’une
-                connexion sérieuse ou d’une affinité
-                spontanée, vous accédez directement aux personnes qui vous correspondent.</p>
-            <img src="../../static/images/system-2521728_640.jpg" alt="image2" class="img-fluid float-md-end col-lg-4">
+
+        <!-- Bloc 2 -->
+        <div class="row align-items-center mb-5 flex-lg-row-reverse">
+            <div class="col-lg-6 text-center mb-3 mb-lg-0">
+                <img src="{% static 'images/system-2521728_640.jpg' %}" alt="Illustration" class="promo-img">
+            </div>
+            <div class="col-lg-6">
+                <h3 class="fw-bold mb-3">Filtrage intelligent</h3>
+                <p class="fs-5">Notre plateforme vous permet d’identifier rapidement les profils qui répondent à vos attentes,
+                    grâce à des filtres précis et une technologie de matching intelligente. Que vous soyez en quête d’une connexion sérieuse
+                    ou d’une affinité spontanée, vous accédez directement aux personnes qui vous correspondent.</p>
+            </div>
         </div>
-        <div class="w-100 d-inline-block row mb-3">
-            <img src="../../static/images/people-7273372_640.jpg" alt="image1"
-                class="img-fluid float-md-start col-lg-4">
-            <p class="text-center p-2 fs-5"> Ne perdez plus de temps : trouvez des profils qui correspondent à vos
-                critères et testez la solidité de vos
-                matchs avant de vous lancer.</p>
+
+        <!-- Bloc 3 -->
+        <div class="row align-items-center mb-5">
+            <div class="col-lg-6 text-center mb-3 mb-lg-0">
+                <img src="{% static 'images/people-7273372_640.jpg' %}" alt="Illustration" class="promo-img">
+            </div>
+            <div class="col-lg-6">
+                <h3 class="fw-bold mb-3">Trouvez votre match</h3>
+                <p class="fs-5">Ne perdez plus de temps : trouvez des profils qui correspondent à vos critères et testez
+                    la solidité de vos matchs avant de vous lancer.</p>
+            </div>
         </div>
+
     </section>
 </div>
 {% endblock %}
