@@ -40,36 +40,56 @@
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 {% if user.is_authenticated %}
-                <ul class="navbar-nav mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link active text-white" aria-current="page"
-                            href="{% url 'accueil' %}">Accueil</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="#">Mon compte</a>
-                    </li>
-                </ul>
-                <ul class="navbar-nav ms-auto d-flex flex-row align-items-center" id="blocNotifs">
-                    <li class="nav-item text-center mx-2">
-                        <a href="{% url 'deconnexion' %}" class="nav-link text-decoration-none">
-                            <i class="bi bi-box-arrow-in-right fs-4 text-danger"></i><br>
-                            <small class="text-white">Déconnexion</small>
-                        </a>
-                    </li>
+                <ul class="navbar-nav ms-auto d-flex align-items-center" style="gap: 2rem;">
 
-                    <li class="nav-item text-center mx-2">
-                        <a class="nav-link position-relative text-decoration-none" onclick="toggleNotifications()">
-                            <i class="bi bi-bell fs-4 text-white"></i><br>
-                            <small class="text-white">Notifications</small>
+    <!-- Accueil -->
+    <li class="nav-item text-center">
+        <a class="nav-link text-decoration-none" href="{% url 'accueil' %}">
+            <div class="d-flex flex-column align-items-center">
+                <i class="bi bi-house fs-4 text-white"></i>
+                <small class="text-white">Accueil</small>
+            </div>
+        </a>
+    </li>
 
-                            {% if notif_count > 0 %}
-                            <span class="badge bg-danger notif-badge">
-                                {{ notif_count }}
-                            </span>
-                            {% endif %}
-                        </a>
-                    </li>
-                </ul>
+    <!-- Mon compte -->
+    <li class="nav-item text-center">
+        <a class="nav-link text-decoration-none" href="{% url 'profil' %}">
+            <div class="d-flex flex-column align-items-center">
+                <i class="bi bi-person-circle fs-4 text-white"></i>
+                <small class="text-white">Mon compte</small>
+            </div>
+        </a>
+    </li>
+
+    <!-- Déconnexion -->
+    <li class="nav-item text-center">
+        <a href="{% url 'deconnexion' %}" class="nav-link text-decoration-none">
+            <div class="d-flex flex-column align-items-center">
+                <i class="bi bi-box-arrow-in-right fs-4 text-danger"></i>
+                <small class="text-white">Déconnexion</small>
+            </div>
+        </a>
+    </li>
+
+    <!-- Notifications -->
+    <li class="nav-item text-center position-relative">
+        <a class="nav-link text-decoration-none" onclick="toggleNotifications()">
+            <div class="d-flex flex-column align-items-center">
+                <i class="bi bi-bell fs-4 text-white"></i>
+                <small class="text-white">Notifications</small>
+            </div>
+        </a>
+
+        {% if notif_count > 0 %}
+        <span class="badge bg-danger notif-badge position-absolute top-0 start-100 translate-middle">
+            {{ notif_count }}
+        </span>
+        {% endif %}
+    </li>
+
+</ul>
+
 
                 {% else %}
                 <div class="navbar-nav ms-auto">
