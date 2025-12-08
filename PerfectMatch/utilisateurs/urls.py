@@ -27,5 +27,7 @@ urlpatterns = [
     path('api/messages/<int:user_id>/', views.get_messages, name='get_messages'),
     path('api/envoyer_message/<int:receiver_Id>/', views.envoyer_message, name='envoyer_message'),
     path('modif_profil/', views.modifier_view, name='modif_profil'),
+    path('mes_matchs/', views.mes_matchs, name='mes_matchs'),
+    path('profil/<int:id>/', views.profil_view, name='profil')
 ]
 
