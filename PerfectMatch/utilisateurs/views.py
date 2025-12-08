@@ -380,19 +380,40 @@ def get_discussions(request):
             discussion_profile_ids.add(receiver_id)
 
     # Obtentions des donnes autres utilisateurs
-    other_users = User.objects.filter(profile__id__in=discussion_profile_ids)
+    other_profiles = UserProfile.objects.filter(id__in=discussion_profile_ids)
 
-    data = [
-        {
-            "id": user.id,
-            "username": user.username,
-        }
-        for user in other_users
-    ]
+    data = []
+    
+    for profile in other_profiles:
+        # Recuperer le dernier message avec ce partenaire
+        last_message = Message.objects.filter(
+            Q(sender=current_profile, receiver=profile) |
+            Q(sender=profile, receiver=current_profile)
+        ).order_by("-timestamp").first()
+
+        avatar_url = profile.user.photo_profil.url
+        if avatar_url is None:
+            avatar_url = "/static/img/default-avatar.png"
+        # Essaie obtention de l'avatar, sinon image defaut
+        # avatar_url = None
+        # try:
+        #     avatar_url = profile.user.profil_profil.image.url
+        # except Exception:
+        #     avatar_url = "/static/img/default-avatar.png"
+            
+        data.append({
+            "user_id": profile.user.id,
+            "username": profile.user.username,
+            "photo_profil": avatar_url,
+            "last_message": last_message.content[:20] if last_message else "", #contenu abrege
+            "last_timestamp": last_message.timestamp.strftime("%Y-%m-%d %H:%M") if last_message else None,
+        })
+
+    #Trier par message le plus recent
+    data.sort(key=lambda x: x["last_timestamp"], reverse=True)   
 
     return JsonResponse(data, safe=False)
 
-@login_required
 @login_required
 def get_messages(request, user_id):
     current_profile = request.user.profile
