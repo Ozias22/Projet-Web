@@ -32,7 +32,7 @@ class User(AbstractUser):
 
     username = models.CharField(max_length=50, unique=True,  validators=[MinLengthValidator(3, "Le nom d'utilisateur doit contenir au moins 3 caractères.")])
     email = models.EmailField(unique=True)
-    photo_profil = models.ImageField(verbose_name='image_de_profil',upload_to='images/profiles/%Y/%m/%d/',validators=[validate_file_extension,validate_file_size],blank=True, default='images/profiles/default.jpg' )
+    photo_profil = models.ImageField(verbose_name='image_de_profil',upload_to='images/profiles/%Y/%m/%d/',validators=[validate_file_extension,validate_file_size],blank=True, default='profils/default.png' )
     first_name = models.CharField(max_length=30, blank=False)
     last_name = models.CharField(max_length=30, blank=False)
     country = models.CharField(max_length=50, blank=False)

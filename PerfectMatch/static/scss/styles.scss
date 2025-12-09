@@ -1,12 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Lilita+One&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lilita+One&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");
 
 /** VARIABLES **/
-$primary: #E94E65;
-$secondary: #CB6372;
-$info: #B23F56;
-$dark: #3D2F32;
-$light: #F8F9FA;
+$primary: #e94e65;
+$secondary: #cb6372;
+$info: #b23f56;
+$dark: #3d2f32;
+$light: #f8f9fa;
 
 $text-primary: "Roboto", sans-serif;
 $text-titre: "Lilita One", serif;
@@ -16,133 +16,150 @@ $text-titre: "Lilita One", serif;
 
 /*** Début des styles personnalisés ***/
 
-footer{
-    bottom: 0;
-    background-color: $dark;
-    margin-top: 3rem;
-    @extend .text-white;
-    @extend .p-1;
+footer {
+  bottom: 0;
+  background-color: $dark;
+  margin-top: 3rem;
+  @extend .text-white;
+  @extend .p-1;
 }
 img {
-    object-fit: cover;
+  object-fit: cover;
 }
 
 .full-width {
-    width: 100%;
-    max-width: 1500px;
+  width: 100%;
+  max-width: 1500px;
 }
 
 .aside-accueil {
-    margin-left: 2.8rem;
-    @extend .text-center;
-    @extend .col-md-3;
+  margin-left: 2.8rem;
+  @extend .text-center;
+  @extend .col-md-3;
 }
 
 a {
-    text-decoration: none;
-    color: black;
+  text-decoration: none;
+  color: black;
 }
 
 .survol {
-    width: 60%;
+  width: 60%;
 }
 
 .survol:hover {
-    text-decoration: none;
-    background-color: rgba(188, 121, 188, 0.509);
-    border-radius: 1.1rem;
-    padding-left: 18px;
-    padding-right: 18px;
-    padding-top: 11px;
-    transition: 0.3s;
+  text-decoration: none;
+  background-color: rgba(188, 121, 188, 0.509);
+  border-radius: 1.1rem;
+  padding-left: 18px;
+  padding-right: 18px;
+  padding-top: 11px;
+  transition: 0.3s;
 }
 
 .alignement-gauche {
-    text-align: left;
+  text-align: left;
 }
 
 .card-abonnement {
-    @extend .col-3;
-    @extend .rounded-2;
-    @extend .border-secondary;
-    @extend .border;
-    @extend .border-2;
-    @extend .mx-1;
-    @extend .p-2;
+  @extend .col-3;
+  @extend .rounded-2;
+  @extend .border-secondary;
+  @extend .border;
+  @extend .border-2;
+  @extend .mx-1;
+  @extend .p-2;
 }
 
 .card-abonnement:hover {
-    background-color: rgba(203, 99, 115, 0.59);
+  background-color: rgba(203, 99, 115, 0.59);
 }
 
 .chkbox {
-    width: 15px;
+  width: 15px;
 }
 
 .bg-pink-dark {
-    background-color: #c2185b !important;
-    color: #fff;
+  background-color: #c2185b !important;
+  color: #fff;
 }
 
 .btn-pink-dark {
-    background-color: #c2185b;
-    border-color: #b0104a;
-    color: #fff;
+  background-color: #c2185b;
+  border-color: #b0104a;
+  color: #fff;
 }
 
 .btn-pink-dark:hover {
-    background-color: #ad1457;
-    border-color: #99003f;
+  background-color: #ad1457;
+  border-color: #99003f;
 }
 
 /***DISCUSSIONS***/
 #messages {
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
 }
 
 .message-row {
-    display: flex;
-    width: 100%;
-    margin-bottom: 10px;
+  display: flex;
+  width: 100%;
+  margin-bottom: 10px;
 }
-.format-discussions .aside-accueil {
+
+.format-discussions {
+  height: 85vh;
+  .aside-accueil {
     margin-left: 0 !important;
     text-align: left !important;
+  }
 }
 
 .message-left {
-    justify-content: flex-start;
+  justify-content: flex-start;
 }
 
 .message-right {
-    justify-content: flex-end;
+  justify-content: flex-end;
 }
 
 .bubble {
-    max-width: 65%;
-    padding: 10px 14px;
-    border-radius: 12px;
-    font-family: $text-primary;
-    word-break: break-word;
+  max-width: 65%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-family: $text-primary;
+  word-break: break-word;
 }
 
 .bubble-left {
-    background: #e9e9e9;
-    color: black;
+  background: #e9e9e9;
+  color: black;
 }
 
 .bubble-right {
-    background: $primary;
-    color: white;
+  background: $primary;
+  color: white;
 }
+
+.discussion-preview {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.discussion-timestamp {
+  font-size: 0.75rem;
+  color: rgba(0, 0, 0, 0.55);
+}
+
 .profile-avatar {
-    width: 310px;
-    height: 280px;
-    display: flex;
-    justify-content: center;
+  width: 310px;
+  height: 280px;
+  display: flex;
+  justify-content: center;
 }
 
 /* Card swipe animations */
@@ -150,7 +167,8 @@ a {
   position: relative;
 }
 .card-stack > .col-md-8 {
-  transition: transform 350ms cubic-bezier(.22,.9,.32,1), opacity 350ms ease;
+  transition: transform 350ms cubic-bezier(0.22, 0.9, 0.32, 1),
+    opacity 350ms ease;
   will-change: transform, opacity;
 }
 .card-enter {
@@ -170,22 +188,22 @@ a {
   opacity: 0;
 }
 
-.bloc-images{
+.bloc-images {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 300px;
-
 }
 
 .profile-card {
   position: absolute;
-  transition: transform 0.45s cubic-bezier(.22,.9,.32,1), opacity 0.45s ease;
+  transition: transform 0.45s cubic-bezier(0.22, 0.9, 0.32, 1),
+    opacity 0.45s ease;
   width: 300px;
   height: 400px;
   background: $secondary;
   border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 /* Badge shown during swipe or after click */
@@ -209,4 +227,3 @@ a {
 .swipe-badge.disliked {
   background: rgba(220, 40, 40, 0.95);
 }
-
