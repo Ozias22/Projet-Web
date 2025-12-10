@@ -6,7 +6,7 @@ const btnJaime = document.getElementById("jaime");
 const btnJaimePas = document.getElementById("!jaime");
 var profils;
 var imagesProfils;
-let isAnimating;
+let isAnimating= false;
 divProfils.classList.add('card-stack');
 const imgDefaut = '/media/images/profiles/default.jpg';
 
