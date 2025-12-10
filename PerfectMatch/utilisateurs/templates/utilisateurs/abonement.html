@@ -1,5 +1,6 @@
 {% extends "utilisateurs/_modele.html"%}
 
+{% load static %}
 {% block title %}
 PerfectMatch - Abonnement
 {% endblock %}
@@ -10,15 +11,6 @@ PerfectMatch - Abonnement
     <form action="{% url 'valider_abonement' %}" method="post" novalidate>
         {% csrf_token %}
         <h2 class="text-center my-3">Choisissez votre abonnement</h2>
-        {% if messages %}
-        <div>
-            {% for message in messages %}
-            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">
-                {{ message }}
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
         <div class="d-flex justify-content-center">
             <div class="accordion accordion-flush col-md-8" id="accordionFlushExample">
                 <div class="accordion-item">
@@ -56,18 +48,20 @@ PerfectMatch - Abonnement
                     </h2>
                     <div id="flush-collapseTwo" class="accordion-collapse" data-bs-parent="#accordionFlushExample">
                         <div class="accordion-body">
-                            {{ form.type_abonement }}
+                            <div class="d-none">
+                                {{ form.type_abonement }}
+                            </div>
                             <div class="row">
-                                <div class="card-abonnement">
+                                <div class="card-abonnement" data-value="Mensuel">
                                     <h6 class="text-center">Abonnement Mensuel</h6>
                                     <p class="text-center">15$/mois</p>
                                 </div>
-                                <div class="card-abonnement">
+                                <div class="card-abonnement" data-value="Annuel">
                                     <h6 class="text-center">Abonnement Annuel</h6>
                                     <p class="text-center">110$/An</p>
                                 </div>
-                                <div class="card-abonnement">
-                                    <h6 class="text-center">Abonnement Premiun</h6>
+                                <div class="card-abonnement" data-value="Premium">
+                                    <h6 class="text-center">Abonnement Premium</h6>
                                     <p class="text-center">20$/mois</p>
                                 </div>
                             </div>
@@ -115,4 +109,8 @@ PerfectMatch - Abonnement
     </form>
 </div>
 
+{% endblock %}
+
+{% block scriptjs %}
+<script src="{% static 'js/abonnement.js' %}" defer></script>
 {% endblock %}
