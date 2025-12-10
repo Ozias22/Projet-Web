@@ -202,6 +202,7 @@ def profil_perfectmatch_view(request):
             "ImagesUser": imagesUser
         }
     )
+
 @login_required
 def obtenir_profil(request):
     user = request.user
@@ -392,7 +393,7 @@ def get_discussions(request):
 
     return JsonResponse(data, safe=False)
 
-@login_required
+
 @login_required
 def get_messages(request, user_id):
     current_profile = request.user.profile
@@ -467,5 +468,11 @@ def envoyer_message(request,receiver_Id):
         return JsonResponse({'result': 'Message envoyé avec succès'})
     else:
         return JsonResponse({'error': 'Échec de l\'envoi du message'}, status=500)
-
-
+    
+@login_required
+def mes_matchs(request):
+    user = request.user
+    # Filtrer les tests faits par l'utilisateur
+    matchs = Compatibilite.objects.filter(utilisateur=user).select_related('match')
+    matchs = matchs.order_by('-score')  # tri décroissant
+    return render(request, 'utilisateurs/mes_matchs.html', {'matchs': matchs})
