@@ -1,0 +1,11 @@
+{% extends "utilisateurs/_modele.html" %} {% block title %}Aucune autorisation -
+403{%endblock %} {% block main %}
+<div class="container text-center py-5">
+  <h1 class="display-4">Erreur 403</h1>
+  <p class="lead">Vous n’avez pas l’autorisation d’accéder à cette page.</p>
+
+  <a href="{% url 'connexion' %}" class="btn btn-primary mt-3">
+    Retour à l’accueil
+  </a>
+</div>
+{% endblock %}
