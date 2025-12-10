@@ -1,0 +1,11 @@
+{% extends "utilisateurs/_modele.html" %} {% block title %}Page
+introuvable{%endblock %} {% block main %}
+<div class="container text-center py-5">
+  <h1 class="display-4">Erreur 404</h1>
+  <p class="lead">Oups… cette page n’existe pas.</p>
+
+  <a href="{% url 'connexion' %}" class="btn btn-primary mt-3">
+    Retour à l’accueil
+  </a>
+</div>
+{% endblock %}
