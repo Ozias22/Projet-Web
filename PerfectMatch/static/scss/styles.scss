@@ -2,11 +2,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Lilita+One&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");
 
 /** VARIABLES **/
-$primary: #e94e65;
-$secondary: #cb6372;
-$info: #b23f56;
-$dark: #3d2f32;
-$light: #f8f9fa;
+$primary: #f559ce;
+$secondary: #b8405a;
+$info: #db9bb6;
+$dark: #2b2c49;
+$light: #f7f9f7;
 
 $text-primary: "Roboto", sans-serif;
 $text-titre: "Lilita One", serif;
@@ -41,6 +41,24 @@ img {
 a {
   text-decoration: none;
   color: black;
+}
+
+.returnTop {
+  position: fixed;
+  right: 0.5%;
+  bottom: 0.5%;
+  z-index: 99;
+
+  @extend .text-primary;
+  font-size: 50px;
+}
+
+.image-box {
+  @extend .img-fluid;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 16px;
 }
 
 .survol {
