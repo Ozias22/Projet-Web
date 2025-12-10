@@ -8,22 +8,6 @@ PerfectMatch - Mon Profil PerfectMatch
 
 {% block main %}
 <div class="container mt-5">
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        {% endfor %}
-    {% endif %}
-
-    <div class="row mb-4 text-center">
-        <div class="col">
-            <a href="#" id="modifierProfil" class="btn btn-primary me-2 active">Modifier Profil</a>
-            <a href="#" id="apercuProfil" class="btn btn-secondary">Aperçu Profil</a>
-        </div>
-    </div>
-
     <div class="row justify-content-center">
         <div class="col-lg-8">
             <div class="card shadow-sm rounded-4 border-secondary">
