@@ -107,6 +107,12 @@ a {
 .card-abonnement:hover {
   background-color: rgba(203, 99, 115, 0.59);
 }
+.card-abonnement.active {
+  border-color: rgba(203, 99, 115, 0.59);
+  background-color: rgba(203, 99, 115, 0.59);
+  box-shadow: 0 0 10px rgba(236, 15, 15, 0.3);
+}
+
 
 .chkbox {
   width: 15px;
@@ -126,6 +132,20 @@ a {
 .btn-pink-dark:hover {
   background-color: #ad1457;
   border-color: #99003f;
+}
+/* Carte de connexion */
+.login-card {
+    background-color: #fff;
+    max-width: 550px;
+    padding: 2.5rem;
+    border-radius: 25px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.login-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.18);
 }
 
 /***DISCUSSIONS***/
@@ -149,6 +169,12 @@ a {
     text-align: left !important;
   }
 }
+
+.centrer_contenu{
+    max-width: 100%;
+    margin: 0 auto;
+}
+
 
 .message-left {
   justify-content: flex-start;

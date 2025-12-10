@@ -276,7 +276,7 @@ class AbonnementForm(forms.ModelForm):
         model = Abonement
         fields = ['type_abonement', 'card_number', 'expiration_date','cvv']
         widgets = {
-            'type_abonnement': forms.HiddenInput(),
+            'type_abonnement': forms.Select(attrs={'class': 'd-none', 'id': 'type_abonnement'}),
             'card_number': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '1234 5678 9012 3456'}),
             'expiration_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'cvv': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '123'}),
@@ -344,7 +344,7 @@ class ProfilForm(forms.ModelForm):
                 'readonly': 'readonly'
             }),
         }
-        
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
