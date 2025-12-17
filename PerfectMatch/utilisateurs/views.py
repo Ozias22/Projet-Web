@@ -17,7 +17,7 @@ from django.db.models.functions import Random
 from datetime import date
 from django.db.models.functions import Random
 from django.utils.timezone import localtime
-
+from django.templatetags.static import static
 
 def index(request):
     return redirect("connexion")
@@ -231,7 +231,7 @@ def obtenir_profil(request):
             if i.is_mutual:
                 profiles_non_valides.append(i)
         utilisateurs_profiles = UserProfile.objects.exclude(id__in=[profiles_non_valide.user2_id for profiles_non_valide in profiles_non_valides]).exclude(user=user)
-        # imagesUsers = ImagesUser.objects.filter(user__in=[utilisateur_profile.user for utilisateur_profile in utilisateurs_profiles])
+        imagesUsers = ImagesUser.objects.filter(user__in=[utilisateur_profile.user for utilisateur_profile in utilisateurs_profiles])
         users = []
         for profil in utilisateurs_profiles:
             if profil.user_id:  # évite les profils orphelins
@@ -242,7 +242,7 @@ def obtenir_profil(request):
     else:
         utilisateurs_profiles = UserProfile.objects.exclude(user=user)
         imagesUsers = ImagesUser.objects.filter(user__in=[utilisateur_profile.user for utilisateur_profile in utilisateurs_profiles])
-    # return JsonResponse({'profiles': serializers.serialize('json', utilisateurs_profiles),'Images':serializers.serialize('json', imagesUsers)}, safe=False)
+        return JsonResponse({'profiles': serializers.serialize('json', utilisateurs_profiles),'Images':serializers.serialize('json', imagesUsers)}, safe=False)
 
     # AJOUT DES FILTRES POUR GET PROFILES
     # Genre selon UseProfile
@@ -379,11 +379,10 @@ def get_discussions(request):
             Q(sender=profile, receiver=current_profile)
         ).order_by("-timestamp").first()
 
-        # Essaie obtention de l'avatar, sinon image defaut
-        try:
-            avatar_url = profile.user.photo_profil.url
-        except Exception:
-            avatar_url = "/media/profils/default.png"
+        # Essaie obtention de l'avatar, sinon image defaut    
+        avatar_url = profile.user.photo_profil.url
+        if not avatar_url:
+            avatar_url = static("images/default.png")
         
         # si nouveau message non lu
         is_unread = (
