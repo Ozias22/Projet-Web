@@ -123,7 +123,7 @@ def test_compatibilite(request, match_id):
         messages.error(request, "Vous ne pouvez pas faire un test de compatibilité avec vous-même.")
         return redirect("mes_matchs")
 
-    match = get_object_or_404(User, id=match_id)
+    match = Match.objects.get(id=match_id)
 
     if request.method == "POST":
         form = TestCompatibiliteForm(request.POST)
@@ -138,15 +138,11 @@ def test_compatibilite(request, match_id):
 
             score_final = (score / total) * 100
 
+            user1  = User.objects.get(id=match.user1_id)
+            user2  = User.objects.get(id=match.user2_id)
             Compatibilite.objects.update_or_create(
-                utilisateur=request.user,
-                match=match,
-                defaults={'score': score_final}
-            )
-
-            Compatibilite.objects.update_or_create(
-                utilisateur=match,
-                match=request.user,
+                utilisateur=user1,
+                match=user2,
                 defaults={'score': score_final}
             )
 
@@ -458,6 +454,22 @@ def envoyer_message(request,receiver_Id):
 def mes_matchs(request):
     user = request.user
     # Filtrer les tests faits par l'utilisateur
-    matchs = Compatibilite.objects.filter(utilisateur=user).select_related('match')
-    matchs = matchs.order_by('-score')  # tri décroissant
+    # matchs = Compatibilite.objects.filter(utilisateur=user).select_related('match')
+    # matchs = matchs.order_by('-score')  # tri décroissant
+    matchs = Match.objects.filter(user1__user=user, is_mutual=True)
     return render(request, 'utilisateurs/mes_matchs.html', {'matchs': matchs})
+
+@login_required
+def supprimer_image(request,id):
+    image_id = id
+
+    if not image_id:
+        return JsonResponse({"success": False, "error": "ID manquant"})
+
+    try:
+        image = ImagesUser.objects.get(id=image_id, user=request.user)
+        image.delete()
+    except ImagesUser.DoesNotExist:
+        return JsonResponse({"success": False, "error": "Image introuvable"})
+
+    return redirect('profilPerfectMatch')

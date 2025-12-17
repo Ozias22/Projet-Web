@@ -79,9 +79,8 @@ PerfectMatch - Mon Profil PerfectMatch
                                         class="img-fluid rounded shadow-sm border border-secondary"
                                         style="width: 200px; height: 200px; object-fit: cover;">
                                 </a>
-                                <button type="button" class="btn btn-sm btn-danger mt-2 btn-supprimer-image" data-id="{{ image.id }}">
-                                     Supprimer
-                           </button>
+
+                           <a href="{% url 'supprimer_image' image.id %}" class="btn btn-sm btn-danger mt-2">Supprimer</a>
 
                             </div>
                         {% endfor %}

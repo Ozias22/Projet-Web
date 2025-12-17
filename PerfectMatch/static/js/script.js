@@ -4,9 +4,10 @@
 const  divProfils = document.getElementById("bloc_profils");
 const btnJaime = document.getElementById("jaime");
 const btnJaimePas = document.getElementById("!jaime");
+let isAnimating = false
 var profils;
 var imagesProfils;
-let isAnimating= false;
+
 divProfils.classList.add('card-stack');
 const imgDefaut = '/media/images/profiles/default.jpg';
 
