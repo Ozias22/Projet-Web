@@ -405,8 +405,13 @@ def notifications_view(request):
     profile = get_object_or_404(UserProfile, user=request.user)
 
     unread_messages = Message.objects.filter(receiver=profile, is_read=False).order_by('-timestamp')
+    match_not_mutual = Match.objects.filter(
+        user2_id = profile,
+        is_mutual = False
+    )
 
-    data = [
+    data = {
+        'messages' :[
         {
             "id": msg.id,
             "sender": msg.sender.user.username,
@@ -414,7 +419,13 @@ def notifications_view(request):
             "timestamp": msg.timestamp.strftime("%Y-%m-%d %H:%M")
         }
         for msg in unread_messages
-    ]
+        ],
+        'matchs': [{
+            "utilisateur": match.user1_id.user.username,
+        }
+        for match in match_not_mutual
+        ]
+    }
     unread_messages.update(is_read=True)
 
     return JsonResponse({"messages": data})

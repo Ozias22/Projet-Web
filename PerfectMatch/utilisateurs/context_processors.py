@@ -1,4 +1,4 @@
-from utilisateurs.models import Message, UserProfile
+from utilisateurs.models import Message, UserProfile,Match
 
 def navbar_notifications(request):
     if not request.user.is_authenticated:
@@ -13,7 +13,12 @@ def navbar_notifications(request):
         is_read=False
     ).order_by("-timestamp")[:5]
 
+    match_not_mutial = Match.objects.filter(
+        user2_id = profile,
+        is_mutual = False
+    )
+
     return {
-        "notif_count": unread_messages.count(),
+        "notif_count": unread_messages.count() + match_not_mutial.count(),
         "notif_messages": unread_messages
     }
