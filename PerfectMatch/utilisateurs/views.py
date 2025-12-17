@@ -112,7 +112,7 @@ def modifier_view(request):
         if form.is_valid():
             form.save()
             messages.success(request, "✅ Votre profil a été mis à jour avec succès !")
-            return redirect('modif_profil') 
+            return redirect('modif_profil')
         else:
             messages.error(request, "Veuillez corriger les erreurs dans le formulaire.")
     else:
@@ -243,7 +243,7 @@ def obtenir_profil(request):
         utilisateurs_profiles = UserProfile.objects.exclude(user=user)
         imagesUsers = ImagesUser.objects.filter(user__in=[utilisateur_profile.user for utilisateur_profile in utilisateurs_profiles])
     # return JsonResponse({'profiles': serializers.serialize('json', utilisateurs_profiles),'Images':serializers.serialize('json', imagesUsers)}, safe=False)
- 
+
     # AJOUT DES FILTRES POUR GET PROFILES
     # Genre selon UseProfile
     if gender:
@@ -264,7 +264,7 @@ def obtenir_profil(request):
         utilisateurs_profiles = utilisateurs_profiles.filter(user__birthday__gte=min_birthdate)
     # Mettre la liste en aleatoire
     utilisateurs_profiles = utilisateurs_profiles.order_by(Random())
- 
+
     # Construire une liste de profils avec l'objet user inclus (dictionnaire sérialisable)
     profils_serialises = []
     for up in utilisateurs_profiles:
@@ -287,15 +287,15 @@ def obtenir_profil(request):
             'bio': up.bio,
             'interests': [i.name for i in up.interests.all()],
         })
- 
+
     imagesUsers = list(imagesUsers.values())
     for img in imagesUsers:
         img['image'] = f"/media/{img['image']}"
- 
+
     return JsonResponse({'profiles': profils_serialises, 'Images': imagesUsers})
- 
- 
- 
+
+
+
 
 
 @csrf_exempt
@@ -346,21 +346,6 @@ def action_like(request):
     else:
         return JsonResponse({'error': 'Unknown action'}, status=400)
 
-# @login_required
-# def profil_user_view(request, id):
-#     """Vue pour afficher le profil d’un utilisateur donné"""
-#     user = get_object_or_404(User, id=id)
-#     user_profile = UserProfile.objects.get(user=user)
-#     imagesUser = ImagesUser.objects.filter(user=user)
-
-#     form1 = userProfileForm(instance=user_profile)
-#     form2 = ImagesUserForm()
-
-#     return render(
-#         request,
-#         "utilisateurs/profilePerfectMatch.html",
-#         {"form1": form1, "form2": form2, "ImagesUser": imagesUser}
-#     )
 @login_required
 def discussions(request):
     return render(request,"utilisateurs/discussions.html")
@@ -510,7 +495,7 @@ def envoyer_message(request,receiver_Id):
         return JsonResponse({'result': 'Message envoyé avec succès'})
     else:
         return JsonResponse({'error': 'Échec de l\'envoi du message'}, status=500)
-    
+
 @login_required
 def mes_matchs(request):
     user = request.user
