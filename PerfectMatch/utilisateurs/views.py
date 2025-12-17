@@ -50,7 +50,7 @@ def valider_abonement(request):
     return render(request, "utilisateurs/abonement.html", {"form": form})
 
 def deconnexion(request):
-    """Comment"""
+    """Déconnecte l'utilisateur courant et redirige vers la page de connexion."""
     logout(request)
     messages.success(request, "Vous avez été déconnecté avec succès.")
     return redirect('connexion')
