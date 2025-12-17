@@ -57,31 +57,40 @@ def deconnexion(request):
 
 
 def connexion(request):
-    """Comment"""
+    """
+    Gère la connexion d'un utilisateur via un formulaire.
+    - Authentifie l'utilisateur
+    - Crée le profil s'il n'existe pas
+    - Redirige selon le premier login
+    """
+
     if request.user.is_authenticated:
         return redirect('accueil')
 
+    # Traitement du formulaire de connexion
     if request.method == "POST":
         form = ConnectionForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data["username"]
             password = form.cleaned_data["password"]
-
+            # Cherche BD pour utilisateur valide
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
                 messages.success(request, "Connexion réussie !")
 
-                from utilisateurs.models import UserProfile
-
+                # Création ou récupération du profil utilisateur
+                # created necessaire puisque tuple
                 profile, created = UserProfile.objects.get_or_create(user=user)
 
+                # Redirection si premier login
                 if profile.first_login:
                     profile.first_login = False
                     profile.save()
                     return redirect('profilPerfectMatch')
                 return redirect('accueil')
             else:
+                # Erreur globale du formulaire
                 form.add_error(None, "Nom d'utilisateur ou mot de passe incorrect.")
     else:
         form = ConnectionForm()
@@ -91,7 +100,10 @@ def connexion(request):
 
 @login_required
 def accueil(request):
-    """Vue pour la page d'accueil après connexion"""
+    """
+    Vue de la page d'accueil.
+    Accessible uniquement aux utilisateurs authentifiés.
+    """
     user = request.user
     return render(request, "utilisateurs/accueil.html", {"user": user})
 
@@ -346,26 +358,39 @@ def action_like(request):
 
 @login_required
 def discussions(request):
+    """
+    Affiche la page principale des discussions entre utilisateurs.
+    Accessible uniquement aux utilisateurs authentifiés.
+    """
     return render(request,"utilisateurs/discussions.html")
 
 @login_required
 def get_discussions(request):
+    """
+    API, permettant d'obtenir les partenaires de discussions
+    de l'utilisateur courant, basée sur les messages échangés.
+    
+    Accessible uniquement aux utilisateurs authentifiés.
+    
+    :return JsonResponse: Liste d'utilisateurs partenaires
+    """
     current_profile = request.user.profile
-
+    
     # Obtient les utilisateurs qui on interagis avec l'utilisateur courant
     pairs = Message.objects.filter(
         Q(sender=current_profile) | Q(receiver=current_profile)
     ).values_list("sender_id", "receiver_id").distinct()
-
+    
+    # Extrait les IDs des partenaires de discussion.
+    # Chaque message contient un sender_id et un receiver_id,
+    # dont un correspond toujours à l'utilisateur courant.
     discussion_profile_ids = set()
-    # Filtre les utilisateurs en contact pour l'affichage des discussions
     for sender_id, receiver_id in pairs:
         if sender_id != current_profile.id:
             discussion_profile_ids.add(sender_id)
         if receiver_id != current_profile.id:
             discussion_profile_ids.add(receiver_id)
-
-    # Obtentions des donnes autres utilisateurs
+    # Obtentions des autres utilisateurs
     other_users = User.objects.filter(profile__id__in=discussion_profile_ids)
 
     data = [
@@ -381,10 +406,22 @@ def get_discussions(request):
 
 @login_required
 def get_messages(request, user_id):
+    """
+    API permettant de récupérer la liste des messages échangés
+    entre l'utilisateur courant et un partenaire donné.
+
+    Accessible uniquement aux utilisateurs authentifiés.
+
+    :param int user_id: Identifiant de l'utilisateur partenaire
+    :return JsonResponse: Liste chronologique des messages
+    """
+
     current_profile = request.user.profile
     sender_profile = get_object_or_404(UserProfile, user__id=user_id)
-
     print(sender_profile)
+    
+    # Récupère tous les messages échangés entre l'utilisateur courant
+    # et le partenaire, triés chronologiquement
     messages_list = Message.objects.filter(
         Q(receiver_id=current_profile.id, sender_id=sender_profile.id) |
         Q(receiver_id=sender_profile.id, sender_id=current_profile.id)
@@ -426,32 +463,52 @@ def notifications_view(request):
 @csrf_exempt
 @login_required
 def envoyer_message(request,receiver_Id):
+    """
+    API permettant l'envoi d'un message entre l'utilisateur connecté
+    et un utilisateur partenaire.
+
+    Reçoit les données au format JSON depuis une requête AJAX.
+    Accessible uniquement aux utilisateurs authentifiés.
+
+    :param int receiver_Id: Identifiant de l'utilisateur destinataire
+    :return JsonResponse: Résultat de l'envoi du message
+    """
+    # Autorise uniquement les requêtes POST (sécurité API)
     if request.method != 'POST':
         return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
 
+    # Tentative de lecture du corps JSON de la requête
     try:
         donnees = json.loads(request.body)
     except Exception:
         return JsonResponse({'error': 'JSON Invalide'}, status=400)
 
+    # Extraction du contenu du message
     content = donnees.get('content')
 
+    # Validation des données reçues
     if not receiver_Id or not content:
         return JsonResponse({'error': 'Champs manquants'}, status=400)
+    # Récupération du profil du destinataire
     try:
         receiver_profile = UserProfile.objects.get(user__id=receiver_Id)
     except UserProfile.DoesNotExist:
         return JsonResponse({'error': 'Profil utilisateur manquant'}, status=404)
+    
+    # Création du message entre l'utilisateur courant et le destinataire
     sender_profile = request.user.profile
     message = Message.objects.create(
         sender=sender_profile,
         receiver=receiver_profile,
         content=content
     )
+    
+    # Vérification de la création du message
     if message:
         message.save()
         return JsonResponse({'result': 'Message envoyé avec succès'})
     else:
+        # Erreur serveur inattendue
         return JsonResponse({'error': 'Échec de l\'envoi du message'}, status=500)
 
 @login_required
