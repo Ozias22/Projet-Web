@@ -2,67 +2,83 @@
 {% load static %}
 
 {% block title %}
-PerfectMatch - Connexion
+PerfectMatch - Se connecter
+{% endblock %}
+
+{% block header%}
+<h2>
+    <a href="/">
+
+    </a>
+</h2>
 {% endblock %}
 
 {% block main %}
-<div class="container py-5">
-
-    <!-- Carte connexion -->
-    <div class="login-card mx-auto text-center">
-        <h2 class="mb-4 text-primary">Connexion</h2>
-        <form class=".centrer_contenu" action="#" method="post" novalidate>
-            {% csrf_token %}
-            {{ form }}
-            <div class="d-flex justify-content-center mt-4">
-                <input class="btn btn-outline-secondary btn-md me-2" type="reset" value="Réinitialiser" />
-                <input class="btn btn-primary btn-md" type="submit" value="Envoyer" />
-            </div>
-        </form>
-    </div>
-
-    <!-- Section promotionnelle -->
-    <section class="promo-section mt-5">
-
-        <!-- Bloc 1 -->
-        <div class="row align-items-center mb-5">
-            <div class="col-lg-6 text-center mb-3 mb-lg-0">
-                <img src="{% static 'images/system-2521728_640.jpg' %}" alt="Illustration" class="promo-img">
-            </div>
-            <div class="col-lg-6">
-                <h3 class="fw-bold mb-3">Ne perdez plus de temps</h3>
-                <p class="fs-5">Grâce à notre système intelligent de filtrage et de compatibilité, vous accédez rapidement à des profils
-                    qui répondent précisément à vos critères. Que vous cherchiez une affinité professionnelle, amicale ou amoureuse,
-                    notre plateforme vous permet de cibler les bons profils dès le départ.</p>
+<div class="container p-5">
+    <section class="row mt-5 justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-0 rounded-5">
+                <div class="card-header text-white text-center rounded-top-4 bg-secondary">
+                    <h2 class="mb-0">Connexion de compte</h2>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        {{ form }}
+                        <div class="d-flex justify-content-center">
+                            <a href="{% url 'connexion' %}" class="btn btn-outline-secondary w-25 btn-md me-2 mt-3">Réinitialiser</a>
+                            <button type="submit" class="btn btn-primary w-25 mt-3">
+                            Connexion
+                        </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-center bg-light">
+                    <p class="mb-0 ">Pas de compte? <a class="link-offset-2 text-decoration-underline link-underline-primary" href="{%  url "inscription" %}">Inscrivez-vous</a></p>
+                </div>
             </div>
         </div>
-
-        <!-- Bloc 2 -->
-        <div class="row align-items-center mb-5 flex-lg-row-reverse">
-            <div class="col-lg-6 text-center mb-3 mb-lg-0">
-                <img src="{% static 'images/system-2521728_640.jpg' %}" alt="Illustration" class="promo-img">
-            </div>
-            <div class="col-lg-6">
-                <h3 class="fw-bold mb-3">Filtrage intelligent</h3>
-                <p class="fs-5">Notre plateforme vous permet d’identifier rapidement les profils qui répondent à vos attentes,
-                    grâce à des filtres précis et une technologie de matching intelligente. Que vous soyez en quête d’une connexion sérieuse
-                    ou d’une affinité spontanée, vous accédez directement aux personnes qui vous correspondent.</p>
-            </div>
+    </section>
+    <section class="row bg-secondary p-5 mx-3 mt-5 rounded-5 shadow-lg">
+      <!--  -->
+      <div class="col-12 p-3 my-3 rounded-4 text-white bg-info shadow-lg">
+        <div class="row">
+          <div class="col-4">
+            <img class="image-box rounded " src="{% static 'images/system-2521728_640.jpg' %}" alt="" />
+          </div>
+          <div class="col-8 text-center my-3">
+            <h2 class="h2">Ne perdez plus de temps!</h2>
+            <p class="p-2 fs-5">Grâce à notre système intelligent de filtrage et de compatibilité, vous accédez rapidement à des profils qui répondent précisément à vos critères. Que vous cherchiez une affinité professionnelle, amicale ou amoureuse, notre plateforme v ous permet de cibler les bons profils dès le départ
+            </p>
+          </div>
         </div>
-
-        <!-- Bloc 3 -->
-        <div class="row align-items-center mb-5">
-            <div class="col-lg-6 text-center mb-3 mb-lg-0">
-                <img src="{% static 'images/people-7273372_640.jpg' %}" alt="Illustration" class="promo-img">
-            </div>
-            <div class="col-lg-6">
-                <h3 class="fw-bold mb-3">Trouvez votre match</h3>
-                <p class="fs-5">Ne perdez plus de temps : trouvez des profils qui correspondent à vos critères et testez la solidité de vos matchs avant de vous lancer.
-                    Explorez les profils qui vous attirent, échangez, apprenez à vous connaître, et assurez-vous que vos valeurs et objectifs de vie s’alignent. N’attendez plus : redéfinissez ce que vous recherchez.
-                     Le bon partenaire est peut‑être déjà là — saisissez votre chance dès maintenant.</p>
-            </div>
+      </div>
+      <!--  -->
+      <div class="col-12 p-3 my-3 rounded-4 text-white bg-info">
+        <div class="row">
+          <div class="col-8 text-center my-3">
+            <h2 class="h2">Approfondissez votre relation proche à une relation intime et joyeuse</h2>
+            <p class="p-2 fs-5">Notre plateforme vous permet d’identifier rapidement les profils qui répondent à vos attentes, grâce à des filtres précis et une technologie de matching intelligente. Que vous soyez en quête d’une connexion sérieuse ou d’une affinité spontanée, vous accédez directement aux personnes qui vous correspondent.</p>
+          </div>
+          <div class="col-4">
+            <img class="image-box rounded " src="{% static 'images/GettyImages-1354885010.jpg' %}" alt="" />
+          </div>
         </div>
-
+      </div>
+      <!--  -->
+      <div class="col-12 p-3 my-3 rounded-4 text-white bg-info">
+        <div class="row">
+          <div class="col-4">
+            <img class="image-box" src="{% static 'images/people-7273372_640.jpg' %}" alt="" />
+          </div>
+          <div class="col-8 text-center">
+            <h2 class="text-center h2">Des millions de candidats vous attendent!</h2>
+            <p class="p-2 fs-5">
+              Ne perdez plus de temps: trouvez des profils qui correspondent à vos critères et testez la solidité de vos matchs avant de vous lancer.<br /><br />Trouvez le profil en un clin d'œil et invitez-les à faire une discussion aimable.
+            </p>
+          </div>
+        </div>
+      </div>
     </section>
 </div>
 {% endblock %}

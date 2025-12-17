@@ -12,10 +12,12 @@ from django.core import serializers
 from django.db.models import Q
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from datetime import date
+from datetime import date, datetime
 from django.db.models.functions import Random
 from datetime import date
 from django.db.models.functions import Random
+from django.utils.timezone import localtime
+from django.templatetags.static import static
 
 def index(request):
     return redirect("connexion")
@@ -229,7 +231,7 @@ def obtenir_profil(request):
             if i.is_mutual:
                 profiles_non_valides.append(i)
         utilisateurs_profiles = UserProfile.objects.exclude(id__in=[profiles_non_valide.user2_id for profiles_non_valide in profiles_non_valides]).exclude(user=user)
-        # imagesUsers = ImagesUser.objects.filter(user__in=[utilisateur_profile.user for utilisateur_profile in utilisateurs_profiles])
+        imagesUsers = ImagesUser.objects.filter(user__in=[utilisateur_profile.user for utilisateur_profile in utilisateurs_profiles])
         users = []
         for profil in utilisateurs_profiles:
             if profil.user_id:  # évite les profils orphelins
@@ -240,7 +242,7 @@ def obtenir_profil(request):
     else:
         utilisateurs_profiles = UserProfile.objects.exclude(user=user)
         imagesUsers = ImagesUser.objects.filter(user__in=[utilisateur_profile.user for utilisateur_profile in utilisateurs_profiles])
-    # return JsonResponse({'profiles': serializers.serialize('json', utilisateurs_profiles),'Images':serializers.serialize('json', imagesUsers)}, safe=False)
+        return JsonResponse({'profiles': serializers.serialize('json', utilisateurs_profiles),'Images':serializers.serialize('json', imagesUsers)}, safe=False)
 
     # AJOUT DES FILTRES POUR GET PROFILES
     # Genre selon UseProfile
@@ -366,19 +368,58 @@ def get_discussions(request):
             discussion_profile_ids.add(receiver_id)
 
     # Obtentions des donnes autres utilisateurs
-    other_users = User.objects.filter(profile__id__in=discussion_profile_ids)
+    other_profiles = UserProfile.objects.filter(id__in=discussion_profile_ids)
 
-    data = [
-        {
-            "id": user.id,
-            "username": user.username,
-        }
-        for user in other_users
-    ]
+    data = []
+    
+    for profile in other_profiles:
+        # Recuperer le dernier message avec ce partenaire
+        last_message = Message.objects.filter(
+            Q(sender=current_profile, receiver=profile) |
+            Q(sender=profile, receiver=current_profile)
+        ).order_by("-timestamp").first()
 
+        # Essaie obtention de l'avatar, sinon image defaut    
+        avatar_url = profile.user.photo_profil.url
+        if not avatar_url:
+            avatar_url = static("images/default.png")
+        
+        # si nouveau message non lu
+        is_unread = (
+            last_message.sender == profile
+            and not last_message.is_read
+        )
+
+        # abbreviation du message si 17+ caracteres
+        if last_message:
+            content = last_message.content
+            short_content = content[:17] + "..." if len(content) > 17 else content
+        else:
+            short_content = ""
+        
+        data.append({
+            "user_id": profile.user.id,
+            "username": profile.user.username,
+            "photo_profil": avatar_url,
+            "last_message": short_content, #contenu abrege
+            "last_timestamp": last_message.timestamp if last_message else None,
+            "is_unread": is_unread,
+        })
+
+    #Trier par message le plus recent
+    data.sort(
+    key=lambda x: (
+        not x["is_unread"], -(x["last_timestamp"].timestamp() if x["last_timestamp"] else 0)))
+
+    
+    for item in data:
+        if item["last_timestamp"]:
+            item["last_timestamp"] = localtime(item["last_timestamp"]).strftime("%Y-%m-%d %H:%M")
+
+    
     return JsonResponse(data, safe=False)
 
-
+@login_required
 @login_required
 def get_messages(request, user_id):
     current_profile = request.user.profile
