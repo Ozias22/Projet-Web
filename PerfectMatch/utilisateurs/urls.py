@@ -7,7 +7,6 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('connexion/', views.connexion, name='connexion'),
     path("inscription/", views.inscription_view, name="inscription"),
-    #path('login/', views.login_view, name='login'),
     path('compatibilite/<int:match_id>/', views.test_compatibilite, name='test_compatibilite'),
     path("deconnexion/", views.deconnexion, name="deconnexion"),
     # path("connecter_compte/", views.index, name="connecter_compte"),
@@ -22,6 +21,7 @@ urlpatterns = [
     # path('profilPerfectMatch/', views.profil_perfectmatch_view, name='profilPerfectMatch'),
     # path('ajout-image/', views.ajout_image, name='ajout-image'),
     path('discussions/', views.discussions, name='discussions'),
+    path('supprimerImage/<int:id>/' ,views.supprimer_image, name='supprimer_image'),
     #API
     path('api/discussions/', views.get_discussions, name='get_discussions'),
     path('api/messages/<int:user_id>/', views.get_messages, name='get_messages'),
