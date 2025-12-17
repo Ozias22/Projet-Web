@@ -473,7 +473,7 @@ function toggleNotifications() {
         .then(data => {
             popup.innerHTML = "";
 
-            if (data.messages.length === 0 || data.matchs.length ===0) {
+            if (data.messages.length === 0 ) {
                 popup.innerHTML = "<p>Aucune nouvelle notification.</p>";
             } else {
                 data.messages.forEach(msg => {

@@ -402,16 +402,17 @@ def get_messages(request, user_id):
 @login_required
 def notifications_view(request):
 
-    profile = get_object_or_404(UserProfile, user=request.user)
+    profile = request.user.profile
 
     unread_messages = Message.objects.filter(receiver=profile, is_read=False).order_by('-timestamp')
     match_not_mutual = Match.objects.filter(
         user2_id = profile,
         is_mutual = False
     )
+    print('match',match_not_mutual)
 
-    data = {
-        'messages' :[
+    data = [
+
         {
             "id": msg.id,
             "sender": msg.sender.user.username,
@@ -419,13 +420,7 @@ def notifications_view(request):
             "timestamp": msg.timestamp.strftime("%Y-%m-%d %H:%M")
         }
         for msg in unread_messages
-        ],
-        'matchs': [{
-            "utilisateur": match.user1_id.user.username,
-        }
-        for match in match_not_mutual
-        ]
-    }
+    ]
     unread_messages.update(is_read=True)
 
     return JsonResponse({"messages": data})
@@ -463,11 +458,8 @@ def envoyer_message(request,receiver_Id):
 
 @login_required
 def mes_matchs(request):
-    user = request.user
-    # Filtrer les tests faits par l'utilisateur
-    # matchs = Compatibilite.objects.filter(utilisateur=user).select_related('match')
-    # matchs = matchs.order_by('-score')  # tri décroissant
-    matchs = Match.objects.filter(user1__user=user, is_mutual=True)
+    profil_actuel = UserProfile.objects.get(user=request.user)
+    matchs = Match.objects.filter(user1 = profil_actuel, is_mutual=True)
     return render(request, 'utilisateurs/mes_matchs.html', {'matchs': matchs})
 
 @login_required
